@@ -1,0 +1,8 @@
+body {
+    margin: 0;
+}
+.nav {
+    background-color: aqua;
+    color: black;
+    display: flex;
+}
