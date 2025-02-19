@@ -1,0 +1,97 @@
+.nav {
+    padding: 0px 17px 0px 60px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    transition: 0.4s;
+    background-color: transparent;
+    z-index: 9999;
+    background-color: #000411;
+}
+
+.navTitle {
+    font-family: K2D;
+    font-size: 40px;
+    color: #FFFFFF;
+    display: flex;
+    padding: 0px;
+    align-items: center;
+}
+.navLogo {
+    height: 63px; 
+    margin-right: 10px;  
+}
+.navUl {
+    margin-left: auto;
+}
+.navUl ul {
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+.navUl li button{
+    color: #FFFFFF;
+    font-size: 18px;
+}
+.signIn button{
+    margin-right: 60px;
+    padding: 0;
+}
+.signUp button{
+    font-weight:600;
+    background-color: #FFC205;
+    padding: 7px 14px;
+    border-radius: 45px;
+}
+.settings button{
+    margin-left: 17px;
+    padding: 0;
+}
+  /* Адаптив для мобільних пристроїв (від 480px до 767px) */
+  @media (max-width: 795px) {
+    .nav {
+        padding: 0px 5px 0px 5px;
+    }
+    .signIn button{
+        margin-right: 15px;
+    }
+    .navLogo {
+        margin-right: 3px;  
+    }
+    .settings button{
+        margin-left: 5px;
+    }
+
+  }
+  /* Адаптив для мобільних пристроїв (від 480px до 767px) */
+  @media (max-width: 555px) {
+    .nav {
+        padding: 0px 2px 0px 2px;
+        height: 60px;
+    }
+    .navUl li button{
+        font-size: 17px;
+    }
+    .navLogo {
+        height: 45px; 
+        margin-right: 2px;  
+    }
+    .navTitle {
+        font-size: 28px;
+    }
+    .signIn button{
+        margin-right: 15px;
+    }
+    .signUp button{
+        padding: 4px 5px;
+    }
+    .navLogo {
+        margin-right: 3px;  
+    }
+    .settings button{
+        display: none;
+    }
+  }

@@ -1,0 +1,184 @@
+.signUp {
+    background-image: url("../../assets/images/SignUpPage/background.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-width: 100%;
+    min-height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerForm {
+    background-color: #000411;
+    position: relative;
+    color: #491383;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 30px;
+    box-shadow: 0px 0px 30px #491383;
+    padding: 25px 60px;
+    min-width: 300px;
+}
+.registerForm p{
+    color: red;
+    font-size: 14px;
+    margin: 2px 0px 0px 0px;
+    padding: 0;
+}
+.inputForm {
+    align-items: center;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 30px;
+    width: 100%;
+}
+.row {
+    display: flex;
+    gap: 16px;
+}
+.inputForm label{
+    margin-bottom: 8px;
+    display: block;
+    color: #BFBFBF;
+    font-size: 20px;
+}
+.inputForm input{
+    background-color: transparent;
+    outline: none;
+    border: 1px solid #313135 ;
+    color: #BFBFBF;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 17px;
+    width: 260px;
+    box-sizing: border-box; 
+}
+.passwordShown {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 9px;
+}
+
+.passwordConfirmShown{
+    cursor: pointer;
+    position: absolute;  
+    margin-left: -30px;
+    margin-top: 9px;
+}
+
+h1{
+    text-align: center;
+    color: #ffffff;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0 auto;
+
+}
+.signUpButton{
+    
+    margin-top: 11px;
+    background-color: #FF971D;
+    color: #202022;
+    font-size: 23px;
+    font-weight: 550;
+    border-radius: 10px;
+    padding: 11px 70px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.signUpButton:hover {
+    background-color: #d17d16;
+}
+
+.checkboxTerms {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    color: #BFBFBF;
+    font-size: 20px;
+
+}
+input[type="checkbox"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    appearance: none;
+    background-color: transparent;
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #313135;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    background-color: #BFBFBF;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transition: 220ms transform ease-in-out;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+.signIn{
+    margin-top: 8px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 20;
+}
+.signIn a{
+    text-decoration: none;
+    color: #FF971D;
+    font-size: 20px;
+    font-weight: 550;
+}
+
+/* Планшети та середні екрани */
+@media (max-width: 950px) {
+
+  }
+  
+  /* Смартфони (портретна орієнтація) */
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+    }
+  }
+  
+  /* Дуже малі екрани */
+  @media (max-width: 480px) {
+    .row {
+      flex-direction: column;
+    }
+    .registerForm {
+        padding: 0px;
+        border-radius: 0px;
+        box-shadow:  0px 0px 0px ;
+    }
+    .inputForm {
+        gap: 16px;
+    }
+    .signUp {
+        background-image: none;
+    }
+  }
+  

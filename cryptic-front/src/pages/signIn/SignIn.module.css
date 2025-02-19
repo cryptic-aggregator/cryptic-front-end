@@ -1,0 +1,135 @@
+.signIn {
+    background-image: url("../../assets/images/SignUpPage/background.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    min-width: 100%;
+    min-height: 100vh;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerForm {
+    background-color: #000411;
+    position: relative;
+    color: #491383;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 30px;
+    box-shadow: 0px 0px 30px #491383;
+    padding: 25px 60px;
+    min-width: 300px;
+}
+.registerForm p{
+    color: red;
+    font-size: 14px;
+    margin: 2px 0px 0px 0px;
+    padding: 0;
+}
+.inputForm {
+    align-items: center;
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 10px;
+    width: 100%;
+}
+.passwordShown {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 9px;
+}
+.inputForm label{
+    margin-bottom: 8px;
+    display: block;
+    color: #BFBFBF;
+    font-size: 20px;
+}
+.inputForm input{
+    background-color: transparent;
+    outline: none;
+    border: 1px solid #313135 ;
+    color: #BFBFBF;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 17px;
+    width: 260px;
+    box-sizing: border-box; 
+}
+h1{
+    text-align: center;
+    color: #ffffff;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0 auto;
+}
+.signInButton{ 
+    margin-top: 26px;
+    background-color: #FF971D;
+    color: #202022;
+    font-size: 23px;
+    font-weight: 550;
+    border-radius: 10px;
+    padding: 11px 70px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.signInButton:hover {
+    background-color: #d17d16;
+}
+
+.signUp{
+    margin-top: 8px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 20;
+}
+.signUp a{
+    text-decoration: none;
+    color: #FF971D;
+    font-size: 20px;
+    font-weight: 550;
+}
+.forgotPassword{
+    margin-top: 9px;
+    text-decoration: none;
+    color: #BFBFBF;
+    font-size: 20px;
+
+}
+/* Планшети та середні екрани */
+@media (max-width: 950px) {
+
+  }
+  
+  /* Смартфони (портретна орієнтація) */
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+    }
+  }
+  
+  /* Дуже малі екрани */
+  @media (max-width: 480px) {
+
+    .registerForm {
+        padding: 0px;
+        border-radius: 0px;
+        box-shadow:  0px 0px 0px ;
+    }
+    .inputForm {
+        gap: 16px;
+    }
+    .signIn {
+        background-image: none;
+    }
+  }
+  

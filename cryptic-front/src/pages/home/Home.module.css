@@ -1,0 +1,1081 @@
+/****** common *********/
+.title0{
+    color: #ffffff;
+    font-size: 40px;
+    font-weight: bold;
+}
+.title1{
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: bold;
+}
+.title2{
+    color: #808288;
+    font-size: 18px;
+    font-weight:300;
+}
+
+/****** main *********/
+
+.home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 100px;
+}
+
+
+/****** section *********/
+
+.sectionFirst {
+    margin-top: 50px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    min-height: 100%;
+    z-index: 1;
+    width: 100%;
+    max-width: 1450px;
+    margin-left: 256px;
+}
+.sectionSecond{
+    width: 100%;
+    max-width: 1194px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column; 
+}
+.sectionThird, .sectionFourth{
+    width: 100%;
+    max-width: 1194px;
+    display: flex;
+    flex-direction: column;
+}
+.sectionFifth{
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    flex-direction: column;
+}
+.sectionSixth{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 805px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;  
+}
+
+/****** sectionFirst *********/
+.slogan{
+    color: #ffffff;
+    padding: 30px 0px 20px 0px;
+    display: flex; 
+    font-size: 46px;
+    font-weight: bold; 
+}
+.infoSectionFirst{
+    width: 32%;
+
+}
+.wallet {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Дві колонки */
+    grid-template-rows: auto auto; /* Два рядки */
+    grid-template-areas: 
+        "first second"
+        "third third"; /* Третій елемент займає всю ширину */
+    justify-items: center; /* Вирівнює елементи в колонках */
+    align-items: center; /* Вирівнює по вертикалі */
+    width: 65%;
+    height: 100%;
+    padding-top: 30px;
+}
+.wallet span{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 18px;
+    z-index: 2;
+    color: #ffffff;
+    transition: 1s;
+}
+.startNowButton {
+    position: relative;
+    color: #ffffff;
+    font-size: 26px;
+    background-color: rgba(73, 19, 131, 0.5);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-weight: 500;
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    transition: color 0.7s linear, background-color 0.7s linear;
+    overflow: hidden;
+}
+
+.startNowButton .imgWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+/* Стилі для img */
+.startNowButton .imgWrapper img {
+    width: 15px;
+    padding: 5px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Фон, що збільшується */
+.startNowButton .imgWrapper::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+    transform: scale(1) ;
+    opacity: 1;
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+/* При наведенні фон збільшується */
+.startNowButton:hover .imgWrapper::before {
+    transform: scale(50);
+    opacity: 1;
+}
+
+/* Стилі для тексту label */
+.startNowButton label {
+    transition: color 0.9s ease;
+}
+
+/* При наведенні змінюється колір label */
+.startNowButton:hover label {
+    color: #000;
+    z-index: 2;
+}
+.logoWallet {
+    width: 45%;
+    position: relative;
+    z-index: 2; 
+}
+.logoEllipse{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: transform 1s;
+}
+
+/*otherLogo*/
+.otherLogo {
+    grid-area: first;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.otherLogo:hover .logoEllipse{
+    transform: rotate(68deg);
+}
+.otherLogo:after {
+    border-radius: 50%;
+    display: block;
+    content: "";
+    background-color: #000411;
+    position: absolute;
+    width: 185px;
+    height: 185px;
+    z-index: 0;
+    transition: background-color 1s, width 0.8s, height 0.8s;
+}
+.otherLogo:hover:after {
+    background-color: #FFC205;
+    width: 100%;
+    height: 100%;
+}
+.otherLogo:hover span {
+    color: #000; 
+}
+
+
+.phantomLogo {
+    grid-area: third;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.phantomLogo:hover .logoEllipse{
+    transform: rotate(-68deg);
+}
+.phantomLogo:after {
+    border-radius: 50%;
+    display: block;
+    content: "";
+    background-color: #000411;
+    position: absolute;
+    width: 185px;
+    height: 185px;
+    z-index: 0;
+    transition: background-color 1s, width 0.8s, height 0.8s;
+}
+.phantomLogo:hover:after {
+    background-color: #ffffff;
+    width: 100%;
+    height: 100%;
+}
+.phantomLogo:hover span {
+    color: #000; 
+}
+
+.metamaskLogo {
+    grid-area: second;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.metamaskLogo:hover .logoEllipse{
+    transform: rotate(68deg);
+}
+.metamaskLogo:after {
+    border-radius: 50%;
+    display: block;
+    content: "";
+    background-color: #000411;
+    position: absolute;
+    width: 185px;
+    height: 185px;
+    z-index: 0;
+    transition: background-color 1s, width 0.8s, height 0.8s;
+}
+.metamaskLogo:hover:after {
+    background-color: #FFC205;
+    width: 100%;
+    height: 100%;
+}
+.metamaskLogo:hover span {
+    color: #000; 
+}
+.otherLogo:hover span::after, .metamaskLogo:hover span::after, .phantomLogo:hover span::after {
+    margin-top: 50px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    content: " Connect the wallet";
+    font-size: 16px; 
+    color: #808288;
+}
+/****** sectionSecond *********/
+.goalsInfo{
+    display: flex;
+    justify-content:space-between;
+    flex-direction: row; 
+}
+.goalsText{
+   width: 40%;
+   position: sticky;
+   top: 20vh;
+   align-self: start;
+   text-align: justify;
+}
+.goalsText .title2{
+    margin-top: 20px;
+}
+.goalsList{
+    width: 45%;
+}
+
+.goalsListUl{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 55px;
+}
+.goalsListText{
+    padding: 0px 20px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 25px;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.goalsListUlElements {
+    border: 3px solid rgba(35, 37, 43, 0.8);
+    background-color: transparent;
+    border-radius: 35px;
+    display: flex;
+    align-items: center;
+    min-height: 125px;
+    width: 100%;
+    max-height: 400px;
+    transition: all 0.7s ease-in-out;
+    transform: scale(0.9);
+    position: relative;
+    overflow: hidden;
+}
+
+.goalsListUlElements::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 35px;
+    border: 3px solid white;
+    opacity: 0;
+    transform: scale(1);
+    transition: none;
+}
+
+.goalsListUlElements.active {
+    background-color: rgba(35, 37, 43, 0.5);
+    transform: scale(1);
+    border: 0px;
+}
+
+/* Анімація руху бордера від центру */
+.goalsListUlElements.active::before {
+    opacity: 1;
+    transform: scale(1);
+    animation: borderExpand 0.7s ease-in-out forwards;
+}
+
+@keyframes borderExpand {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+.goalsList img{
+    margin-right: 10px;
+    height: 90px;
+}
+.goalsList p{
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+}
+
+/****** sectionThird *********/
+
+
+.analiiticsInfo{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.analiiticsInfoText .title1{
+    margin-bottom: 20px;
+}
+.analiiticsInfoText .title2{
+    margin-top: 10px;
+}
+.analiiticsInfoText {
+    text-align: justify;
+    width: 40%;
+    height: 100%;
+}
+.analiiticsInfoImg {
+    display: flex;
+    width: 55%;
+    justify-content: center;
+    align-items: center;
+}
+.analiiticsInfoImg img{
+    width: 100%;
+}
+.analyticsListUl{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    color: #ffffff;
+    font-size: 25px;
+    font-weight: 500;
+}
+.analyticsListUlElements{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.analyticsListUlElements img{
+    margin-right: 15px;
+}
+
+/****** sectionFourth *********/
+
+
+.transferInfo{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.transferInfoText{
+    width: 40%;
+    text-align: justify;
+}
+.transferInfoText .title2{
+    margin-top: 10px;
+}
+.transferInfoImg {
+    display: flex;
+    width: 55%;
+    justify-content: center;
+    align-items: center;
+}
+.transferInfoImg img{
+    width: 100%;
+    height: 100%;
+}
+.tryNowButton{
+    position: relative;
+    color: #ffffff;
+    font-size: 26px;
+    background-color: rgba(73, 19, 131, 0.5);
+    border-radius: 10px;
+    padding: 14px 40px;
+    font-weight: 500;
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    transition: color 0.7s linear, background-color 0.7s linear;
+    overflow: hidden;
+}
+.tryNowButton:hover{
+    color: #000000;
+    background-color: white;
+}
+
+/****** sectionFifth *********/
+.sectionFifth .title0{
+    text-align: center;
+    margin-bottom: 20px;
+}
+.mobileAppInfo{
+    display: flex;
+    justify-content:  space-between;
+    width: 100%;
+}
+.leftInfo li,.rightInfo li{
+    position: relative;
+    background-color: rgba(35, 37, 43, 0.5);
+    border-radius: 45px;
+    text-align: justify;
+    flex: 1;
+}
+.leftInfo .InfoTopic{
+    text-align: left;
+}
+.rightInfo .InfoTopic{
+    text-align:right;
+}
+.leftInfo ,.rightInfo {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content:  space-between;
+    gap: 60px;
+    width: 27%;
+}
+.centralInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 37%;
+    gap: 55px;
+}
+.downloadMobileAppButton{
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 32px;
+    padding: 10px 0px;
+    width: 100%;
+    border-radius: 35px;
+    z-index: 10;
+    transition: 0.3s linear;
+}
+.downloadMobileApp{
+    position: relative;
+    --offset: 3px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    background: #000411;
+    border-radius: 35px;
+    width: 65%;
+}
+.downloadMobileAppButton:hover{
+    background: rgba(73, 19, 131, 0.5);
+}
+/* Conic gradient */
+.downloadMobileApp::before { 
+    content: '';
+    background: conic-gradient(transparent 270deg, white, transparent);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 1;
+    width: 200px;
+    animation: rotate 2s linear infinite;
+}
+
+/* Overlay */
+.downloadMobileApp::after {
+    content: '';
+    background: inherit;
+    border-radius: inherit;
+    position: absolute;
+    inset: var(--offset);
+    height: calc(100% - 2 * var(--offset));
+    width: calc(100% - 2 * var(--offset));
+}
+@keyframes rotate {
+    from {
+        transform: translate(-50%, -50%) scale(1.4) rotate(0turn);
+    }
+
+    to {
+        transform: translate(-50%, -50%) scale(1.4) rotate(1turn);
+    }
+}
+.downloadMobileAppImg{
+    border-radius: 35px;
+    padding: 0px 25px ;
+    background: linear-gradient(to top, rgba(73, 19, 131, 0.5) 0%, transparent 40%);
+}
+.mobileAppImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.leftInfo li::after,.rightInfo li::after{
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 250;
+    content: "+";
+    font-size: 30px;
+    color: #000;
+    background-color: #7E869E;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 25px;
+    z-index: 1;
+}
+.leftInfo li::after{
+    right: 25px;
+}
+.leftInfo li::after :cli{
+    right: 25px;
+}
+.rightInfo li::after{
+    left: 25px;
+}
+.InfoTopic{
+    color: white;
+    font-size: 30px;
+}
+.infoText{
+    padding: 30px;
+}
+.infoText .title2{
+    padding-top: 10px;
+}
+
+/****** sectionSixth *********/
+
+.backgroundSection{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-image: url("../../assets/images/HomePage/backgroundSectionSixth.svg");
+    background-repeat:no-repeat;
+    background-position: center; 
+    z-index: 0;
+    
+}
+.animation{
+    display: flex;
+    align-items: center;
+    z-index: 1;
+}
+.animationBrand{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    height: 180px;
+    width: 180px;
+}
+.animationBrand img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+@keyframes rotateAnimation {
+    0% { transform: rotate(0deg); }
+    80% { transform: rotate(360deg); } /* Обертання триває 5 секунд */
+    100% { transform: rotate(360deg); } /* Затримка на 2 секунди (останній кадр без змін) */
+}
+@keyframes rotateAnimationAnyother {
+    0% { transform: rotate(0deg); }
+    80% { transform: rotate(-360deg); } /* Обертання триває 5 секунд */
+    100% { transform: rotate(-360deg); } /* Затримка на 2 секунди (останній кадр без змін) */
+}
+.animationBrandFirstCircle{
+    animation: rotateAnimation 3s ease infinite;
+}
+.animationBrandSecondCircle{
+    animation: rotateAnimationAnyother 3s ease infinite;
+}
+.animationBrandThirdCircle{
+    animation: rotateAnimation 3s ease infinite;
+}
+.textLogo{
+    margin-left: 10px;
+    font-family: K2D;
+    font-size: 100px;
+    font-weight: 500;
+}
+.startNowButtonEnd{
+    color: #ffffff;
+    border: 1px solid  #ffffff;
+    font-size: 32px;
+    padding: 11px 65px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    z-index: 1;
+    transition: 0.7s linear;
+}
+.startNowButtonEnd:hover{
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/****** footer *********/
+
+footer{
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+    color: #808288;
+    font-size: 20px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.footerContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    max-width: 1194px;
+}
+.footerUl {
+    display: flex;
+    gap: 55px;
+}
+.footerUl button {
+    color: #808288;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/****** media *********/
+@media (max-width: 1740px) {
+    .sectionFirst {
+        max-width: 1350px;
+        margin-left: 156px;
+    }
+}
+@media (max-width: 1540px) {
+    .sectionFirst {
+        max-width: 1250px;
+        margin-left: 54px;
+    }
+}
+@media (max-width: 1340px) {
+    .sectionFirst {
+        max-width: 1194px;
+        margin-left: 0px;
+    }
+}
+/*
+@media (max-width: 1900px) {
+    .sectionFirst {
+        max-width: 1550px;
+        left: 55px;  
+    }
+}
+@media (max-width: 1680px) {
+    .sectionFirst {
+        max-width: 1500px;
+        left: 30px;  
+    }
+}
+@media (max-width: 1580px) {
+    .sectionFirst {
+        max-width: 1440px;
+        left: 0px;  
+    }
+    .slogan {
+        font-size: 40px;
+      }
+      .title1 {
+        font-size: 40px;
+      }
+      .title2 {
+        font-size: 24px;
+      }
+      .wallet span{
+          margin-top: 10px;
+          font-size: 24px;
+      }
+      .logoWallet {
+          width: 150px;
+      }
+  
+  
+      .otherLogo{
+          width: 283px;
+          height: 283px;
+      }
+      .otherLogo:after{
+          width: 235px;
+          height: 235px;
+      }
+      .otherLogo:hover:after {
+          width: 283px;
+          height: 283px;
+      }
+      .otherLogo:hover span::after {
+          font-size: 18px; 
+      }
+  
+  
+      .phantomLogo{
+          width: 360px;
+          height: 360px;
+      }
+      .phantomLogo:after{
+          width: 290px;
+          height: 290px;
+      }
+      .phantomLogo:hover:after {
+          width: 360px;
+          height: 360px;
+      }
+      .phantomLogo:hover span::after {
+          font-size: 18px; 
+      }
+      
+  
+      .metamaskLogo{
+          width: 327px;
+          height: 327px;
+      }
+      .metamaskLogo:after{
+          width: 280px;
+          height: 280px;
+      }
+      .metamaskLogo:hover:after {
+          width: 327px;
+          height: 327px;
+      }
+      .metamaskLogo:hover span::after {
+          font-size: 18px; 
+      }
+}
+@media (max-width: 1200px) {
+
+    .wallet span{
+        margin-top: 10px;
+        font-size: 20px;
+
+    }
+    .logoWallet {
+        width: 120px;
+    }
+      
+    .startNowButton {
+        font-size: 30px;
+        padding: 14px 70px 14px 20px;
+    }
+    
+
+    .otherLogo{
+        width: 233px;
+        height: 233px;
+    }
+    .otherLogo:after{
+        width: 195px;
+        height: 195px;
+    }
+    .otherLogo:hover:after {
+        width: 233px;
+        height: 233px;
+    }
+    .otherLogo:hover span::after {
+        font-size: 16px; 
+    }
+
+
+    .phantomLogo{
+        width: 310px;
+        height: 310px;
+    }
+    .phantomLogo:after{
+        width: 250px;
+        height: 250px;
+    }
+    .phantomLogo:hover:after {
+        width: 310px;
+        height: 310px;
+    }
+    .phantomLogo:hover span::after {
+        font-size: 18px; 
+    }
+    
+
+    .metamaskLogo{
+        width: 287px;
+        height: 287px;
+    }
+    .metamaskLogo:after{
+        width: 240px;
+        height: 240px;
+    }
+    .metamaskLogo:hover:after {
+        width: 287px;
+        height: 287px;
+    }
+    .metamaskLogo:hover span::after {
+        font-size: 18px; 
+    }
+
+}
+@media (max-width: 965px) {
+    .wallet span{
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .startNowButton {
+        font-size: 30px;
+        padding: 14px 70px 14px 20px;
+    }
+    .logoWallet {
+        width: 90px;
+    }
+
+    .otherLogo{
+        width: 185px;
+        height: 185px;
+    }
+    .otherLogo:after{
+        width: 160px;
+        height: 160px;
+    }
+    .otherLogo:hover:after {
+        width: 185px;
+        height: 185px;
+    }
+    .otherLogo:hover span::after {
+        font-size: 14px; 
+    }
+
+
+    .phantomLogo{
+        width: 250px;
+        height: 250px;
+    }
+    .phantomLogo:after{
+        width: 210px;
+        height: 210px;
+    }
+    .phantomLogo:hover:after {
+        width: 250px;
+        height: 250px;
+    }
+    .phantomLogo:hover span::after {
+        font-size: 18px; 
+    }
+    
+   
+    .metamaskLogo{
+        width: 227px;
+        height: 227px;
+    }
+    .metamaskLogo:after{
+        width: 195px;
+        height: 195px;
+    }
+    .metamaskLogo:hover:after {
+        width: 227px;
+        height: 227px;
+    }
+    .metamaskLogo:hover span::after {
+        font-size: 18px; 
+    }
+}
+@media (max-width: 795px) {
+    .sectionFirst{
+        align-items: center;
+        justify-content: start;
+        flex-direction: column;
+        text-align: center;
+    }
+    .startNowButton{
+        margin-bottom: 30px;
+    }
+    .slogan{
+        justify-content: center;
+     }
+
+  }
+  
+
+  @media (max-width: 555px) {
+
+    .slogan {
+      font-size: 28px;
+      margin: 0px 0px 10px 0px;
+    }
+  
+    .title2 {
+      font-size: 18px;
+    }
+    .wallet span{
+        margin-top: 5px;
+    }
+    .startNowButton {
+      font-size: 20px;
+      padding: 10px 30px;
+      margin-top: 40px;
+    }
+    .logoWallet {
+        width: 60px;
+    }
+
+    .otherLogo{
+        width: 145px;
+        height: 145px;
+    }
+    .otherLogo:after{
+        width: 125px;
+        height: 125px;
+    }
+    .otherLogo:hover:after {
+        width: 145px;
+        height: 145px;
+    }
+    .otherLogo:hover span::after {
+        font-size: 11px; 
+    }
+
+    .phantomLogo{
+        width: 200px;
+        height: 200px;
+        margin-top: 45%;
+        left: 18%;
+    }
+    .phantomLogo:after{
+        width: 160px;
+        height: 160px;
+    }
+    .phantomLogo:hover:after {
+        width: 200px;
+        height: 200px;
+    }
+    .phantomLogo:hover span::after {
+        font-size: 14px; 
+    }
+
+
+    .metamaskLogo{
+        width: 193px;
+        height: 193px;
+    }
+    .metamaskLogo:after{
+        width: 165px;
+        height: 165px;
+    }
+    .metamaskLogo:hover:after {
+        width: 193px;
+        height: 193px;
+    }
+    .metamaskLogo:hover span::after {
+        font-size: 14px; 
+    }
+  }
+
+  @media (max-width: 414px) {
+    .wallet{
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .wallet button{
+        margin-top: 15px;
+    }
+
+    .otherLogo{
+        margin: 0;
+    }
+
+    .phantomLogo{
+        left: 0;
+    }
+
+}*/
