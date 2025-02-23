@@ -1,8 +1,33 @@
 body {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #000411;
+    font-family: Outfit;
+    color: #ffffff;
 }
-.nav {
-    background-color: aqua;
-    color: black;
-    display: flex;
+button{
+    cursor: pointer;
+    background: none; 
+    border: none; 
+}
+ul{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;
+}
+li{
+    padding: 0px;
+    margin: 0px;
+    list-style: none;  
+}
+
+@font-face {
+    font-family: K2D;
+    src: url(../assets/fonts/K2D-Regular.ttf);
+}
+@font-face {
+    font-family: Outfit;
+    src: url(../assets/fonts/Outfit-VariableFont_wght.ttf);
 }
