@@ -12,6 +12,7 @@
 }
 
 .navTitle {
+    text-decoration: none;
     font-family: K2D;
     font-size: 40px;
     color: #FFFFFF;
@@ -25,6 +26,7 @@
 }
 .navUl {
     margin-left: auto;
+        text-decoration: none;
 }
 .navUl ul {
     padding: 0px;
@@ -32,30 +34,63 @@
     display: flex;
     align-items: center;
 }
-.navUl li button{
+.navUl li a{
+    text-decoration: none;
     color: #FFFFFF;
     font-size: 18px;
+    
 }
-.signIn button{
+.signIn a{
     margin-right: 60px;
     padding: 0;
 }
-.signUp button{
+.signUp a{
+    transition: background-color 0.3s ease;
     font-weight:600;
     background-color: #FFC205;
     padding: 7px 14px;
     border-radius: 45px;
 }
+.signIn a:hover{
+    font-weight:500;
+}
+.signUp a:hover{
+    background-color: #E0A800; 
+}
 .settings button{
     margin-left: 17px;
     padding: 0;
+    transition: transform 0.3s;
+}
+.settings button:hover{
+    transform: rotate(30deg);
+}
+.auth{
+    position: relative;
+    padding: 10px 20px;
+    gap: 20px;
+    background: rgba(35, 37, 43, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.auth:hover{
+    position: relative;
+    padding: 10px 20px;
+    background: rgba(35, 37, 43, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
   /* Адаптив для мобільних пристроїв (від 480px до 767px) */
   @media (max-width: 795px) {
     .nav {
-        padding: 0px 5px 0px 5px;
+        padding: 0px 10px 0px 10px;
     }
-    .signIn button{
+    .signIn a{
         margin-right: 15px;
     }
     .navLogo {
@@ -69,10 +104,9 @@
   /* Адаптив для мобільних пристроїв (від 480px до 767px) */
   @media (max-width: 555px) {
     .nav {
-        padding: 0px 2px 0px 2px;
         height: 60px;
     }
-    .navUl li button{
+    .navUl li a{
         font-size: 17px;
     }
     .navLogo {
@@ -82,16 +116,16 @@
     .navTitle {
         font-size: 28px;
     }
-    .signIn button{
-        margin-right: 15px;
+    .signIn a{
+        display: none;
     }
-    .signUp button{
-        padding: 4px 5px;
+    .signUp a{
+        display: none;
+    }
+    .auth{
+        display: flex;
     }
     .navLogo {
         margin-right: 3px;  
-    }
-    .settings button{
-        display: none;
     }
   }

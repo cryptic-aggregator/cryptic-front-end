@@ -1,5 +1,6 @@
 import styles from "./Home.module.css";
 import Navbar from "../../components/Navbar.js";
+import Footer from "../../components/Footer.js";
 import settings from "../../assets/images/HomePage/settings.svg";
 import calendar from "../../assets/images/HomePage/calendar.svg";
 import checkMark from "../../assets/images/HomePage/checkMark.svg";
@@ -26,9 +27,12 @@ import transactionDataGoals from "../../assets/images/HomePage/TransactionDataGo
 import transactionCostGoals from "../../assets/images/HomePage/TransactionCostGoals.svg";
 import transferGoals from "../../assets/images/HomePage/TransferGoals.svg";
 import graph from "../../assets/images/HomePage/Graph.svg";
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Home() {
+  const {t} = useTranslation();
   useEffect(() => {
     const animItems = document.querySelectorAll(".animItems");
 
@@ -77,38 +81,37 @@ export default function Home() {
   return (
     <>
     <Navbar/>
-    <main className={styles.home}>
-    
+    <main className={styles.home}> 
       <section className={styles.sectionFirst}>
         <div className={styles.contentSectionFirst}>
           <div className={styles.infoSectionFirst}>
-            <div className={styles.slogan}>Simple and Secure <br />Management of Your <br />Crypto Wallets</div>
-            <div className={styles.title2}>Track balances, analyze portfolios,<br /> and receive notifications with one click.</div>
-            <button className={styles.startNowButton}>
-              <label>Start Now</label>
+            <div className={styles.slogan}>{t('home.slogan')}</div>
+            <div className={styles.title2}>{t('home.trackBalances')}</div>
+            <Link to="/signUp" className={styles.startNowButton}>
+              <label>{t('home.startNow')}</label>
               <span class={styles.imgWrapper}>
                 <img src={rightArrowAngle}  alt="icon"/>
               </span>
-            </button>
+            </Link>
           </div>
           <div className={styles.wallet}>
-            <button className={styles.otherLogo}>
+            <Link to="/connectWallet"className={styles.otherLogo} >
                 <img className={styles.logoEllipse} src={otherLogoEllipse} alt="Other logo" />
                 <img className={styles.logoWallet} src={otherLogo} alt="Other logo" />
-                <span>Other</span>
-            </button>
+                <span data-tooltip={t('home.connectWallet')}>{t('home.other')}</span>
+            </Link>
 
-            <button className={styles.metamaskLogo}>
+            <Link to="/connectWallet" className={styles.metamaskLogo} >
                 <img className={styles.logoEllipse} src={metamaskLogoEllipse} alt="Other logo" />
                 <img className={styles.logoWallet} src={metamaskLogo} alt="Metamask logo" />
-                <span>Metamask</span>
-            </button>
+                <span data-tooltip={t('home.connectWallet')}>{t('home.metamask')}</span>
+            </Link>
 
-            <button className={styles.phantomLogo}>
+            <Link to="/connectWallet" className={styles.phantomLogo} >
                 <img className={styles.logoEllipse} src={phantomLogoEllipse} alt="Other logo" />
                 <img className={styles.logoWallet} src={phantomLogo} alt="Phantom logo" />
-                <span>Phantom</span>
-            </button>
+                <span data-tooltip={t('home.connectWallet')}>{t('home.phantom')}</span>
+            </Link>
           </div>
         </div>
 
@@ -118,39 +121,39 @@ export default function Home() {
         <div className={styles.contentSectionSecond}>
           <div className={styles.goalsInfo}>
             <div className={styles.goalsText}>
-              <div className={styles.title1}>Maximize the potential of the platform to achieve your goals</div>
-              <div className={styles.title2}>Create portfolio, connect your wallets, use analytical tools, send transactions</div>
+              <div className={styles.title1}>{t('home.goalsTitle')}</div>
+              <div className={styles.title2}>{t('home.goalsSubtitle')}</div>
             </div>
             <div className={styles.goalsList}>
               <ul className={styles.goalsListUl}>
                 <li className={`animItems ${styles.goalsListUlElements}`}>
                   <div className={styles.goalsListText}>
                     <img src={transferGoals} alt="Transfer" />
-                    <p>Transfer your assets</p>
+                    <p>{t('home.transferAssets')}</p>
                   </div>
                 </li>
                 <li className={`animItems ${styles.goalsListUlElements}`}>
                   <div className={styles.goalsListText}>
                     <img src={portfolioGoals} alt="Manage" />
-                    <p>Manage different portfolios</p>
+                    <p>{t('home.managePortfolios')}</p>
                   </div>
                 </li>
                 <li className={`animItems ${styles.goalsListUlElements}`}>
                   <div className={styles.goalsListText}>
                     <img src={transactionDataGoals} alt="View" />
-                    <p>View historical transaction data</p>
+                    <p>{t('home.viewTransactions')}</p>
                   </div>
                 </li>
                 <li className={`animItems ${styles.goalsListUlElements}`}>
                   <div className={styles.goalsListText}>
                     <img src={transactionCostGoals} alt="Track" />
-                    <p>Track transaction costs</p>
+                    <p>{t('home.trackCosts')}</p>
                   </div>
                 </li>
                 <li className={`animItems ${styles.goalsListUlElements}`}>
                   <div className={styles.goalsListText}>
                     <img src={balanceAnalyticsGoals} alt="Analyze" />
-                    <p>Analyze wallet balance changes</p>
+                    <p>{t('home.analyzeBalances')}</p>
                   </div>
                 </li>
               </ul>
@@ -165,13 +168,9 @@ export default function Home() {
               <img src={graph} alt="Analytics" />
             </div>
             <div className={styles.analiiticsInfoText}>
-              <div className={styles.title1}>Access comprehensive asset analytics for your portfolios</div>
-              <div className={styles.title2}>
-                Discover our platform's powerful analytical tools, featuring interactive charts for tracking balance changes.
-              </div>
-              <div className={styles.title2}>
-                Gain insights into asset allocation with  portfolio structure analysis and monitor your profitability with detailed performance metrics for each coin.
-              </div>
+              <div className={styles.title1}>{t('home.analyticsTitle')}</div>
+              <div className={styles.title2}>{t('home.analyticsDescription1')}</div>
+              <div className={styles.title2}>{t('home.analyticsDescription2')}</div>
             </div>
           </div>
 
@@ -179,19 +178,19 @@ export default function Home() {
           <ul className={styles.analyticsListUl}>
               <li className={styles.analyticsListUlElements}>
                 <img src={settings} alt="Customize" />
-                <span>Customize the data displayed</span>
+                <span>{t('home.customizeData')}</span>
               </li> 
               <li className={styles.analyticsListUlElements}>
                 <img src={calendar} alt="Select" />
-                <span>Select a time period</span>
+                <span>{t('home.selectTime')}</span>
               </li>
               <li className={styles.analyticsListUlElements}>
                 <img src={diagram} alt="Get Info" />
-                <span>Get all you need to know</span>
+                <span>{t('home.getInfo')}</span>
               </li>
               <li className={styles.analyticsListUlElements}>
                 <img src={checkMark} alt="Choose" />
-                <span>Choose your wallet</span>
+                <span>{t('home.chooseWallet')}</span>
               </li>
             </ul>
           </div>
@@ -202,9 +201,9 @@ export default function Home() {
       <section className={styles.sectionFourth}>
         <div className={styles.contentSectionFourth}>
           <div className={styles.transferInfoText}>
-            <div className={styles.title1}>Easily transfer your assets to other addresses</div>
-            <div className={styles.title2}>Store recipient addresses to make transfer faster and easier</div>
-            <button className={styles.tryNowButton}>Try Now</button>
+            <div className={styles.title1}>{t('home.transferTitle')}</div>
+            <div className={styles.title2}>{t('home.transferSubtitle')}</div>
+            <Link to="/signUp" className={styles.tryNowButton}>{t('home.tryNow')}</Link>
           </div>
           <div className={styles.transferInfoImg}>
             <img src={chartDynamic} alt="Transfer" />
@@ -215,30 +214,26 @@ export default function Home() {
    
       <section className={styles.sectionFifth}>
         <div className={styles.contentSectionFifth}>
-          <div className={styles.title0}>Get our free mobile app</div>
+          <div className={styles.title0}>{t('home.mobileAppTitle')}</div>
             <div className={styles.mobileAppInfo}>
                 <div className={styles.leftInfo}>
                   <li className={styles.security}>
                       <div className={styles.infoText}>
-                        <div className={styles.InfoTopic}>Security</div>
-                        <div className={styles.title2}>Protect your crypto assets with robust encryption and two-factor authentication. 
-                          Enjoy peace of mind in every transaction, knowing all your data is securely safeguarded.
-                        </div>
+                        <div className={styles.InfoTopic}>{t('home.securityTitle')}</div>
+                        <div className={styles.title2}>{t('home.securityText')}</div>
                       </div>
                     </li>
                     
                     <li className={styles.notifications}>
                       <div className={styles.infoText}>
-                        <div className={styles.InfoTopic}>Notifications</div>
-                        <div className={styles.title2}>Receive and manage push notifications for every operation and balance change. 
-                          Stay on top of every update and respond promptly to important events.
-                        </div>
+                        <div className={styles.InfoTopic}>{t('home.notificationsTitle')}</div>
+                        <div className={styles.title2}>{t('home.notificationsText')}</div>
                       </div>
                     </li>
                 </div>
                 <div className={styles.centralInfo}>
                     <div className={styles.downloadMobileApp}>
-                      <button className={styles.downloadMobileAppButton}>Download</button>
+                      <Link to="/downloadApp" className={styles.downloadMobileAppButton}>{t('home.download')}</Link>
                     </div>
                     <div className={styles.downloadMobileAppImg}>
                       <img className={styles.mobileAppImg} src={mobileApp} alt="Mobile App" />
@@ -247,18 +242,14 @@ export default function Home() {
                 <div className={styles.rightInfo}>
                     <li className={styles.lightness}>
                       <div className={styles.infoText}>
-                        <div className={styles.InfoTopic}>Lightness</div>
-                        <div className={styles.title2}>Use QR codes for quick and convenient transfers. 
-                          Simply scan the code with one tap—no more errors or lengthy procedures.
-                        </div>
+                        <div className={styles.InfoTopic}>{t('home.lightnessTitle')}</div>
+                        <div className={styles.title2}>{t('home.lightnessText')}</div>
                       </div>
                     </li>
                     <li className={styles.access}>
                       <div className={styles.infoText}>
-                        <div className={styles.InfoTopic}>Access</div>
-                        <div className={styles.title2}>Keep all the most important information at your fingertips. 
-                          From transaction history to analytics—everything is available in one click, wherever you are.
-                        </div>
+                        <div className={styles.InfoTopic}>{t('home.accessTitle')}</div>
+                        <div className={styles.title2}>{t('home.accessText')} </div>
                       </div>
                     </li>
                 </div>
@@ -269,7 +260,7 @@ export default function Home() {
       <section className={styles.sectionSixth}>
         <div className={styles.backgroundSection}></div>
         <div className={styles.contentSectionSixth}>
-          <div className={styles.title0} >Feel free on your crypto journey with</div>
+          <div className={styles.title0} >{t('home.cryptoJourney')}</div>
           <div className={styles.animation}>
             <div className={styles.animationBrand}>
                 <img className={styles.animationBrandZeroCircle} src={zeroCircleAnim} alt="Logo" />
@@ -279,27 +270,14 @@ export default function Home() {
             </div>
             <div className={styles.textLogo}>RYPTIC</div>
           </div>
-          <button className={styles.startNowButtonEnd}>Start Now</button>
+          <Link to="/signUp" className={styles.startNowButtonEnd}>{t('home.startNow')}</Link>
         </div>
       </section>
 
     </main>
 
-    <footer>
-        <div className={styles.footerContent}>
-          <li className={styles.brand}>
-              ©2024 Cryptic
-          </li>
-          <ul className={styles.footerUl}>
-            <li>
-              <button>Terms  of Service</button>
-            </li>
-            <li>
-              <button>Privacy Policy</button>
-            </li>
-          </ul>  
-        </div> 
-    </footer> 
+    <Footer/>
+
     </>
   );
 }

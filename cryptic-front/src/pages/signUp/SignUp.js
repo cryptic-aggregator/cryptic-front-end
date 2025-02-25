@@ -2,8 +2,20 @@ import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 import styles from "./SignUp.module.css";
+import { Link } from "react-router-dom";
+import { authApi } from '../../api/endpoints/authApi';
+import { useTranslation } from 'react-i18next';
+
 
 export default function SignUp() {
+    const {t} = useTranslation();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+  
+  
     //show password
     const [passwordShown, setPasswordShown] = useState(false);
     const [passwordConfirmShown, setPasswordConfirmShown] = useState(false);
@@ -19,61 +31,72 @@ export default function SignUp() {
     const { register, handleSubmit, watch, formState: {errors} } = useForm({mode: 'onChange',});
     password = watch("password", "");
 
-    const onSubmit = (data) => {
-      console.log(data);
+    const onSubmit = async (data) => {
+      try {
+        const userData = {
+          name: data.login, // Змінено з login на name відповідно до API
+          email: data.email,
+          password: data.password
+        };
+        const response = await authApi.register(userData);
+        console.log('Registration successful:', response.data);
+      } catch (error) {
+        // Можна додати Toast повідомлення про помилку
+        console.error('Registration failed:', error.response?.data);
+      }
     };
 
   return (
     <>
     <div className={styles.signUp}>
     <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
-        <h1>Sign Up</h1>
+        <h1>{t('signUp.topic')}</h1>
         <div className={styles.inputForm}>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label>Login</label>
+              <label>{t('signUp.login')}</label>
               <input {...register("login", { 
-                required: "This is required." 
+                required: `${t('signUp.required')}` 
               })} 
-              placeholder="Enter your login" autoComplete="off"/>
+              placeholder={t('signUp.placeholderLogin')} autoComplete="off"/>
               <p>{errors.login?.message}</p>
             </div>
             <div className={styles.inputGroup}>
-              <label>Email</label>
+              <label>{t('signUp.email')}</label>
               <input {...register("email", { 
-                required: "This is required.", 
+                required: `${t('signUp.required')}`, 
                 pattern:{
                   value: /^[A-Z0-9._%+-]+@[a-z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: 'Invalid email address',
+                  message: `${t('signUp.patternEmail')}`,
                 },
               })} 
-              placeholder="Enter your email" autoComplete="off"
+              placeholder={t('signUp.placeholderEmail')} autoComplete="off"
               />
               <p>{errors.email?.message}</p>
             </div>
           </div>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label>Password</label>
+              <label>{t('signUp.password')}</label>
               <input {...register("password", { 
-                required: "This is required.", 
+                required: `${t('signUp.required')}`, 
                 minLength:{ 
                   value: 6, 
-                  message: "Min lenght is 6."
+                  message: `${t('signUp.patternPassword')}`
                 }
               })} 
-              type={passwordShown ? "text" : "password"} placeholder="Enter your password" autoComplete="off"/>
+              type={passwordShown ? "text" : "password"} placeholder={t('signUp.placeholderPassword')} autoComplete="off"/>
               <i className={styles.passwordShown} onClick={togglePasswordVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>
               <p>{errors.password?.message}</p>
             </div>
             <div className={styles.inputGroup}>
-              <label>Confirm password</label>
+              <label>{t('signUp.confirmPassword')}</label>
               <input {...register("confirmPassword", { 
-                required: "This is required.",
-                validate: (value) => value === password || "Passwords do not match."
+                required: `${t('signUp.required')}`,
+                validate: (value) => value === password || `${t('signUp.patternConfirmPassword')}`
                 }
               )} 
-              type={passwordConfirmShown ? "text" : "password"}placeholder="Repeat your password" autoComplete="off"/>
+              type={passwordConfirmShown ? "text" : "password"}placeholder={t('signUp.placeholderConfirmPassword')} autoComplete="off"/>
               <i className={styles.passwordConfirmShown} onClick={togglePasswordConfirmVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>
               <p>{errors.confirmPassword?.message}</p>
             </div>
@@ -82,14 +105,14 @@ export default function SignUp() {
 
         <div className={styles.checkboxTerms}>
           <input id="check" type="checkbox" {...register("agreeUseTerms", { 
-            required: "This is required." 
+            required: `${t('signUp.required')}` 
           })}/>
-          <label htmlFor="check">I agree with the terms of use</label>
+          <label htmlFor="check">{t('signUp.check')}</label>
         </div>
         <p>{errors.agreeUseTerms?.message}</p>
 
-        <button className={styles.signUpButton} type="submit" >Sign Up</button>
-        <label className={styles.signIn} >Already have an Account <a href="signin">Sign In</a></label>
+        <button className={styles.signUpButton} type="submit" >{t('signUp.button')}</button>
+        <label className={styles.signIn} >{t('signUp.textSignIn')}<Link to="/signIn">{t('signUp.refSignIn')}</Link></label>
       </form>
     </div>
     </>

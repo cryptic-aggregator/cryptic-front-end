@@ -1,4 +1,4 @@
-body {
+html,body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -7,10 +7,32 @@ body {
     font-family: Outfit;
     color: #ffffff;
 }
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: rgba(35, 37, 43, 1);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(77, 77, 78);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
 button{
-    cursor: pointer;
-    background: none; 
-    border: none; 
+    all: unset;
 }
 ul{
     padding: 0px;
@@ -21,6 +43,11 @@ li{
     padding: 0px;
     margin: 0px;
     list-style: none;  
+}
+a{
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
 }
 
 @font-face {

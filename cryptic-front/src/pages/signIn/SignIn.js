@@ -2,8 +2,12 @@ import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 import styles from "./SignIn.module.css";
+import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+
 
 export default function SignIn() {
+    const {t} = useTranslation();
       //show password
       const [passwordShown, setPasswordShown] = useState(false);
 
@@ -20,32 +24,32 @@ export default function SignIn() {
     <>
     <div className={styles.signIn}>
     <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
-        <h1>Sign In</h1>
+        <h1>{t('signIn.topic')}</h1>
         <div className={styles.inputForm}>
 
             <div className={styles.inputGroup}>
-              <label>Email</label>
+              <label>{t('signIn.email')}</label>
               <input {...register("email", { 
-                required: "This is required.",
+                required: `${t('signIn.required')}`,
               })} 
-              placeholder="Enter your email" autoComplete="off"
+              placeholder={t('signIn.placeholderEmail')} autoComplete="off"
               />
               <p>{errors.email?.message}</p>
             </div>
             <div className={styles.inputGroup}>
-              <label>Password</label>
+              <label>{t('signIn.password')}</label>
               <input {...register("password", { 
-                required: "This is required.", 
+                required: `${t('signIn.required')}`, 
 
               })} 
-              type={passwordShown ? "text" : "password"} placeholder="Enter your password" autoComplete="off"/>
+              type={passwordShown ? "text" : "password"} placeholder={t('signIn.placeholderPassword')}  autoComplete="off"/>
               <i className={styles.passwordShown} onClick={togglePasswordVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>
               <p>{errors.password?.message}</p>
             </div>
         </div>
-        <a className={styles.forgotPassword} href="recovery">Forgot Password</a>
-        <button className={styles.signInButton} type="submit" >Sign In</button>
-        <label className={styles.signUp} >Don’t have an account? <a href="signup">Sign Up</a></label>
+        <a className={styles.forgotPassword} href="recovery">{t('signIn.forgotPassword')}</a>
+        <button className={styles.signInButton} type="submit" >{t('signIn.topic')}</button>
+        <label className={styles.signUp} >{t('signIn.textSignUp')} <Link to="/signUp">{t('signIn.refSignUp')}</Link></label>
       </form>
     </div>
     </>
