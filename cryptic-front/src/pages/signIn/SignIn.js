@@ -2,24 +2,42 @@ import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 import styles from "./SignIn.module.css";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-
+import { authApi } from '../../api/endpoints/authApi';
 
 export default function SignIn() {
     const {t} = useTranslation();
       //show password
       const [passwordShown, setPasswordShown] = useState(false);
+      const navigate = useNavigate();
+
+      const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+      });
 
       const togglePasswordVisiblity = () => {
         setPasswordShown(passwordShown ? false : true);
       };
 
     const { register, handleSubmit, formState: {errors} } = useForm({mode: 'onChange',});
-    const onSubmit = (data) => {
-      console.log(data);
+
+    const onSubmit = async (data) => {
+      try {
+        const userData = {
+          email: data.email,
+          password: data.password
+        };
+        const response = await authApi.login(userData);
+        navigate('/portfolio/dashboard');
+        console.log('Login successful:', response.data);
+      } catch (error) {
+        // Можна додати Toast повідомлення про помилку
+        console.error('Login failed:', error.response?.data);
+      }
     };
-  
+
   return (
     <>
     <div className={styles.signIn}>

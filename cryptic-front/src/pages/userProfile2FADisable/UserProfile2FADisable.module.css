@@ -1,0 +1,136 @@
+
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+.userProfile {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 10px;
+}
+.userProfileContent{
+    width: 100%;
+    height: 100%;
+    max-width: 1194px;
+
+    display: flex;
+}
+.userProfileInfo{
+    
+    width: 100%;
+    padding-left: 20px;
+    height: 100%;
+}
+.inputForm{
+    display: flex;
+    gap: 30px;
+}
+.inputForm label{
+    margin-bottom: 8px;
+    display: block;
+    color: #777E90;
+    font-size: 20px;
+}
+.inputForm input{
+    background-color: transparent;
+    outline: none;
+    border: 1px solid #313135 ;
+    color: #BFBFBF;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 17px;
+    width: 300px;
+    box-sizing: border-box; 
+}
+.passwordShown {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 9px;
+}
+.passwordConfirmShown{
+    cursor: pointer;
+    position: absolute;  
+    margin-left: -30px;
+    margin-top: 9px;
+}
+.sideBar{
+    width: 100%;
+    height: 100%;
+    max-width: 370px;
+    max-height: 720px;
+}
+.topic{
+    color: white;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+.registerForm{
+    margin-top: 60px;
+}
+
+.textTopic{
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.buttonWrapper {
+    display: flex;
+    margin-top: 85px;
+}
+.button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #FF3737;
+    border-radius: 10px;
+    height: 50px;
+    width: 240px;
+}
+.button:hover{
+    background-color:  #ff373777;
+}
+
+@media (max-width: 920px) {
+    .inputForm{
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 640px) {
+    .userProfileContent{
+        flex-direction: column;
+    }
+    .sideBar{
+        max-width: 100%;
+        height: 100%;
+    }
+    .userManagementUl {
+        flex-direction: row;
+    }
+    .userProfileInfo{
+        margin: 30px 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .buttonWrapper {
+        margin-top: 50px;
+        justify-content: center;
+    }
+    .userProfileInfo{
+        padding-left: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .topic{
+        text-align: center;
+    }
+}

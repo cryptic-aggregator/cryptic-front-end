@@ -93,6 +93,39 @@ export const uk = {
         userProfile: "Профіль користувача",
         infomation: "Інформація",
         updateProfile: "Оновити профіль",
-    }
-    
+    },
+    userProfile2FA:{
+        topic: "Двофакторна аутентифікація",
+        first: "1. Для завершення цього процесу потрібна програма автентифікатора, наприклад Google Authenticator",
+        second: "2. Відскануйте QR-код за допомогою автентифікатора",
+        secondText: "Якщо ви не можете відсканувати код, ви можете вручну ввести цей секретний ключ у свою програму автентифікації.",
+        third: "3. Після того, як ви відскануєте QR-код вище, введіть шестизначний код, згенерований вашим автентифікатором.",
+        verify: "Перевірити",
+    },
+    userProfile2FADisable:{
+        topic: "Двофакторна аутентифікація",
+        passwordTopic: "Пароль",
+        first: "1. Щоб вимкнути 2FA, введіть свій пароль і шестизначний код із програми Google Authenticator нижче, а потім натисніть «Вимкнути».",
+        placeholderPassword: "Введіть свій пароль",
+        FATopic: "Код 2FA",
+        placeholderFA: "Введіть свій код 2FA",
+        required: "Це обов'язково.",
+        disable: "Вимкнути",
+    },
+    userProfileChangePassword:{
+        topic: "Змінити пароль",
+        oldPasswordTopic: "Старий пароль",
+        placeholderOldPassword: "Введіть свій старий пароль",
+        FATopic: "Код 2FA",
+        placeholderFA: "Введіть свій код 2FA",
+        newPasswordTopic: "Новий пароль",
+        placeholderNewPassword: "Введіть свій новий пароль",
+        patternNewPassword: "Мінімальна довжина 6.",
+        confirmNewPassword: "Підтвердити новий пароль",
+        patternConfirmPassword: "Паролі не збігаються.",
+        placeholderConfirmPassword: "Повторіть свій новий пароль",
+        required: "Це обов'язково.",
+        save: "Зберегти",
+    },
+   
 };

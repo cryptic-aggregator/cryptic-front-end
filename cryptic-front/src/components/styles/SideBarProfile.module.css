@@ -95,6 +95,9 @@
     width: 24px; 
     height: 24px;
 }
+.userManagementUl .active {
+    background-color: #292929;
+}
 .userManagementList:hover {
     background-color: #292929;
 }

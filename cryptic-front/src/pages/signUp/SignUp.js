@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useForm } from 'react-hook-form';
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 import styles from "./SignUp.module.css";
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import { authApi } from '../../api/endpoints/authApi';
 import { useTranslation } from 'react-i18next';
 
 
 export default function SignUp() {
     const {t} = useTranslation();
+    const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,6 +41,7 @@ export default function SignUp() {
           password: data.password
         };
         const response = await authApi.register(userData);
+        navigate('/signIn');
         console.log('Registration successful:', response.data);
       } catch (error) {
         // Можна додати Toast повідомлення про помилку

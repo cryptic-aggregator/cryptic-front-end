@@ -1,0 +1,100 @@
+.sidebar {
+    height: 100%;
+    background-color: #11141E;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    color: #D7D7D7;
+}
+
+.sidebarInfo {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+.topicContentWrapper {
+    width: 100%;
+}
+
+.topicContent {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    padding: 20px 0px;
+    margin: 0px 22px;
+    border-bottom: 1px solid #999999;
+}
+
+.closeBar {
+    position: absolute;
+    right: 0px;
+    cursor: pointer;
+}
+
+.userPortfoliosList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    overflow-y: auto;
+}
+.emptyMessage{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.createPortfoliotWrapper {
+    width: 100%;
+}
+.createPortfolioEmpty{
+    display: flex;
+    justify-content: center;
+    font-weight: 500;
+    margin: 0px 0px;
+    color: #FFC205;
+}
+.createPortfolioEmpty:hover{
+    color: #E0A800; 
+}
+.createPortfolio {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    padding: 10px 0px 15px 0px;
+    margin: 0px 22px;
+    color: #D7D7D7;
+    border-top: 1px solid #999999;
+}
+
+.createPortfoliotWrapper:hover .createPortfolio {
+    color: #ffff;
+    border-top: 1px solid #FFC205;
+}
+
+.userPortfolio {
+    display: block;
+    width: 100%;
+    padding: 13px 0px;
+    text-align: center;
+    text-decoration: none;
+    color: #D7D7D7;
+}
+
+.userPortfolio:hover {
+    background-color: #292929;
+}
+
+.userPortfolio.active {
+    background-color: #292929;
+}

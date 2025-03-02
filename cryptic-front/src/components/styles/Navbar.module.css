@@ -14,15 +14,15 @@
 .navTitle {
     text-decoration: none;
     font-family: K2D;
-    font-size: 40px;
+    font-size: 35px;
     color: #FFFFFF;
     display: flex;
     padding: 0px;
     align-items: center;
 }
 .navLogo {
-    height: 63px; 
-    margin-right: 10px;  
+    height: 48px; 
+    margin-right: 10px; 
 }
 .navUl {
     margin-left: auto;
