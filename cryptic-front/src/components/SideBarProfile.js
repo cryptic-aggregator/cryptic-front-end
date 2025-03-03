@@ -1,17 +1,43 @@
 import styles from "./styles/SideBarProfile.module.css";
 
 import { useState, useEffect } from "react";
-import { Link,useLocation } from "react-router-dom";
+import { Link,useLocation,useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import userImg from "../assets/images/SideBar/user.jpg";
 import iconUserImg from "../assets/images/SideBar/iconUserImg.svg";
 import FAIcon from "../assets/images/SideBar/2FAIcon.svg";
 import changePasswordIcon from "../assets/images/SideBar/changePasswordIcon.svg";
 import userProfileIcon from "../assets/images/SideBar/userProfileIcon.svg";
+import { useAuth } from "../hooks/useAuth"; // Глобальний стан авторизації
+import { authApi } from '../api/endpoints/authApi';
+
 export default function SideBarProfile() {
 
     const {t} = useTranslation();
     const location = useLocation();
+    const navigate = useNavigate();
+    const { isAuth, user } = useAuth(); // Отримуємо інформацію про користувача
+    // Якщо користувач не авторизований, редирект на сторінку входу
+    
+    useEffect(() => {
+        if (!isAuth) {
+            navigate("/signin");
+        }
+    }, [isAuth, navigate]);
+
+    const logout = async () => {
+      try {
+        authApi.logout();
+        console.log('Logout successful:');
+        navigate('/');
+
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    };
+    if (!isAuth) {
+        return null;  // Якщо не авторизований, нічого не відображається
+    }
     return (
         <>
             <aside className={styles.sidebar}>
@@ -23,10 +49,10 @@ export default function SideBarProfile() {
                       </div>
                     </div>
                     <div className={styles.title1}>
-                        Username
+                        {user.unique_name}
                     </div>
                     <div className={styles.title2}>
-                        useremail@gmail.com
+                        {user.email}
                     </div>
                 </div>
                 <div className={styles.userManagement}>
@@ -49,6 +75,15 @@ export default function SideBarProfile() {
                                 <span>{t('sideBarProfile.changePassword')}</span>
                             </div>                            
                         </Link>
+                        {isAuth ? (
+                            // Якщо користувач авторизований, показуємо його ім'я
+                            <button onClick={logout} className={styles.logout}>
+                                Logout
+                            </button>
+                        ) : (
+                            <>
+                            </>
+                        )}
                     </div>
                     <button className={styles.deleteProfile}>{t('sideBarProfile.deleteProfile')}</button>
                 </div>

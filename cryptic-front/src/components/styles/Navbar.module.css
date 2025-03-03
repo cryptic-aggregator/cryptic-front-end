@@ -7,10 +7,19 @@
     top: 0;
     transition: 0.4s;
     background-color: transparent;
-    z-index: 9999;
     background-color: #000411;
 }
-
+.options{
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    margin-left: 40px;
+}
+.options a{
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 18px;
+}
 .navTitle {
     text-decoration: none;
     font-family: K2D;
@@ -26,7 +35,7 @@
 }
 .navUl {
     margin-left: auto;
-        text-decoration: none;
+    text-decoration: none;
 }
 .navUl ul {
     padding: 0px;

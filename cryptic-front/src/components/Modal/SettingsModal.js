@@ -37,10 +37,6 @@ export default function SettingsModal({ isOpen, onClose,children }) {
             {isOpen && (
                 <div className={styles.modalWrapper} onClick={onModalClick}>
                     <div className={styles.settingsModal}>
-
-                        {children}
-
-                        
                         <div className={styles.select} onClick={() => setShowLanguages(!showLanguages)}>
                             <span>{t('settingsModal.Language')}</span>
                             <div className={styles.current}>

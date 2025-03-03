@@ -30,9 +30,32 @@ import graph from "../../assets/images/HomePage/Graph.svg";
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import Web3Modal from "web3modal";
+import {BrowserProvider} from "ethers"
+
+const providerOptions = {}
 
 export default function Home() {
   const {t} = useTranslation();
+
+  async function connectWallet() {
+    try {
+      let web3Modal = new Web3Modal({
+        cacheProvider:false,
+        providerOptions,
+      });
+      const web3ModalInstance = await web3Modal.connect();
+      const web3Provider = new BrowserProvider(web3ModalInstance);
+
+      console.log(web3Provider);
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+
+
+
   useEffect(() => {
     const animItems = document.querySelectorAll(".animItems");
 
@@ -95,7 +118,7 @@ export default function Home() {
             </Link>
           </div>
           <div className={styles.wallet}>
-            <Link to="/connectWallet"className={styles.otherLogo} >
+            <Link  onClick={connectWallet} className={styles.otherLogo} >
                 <img className={styles.logoEllipse} src={otherLogoEllipse} alt="Other logo" />
                 <img className={styles.logoWallet} src={otherLogo} alt="Other logo" />
                 <span data-tooltip={t('home.connectWallet')}>{t('home.other')}</span>

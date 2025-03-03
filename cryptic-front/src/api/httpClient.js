@@ -1,48 +1,70 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
-import { getTokenFromLocalStorage } from '../helper/localstorage';
+import store from "../store/index.js";
+import { setTokens, logout } from "../store/slices/authSlice";
 
 const httpClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    Authorization: 'Bearer' + getTokenFromLocalStorage() || '',
+    'Content-Type': 'application/json',
+    'Accept': '*/*'
   }
 });
-//Інтерцептор для автоматичного додавання токена
+
+// Додавання токена в кожен запит
 httpClient.interceptors.request.use(
   (config) => {
-    const token = sessionStorage.getItem('accessToken');
-    console.log(token)
+    const state = store.getState();
+    const token = state.auth.accessToken;
+
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-    console.log(config)
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-//Інтерцептор для оновлення токена
+// Оновлення токена, якщо він протух
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
+    
+    if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      
       try {
-        const res = await axios.post(`${API_BASE_URL}/users/refresh`, {}, { withCredentials: true });
+        const state = store.getState();
+        const refreshToken = state.auth.refreshToken;
+
+        if (!refreshToken) {
+          store.dispatch(logout());
+          window.location.href = "/signin";
+          return Promise.reject(error);
+        }
+
+        // Запит на оновлення токена
+        const res = await axios.post(`${API_BASE_URL}/users/refresh`, { refreshToken });
         const newAccessToken = res.data.accessToken;
-        sessionStorage.setItem('accessToken', newAccessToken);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-        console.log(originalRequest)
+
+        // Оновлюємо токени в Redux
+        store.dispatch(setTokens({ accessToken: newAccessToken, refreshToken }));
+
+        // Додаємо новий токен в заголовки повторного запиту
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        
         return httpClient(originalRequest);
       } catch (refreshError) {
-        sessionStorage.removeItem('accessToken');
-        window.location.href = '/signin';
+        store.dispatch(logout());
+        window.location.href = "/signin";
+        return Promise.reject(refreshError);
       }
     }
+    
     return Promise.reject(error);
   }
 );
+
 export default httpClient;

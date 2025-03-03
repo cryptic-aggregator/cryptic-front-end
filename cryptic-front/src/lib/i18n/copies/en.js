@@ -43,6 +43,9 @@ export const en = {
     },
     navBar:{
         signIn: "Log In",
+        transfer: "Transfer",
+        portfolios: "My Portfolios",
+        analytics: "Analytics",
         signUp: "Get Started"
     },
     footer:{

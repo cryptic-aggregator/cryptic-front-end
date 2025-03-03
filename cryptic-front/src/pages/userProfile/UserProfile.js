@@ -6,16 +6,30 @@ import Sidebar from "../../components/SideBarProfile.js";
 import { useForm } from 'react-hook-form';
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-
+import { useAuth } from "../../hooks/useAuth"; // Глобальний стан авторизації
+import { authApi } from '../../api/endpoints/authApi';
 
 export default function UserProfile() {
   const {t} = useTranslation();
-  const { register, handleSubmit, formState: {errors} } = useForm({mode: 'onChange',});
+  const { isAuth, user } = useAuth(); // Отримуємо інформацію про користувача 
+
+  const { register, handleSubmit, formState: {errors} } = useForm({
+    mode: 'onChange',
+    defaultValues: {
+      login: user?.unique_name || "Відбувається завнтаження", 
+      email: user?.email ||  "Відбувається завнтаження"
+    }
+  });
 
   const onSubmit = (data) => {
     console.log(data);
   };
-
+ 
+  if (!isAuth) {
+    <>
+      <p>Not allow, you are Tramp</p>
+    </>
+}
   return (
     <>
     <main className={styles.main}>
@@ -37,7 +51,8 @@ export default function UserProfile() {
                       <input {...register("login", { 
                         required: `${t('signUp.required')}` 
                       })} 
-                      placeholder={t('signUp.placeholderLogin')} autoComplete="off"/>
+                      placeholder={t('signUp.placeholderLogin')}
+                      autoComplete="off"/>
                       <p>{errors.login?.message}</p>
                     </div>
                     <div className={styles.inputGroup}>

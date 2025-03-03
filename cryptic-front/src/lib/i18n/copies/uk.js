@@ -43,6 +43,9 @@ export const uk = {
     },
     navBar:{
         signIn: "Вхід",
+        transfer: "Перекази",
+        portfolios: "Мої портфоліо",
+        analytics: "Аналітика",
         signUp: "Розпочати"
     },
     footer:{

@@ -12,7 +12,7 @@ export default function NavbarOptions() {
     return (
         <>
             <nav className={styles.nav}>
-                <Link to="/portfolio/dashboard" className={`${location.pathname === '/portfolio/dashboard' ? styles.active : ""} ${styles.option}`}>
+                <Link to="/dashboard" className={`${location.pathname === '/dashboard' ? styles.active : ""} ${styles.option}`}>
                     <span>Dashboard</span>
                 </Link>
                 <Link to="/portfolio/analytics" className={`${location.pathname === '/portfolio/analytics' ? styles.active : ""} ${styles.option}`}>

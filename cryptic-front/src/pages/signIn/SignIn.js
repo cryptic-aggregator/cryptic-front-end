@@ -5,9 +5,13 @@ import styles from "./SignIn.module.css";
 import { Link,useNavigate  } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { authApi } from '../../api/endpoints/authApi';
+import { useDispatch } from "react-redux";
+import {setUser} from "../../store/slices/authSlice"
 
 export default function SignIn() {
     const {t} = useTranslation();
+    const dispatch = useDispatch();
+
       //show password
       const [passwordShown, setPasswordShown] = useState(false);
       const navigate = useNavigate();
@@ -30,8 +34,10 @@ export default function SignIn() {
           password: data.password
         };
         const response = await authApi.login(userData);
-        navigate('/portfolio/dashboard');
-        console.log('Login successful:', response.data);
+        const user = response.data;
+        console.log('Login successful:', user);
+        navigate('/dashboard');
+
       } catch (error) {
         // Можна додати Toast повідомлення про помилку
         console.error('Login failed:', error.response?.data);

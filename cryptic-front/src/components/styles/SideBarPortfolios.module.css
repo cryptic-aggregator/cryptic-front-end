@@ -15,12 +15,31 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-
     overflow: hidden;
 }
-
+.portfolioName{
+    padding-left: 10px;
+    padding-right: 10px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    flex-grow: 1; /* Дозволяє span займати весь доступний простір */
+    text-align: center; /* Центрує текст у span */
+}
 .topicContentWrapper {
     width: 100%;
+}
+.portfolioContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.deleteIcon{
+    display: none;
+    margin-right: 10px;
 }
 
 .topicContent {
@@ -40,13 +59,43 @@
     cursor: pointer;
 }
 
+/* YourComponent.module.css */
+
 .userPortfoliosList {
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 100%;
     overflow-y: auto;
+    
+
 }
+
+.userPortfoliosList::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 10px;
+}
+
+.userPortfoliosList::-webkit-scrollbar-track {
+    background: #161a25;
+    border-radius: 10px;
+}
+
+.userPortfoliosList::-webkit-scrollbar-thumb {
+    background: #999999;
+    border-radius: 10px;
+}
+.userPortfoliosList::-webkit-scrollbar-thumb:hover {
+    background: #FFC205;
+    border-radius: 10px;
+}
+
+
+.userPortfoliosList::-webkit-scrollbar-button {
+    display: none;
+}
+
+
 .emptyMessage{
     text-align: center;
     margin-top: 20px;
@@ -66,6 +115,7 @@
     color: #E0A800; 
 }
 .createPortfolio {
+
     position: relative;
     display: flex;
     justify-content: center;
@@ -91,10 +141,18 @@
     color: #D7D7D7;
 }
 
+.userPortfolio.active {
+    background-color: #292929;
+}
 .userPortfolio:hover {
     background-color: #292929;
 }
 
-.userPortfolio.active {
-    background-color: #292929;
+.userPortfolio:hover .deleteIcon{
+    display: block;
+}
+
+
+.userPortfolio.deleteHovered {
+    background-color: rgb(116, 46, 46);
 }

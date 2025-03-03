@@ -21,7 +21,8 @@ function App() {
           <Route path="twoAuthenticator" element={<UserProfile2FA />} />
           <Route path="twoAuthenticatorDisable" element={<UserProfile2FADisable />} />
           <Route path="changePassword" element={<UserProfileChangePassword />} />
-          <Route path="portfolio/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dashboard/:id" element={<Dashboard />} />
       </Routes>
     </>
   );
