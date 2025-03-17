@@ -1,0 +1,144 @@
+.nav {
+    padding: 0px 17px 0px 60px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    transition: 0.4s;
+    background-color: transparent;
+    background-color: #000411;
+}
+.options{
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    margin-left: 40px;
+}
+.options a{
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 18px;
+}
+.navTitle {
+    text-decoration: none;
+    font-family: K2D;
+    font-size: 35px;
+    color: #FFFFFF;
+    display: flex;
+    padding: 0px;
+    align-items: center;
+}
+.navLogo {
+    height: 48px; 
+    margin-right: 10px; 
+}
+.navUl {
+    margin-left: auto;
+    text-decoration: none;
+}
+.navUl ul {
+    padding: 0px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+.navUl li a{
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 18px;
+    
+}
+.signIn a{
+    margin-right: 60px;
+    padding: 0;
+}
+.signUp a{
+    transition: background-color 0.3s ease;
+    font-weight:600;
+    background-color: #FFC205;
+    padding: 7px 14px;
+    border-radius: 45px;
+}
+.signIn a:hover{
+    font-weight:500;
+}
+.signUp a:hover{
+    background-color: #E0A800; 
+}
+.settings button{
+    margin-left: 17px;
+    padding: 0;
+    transition: transform 0.3s;
+}
+.settings button:hover{
+    transform: rotate(30deg);
+}
+.auth{
+    position: relative;
+    padding: 10px 20px;
+    gap: 20px;
+    background: rgba(35, 37, 43, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.auth:hover{
+    position: relative;
+    padding: 10px 20px;
+    background: rgba(35, 37, 43, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.user{
+    -webkit-mask-image: linear-gradient(to right, black 70%, rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to right, black 70%, rgba(0, 0, 0, 0));
+}
+  /* Адаптив для мобільних пристроїв (від 480px до 767px) */
+  @media (max-width: 795px) {
+    .nav {
+        padding: 0px 10px 0px 10px;
+    }
+    .signIn a{
+        margin-right: 15px;
+    }
+    .navLogo {
+        margin-right: 3px;  
+    }
+    .settings button{
+        margin-left: 5px;
+    }
+
+  }
+  /* Адаптив для мобільних пристроїв (від 480px до 767px) */
+  @media (max-width: 555px) {
+    .nav {
+        height: 60px;
+    }
+    .navUl li a{
+        font-size: 17px;
+    }
+    .navLogo {
+        height: 45px; 
+        margin-right: 2px;  
+    }
+    .navTitle {
+        font-size: 28px;
+    }
+    .signIn a{
+        display: none;
+    }
+    .signUp a{
+        display: none;
+    }
+    .auth{
+        display: flex;
+    }
+    .navLogo {
+        margin-right: 3px;  
+    }
+  }

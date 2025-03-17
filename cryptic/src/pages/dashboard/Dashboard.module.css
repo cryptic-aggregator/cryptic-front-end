@@ -1,0 +1,187 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+.needSelect{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    width: 100%;
+    height: 100%;
+}
+.notCoins{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    font-size: 25px;
+    width: 100%;
+    height: 100%;
+}
+.userDashboard {
+    height: calc(100vh - 130px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 10px;
+}
+.userDashboardContent{
+    height: 100%;
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+}
+.userDashboardInfo{
+    width: 100%;
+    margin-left: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.sideBar{
+    width: 100%;
+    height: 100%;
+    max-width: 350px;
+    min-width: 250px;
+}
+.title{
+    font-size: 20px;
+    color: #B9B9B9;
+    font-weight: 600;
+}
+.balance{
+    display: flex;
+    align-items: center;
+}
+.currentBalance{
+    color: white;
+    font-size: 32px;
+    font-weight: 600;
+    margin-right: 13px;
+}
+.currencyImg{
+    width: 27px;
+    height: 27px;
+}
+.changeCurrency{
+    font-weight: 500;
+    margin-left: 8px;
+    color: #999999;
+    font-size: 20px;
+}
+.changeTime{
+    font-weight: 500;
+    margin-left: 8px;
+    color: #999999;
+    font-size: 18px; 
+}
+.changeTimeButton{
+    cursor: pointer;
+}
+.balanceChangeDifferent{
+    font-weight: 600;
+    color: red;
+    font-size: 18px;
+}
+.balanceChange{
+    display: flex;
+}
+.changeCurrencyButton{
+    color: #999999;
+    cursor: pointer;
+}
+.compressedInfo{
+    display: flex;
+    justify-content: space-between;
+    height: 120px;
+}
+.userDashboardContent{
+    height: 100%;
+}
+.compressedInfoText{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    
+}
+.compressedInfoGraph{
+    margin-left: 60px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    min-width: 380px;
+}
+.mainInfo{
+    display: flex;
+
+}
+.historyInfo{
+    background-color: #11141E;
+    border-radius: 30px;
+    flex-grow: 1; /* Займає весь вільний простір по висоті */
+    overflow-y: auto; /* Додає прокручування, якщо вміст не вміщується */
+}
+.historyInfoWrapper{
+    padding: 10px 20px ;
+}
+.assetsInfo{
+    width: 100%;
+    font-size: 24px;
+}
+.assetsBalance{
+    margin-left: 10px;
+    color: #B9B9B9;
+}
+
+.syncAll{
+    display: flex;
+    align-items: end;
+}
+.syncAllButton{
+    width: 123px;
+    height: 30px;
+    font-size: 20px;
+    margin: 0px 5px 8px 0px;
+    border: 1px solid #999999;
+    color: #999999;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    cursor: pointer;
+}
+.assetsTable{
+    width: 100%;
+}
+.assetsTableTopic{
+    color: #B9B9B9;
+    font-size: 16px;
+    text-align: left;
+}
+.assetsTableRow{
+    color: #ffff;
+    font-size: 16px;
+ 
+}
+.assetsTableRowImg {
+    display: flex;
+    align-items: center; /* Центрування по вертикалі */
+    gap: 8px; /* Менший відступ між іконкою та текстом */
+    white-space: nowrap; /* Запобігає переносу */
+}
+.assetsIcon{
+    width: 35px;
+    height: 35px;
+}
+.assetsTable {
+    border-spacing: 0 15px; /* Відступи між рядками: 10px */
+  }
+  .hidden {
+    opacity:0; /* Елемент невидимий, але займає місце */
+    margin-left: 35px;
+  }
