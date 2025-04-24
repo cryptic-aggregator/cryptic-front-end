@@ -1,43 +1,22 @@
 import styles from "./Analytics.module.css";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import Sidebar from "../../components/SideBarPortfolios";
-import NavbarOptions from "../../components/NavbarOptions";
-import currencyImg from "../../assets/images/Dashboard/currencyImg.svg";
-import openIcon from "../../assets/images/Dashboard/openIcon.svg";
-import assetsIcon from "../../assets/images/Dashboard/assetsIcon.svg";
-import syncIcon from "../../assets/images/Dashboard/syncIcon.svg";
 import { useTranslation } from 'react-i18next';
-import { Bar, Line, Doughnut } from "react-chartjs-2"
 import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { portfolioApi } from "../../api/endpoints/portfolioApi";
-import { setPortfolios } from "../../store/slices/portfolioSlice";
 import { useAuth } from "../../hooks/useAuth"; // 
-import { infoPortfolio } from "../../store/slices/portfolioSlice";
-import { usePortfolio } from "../../hooks/usePortfolio";
 import { getAnalytics  } from "../../store/slices/analyticsSlice";
-
-import approveIcon from "../../assets/images/AnalyticsPage/approveIcon.svg";
-import feeIcon from "../../assets/images/AnalyticsPage/feeIcon.svg";
-import receivedIcon from "../../assets/images/AnalyticsPage/receivedIcon.svg";
-import transferIcon from "../../assets/images/AnalyticsPage/transferIcon.svg";
-import Diagram from "../../assets/images/AnalyticsPage/Diagram.svg";
-
+import Category from "../../assets/images/AnalyticsPage/Category.jpg";
+import Balance from "../../assets/images/AnalyticsPage/Balance.jpg";
+import Profit from "../../assets/images/AnalyticsPage/Profit.jpg";
+import Risks from "../../assets/images/AnalyticsPage/Risks.jpg";
 import { useRef } from "react";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Filler,
-  Legend 
-} from "chart.js";
 import { useAnalyics } from "../../hooks/useAnalytics";
 
+import AssetAllocations from "./components/AssetAllocations/AssetAllocations";
+import CostAnalysis from "./components/CostAnalysis/CostAnalysis";
+
+import Loader from '../../components/common/Loader/Loader';
+import Error from '../../components/common/Error/Error';
 
 export default function Analytics() {
   const [activeSection, setActiveSection] = useState(null);
@@ -45,7 +24,6 @@ export default function Analytics() {
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const [overallProgress, setOverallProgress] = useState(0);
   const { t } = useTranslation();
-  ChartJS.register(ArcElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,37 +31,8 @@ export default function Analytics() {
   const analiticsRef = useRef(null);
   const { isAuth } = useAuth(); 
   const { analytics,errorAnalytics,loadingAnalytics } = useAnalyics(); 
-  
- 
-  const [assets, setAssets] = useState([]);
-  const [data, setData] = useState([]);
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    layout: {
-      padding: 10, // Додаємо відступи, щоб не обрізало
-    },
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        enabled: true,
-        mode: "nearest",
-        intersect: false,
-        backgroundColor: "#4C4C4CFF",
-        titleColor: "#fff",
-        bodyColor: "#fff",
-        
-        padding: 5,
-        displayColors: false,
-        position: 'average', // Можна використати 'nearest' або 'average' для зміщення
-        callbacks: {
-          label: function(tooltipItem) {
-            return tooltipItem.raw + '%'; // Показує відсоток або іншу інформацію в тултіп
-          }
-        }
-      },
-    },
-  };/*
+
+
     // Authorization check and portfolio info loading
     useEffect(() => {
       if (!isAuth) {
@@ -95,48 +44,15 @@ export default function Analytics() {
         console.log(analytics)
       }
     }, [isAuth, navigate, dispatch, id]);
-    */
-    useEffect(() => {
-      if (analytics?.calculatedCoins) {
-        const assetLabels = analytics.calculatedCoins.map((coin) => coin.symbol);
-        const assetData = analytics.calculatedCoins.map((coin) => parseFloat(coin.percentage));
     
-        const baseColors = ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"];
-        const getColor = (index) => baseColors[index % baseColors.length];
     
-        const newAssets = assetLabels.map((symbol, index) => ({
-          symbol,
-          interest: assetData[index],
-          color: getColor(index),
-        }));
-  
-        setData({
-          labels: assetLabels,
-          datasets: [
-            {
-              label: "Asset Allocation",
-              data: assetData,
-              backgroundColor: colors,
-              borderColor: "#11141E",
-              borderWidth: 2,
-              hoverOffset: 20,
-              cutout: "75%", 
-            },
-          ],
-        });
-  
-        setAssets(newAssets);
-
-      }
-    }, [analytics]); // Виконувати, коли змінюється analytics
-
   // Register section ref
-  const registerSectionRef = (id, element) => {
-    if (element) {
-      sectionsRef.current[id] = element;
-    }
-  };
-  
+   const registerSectionRef = (id, element) => {
+     if (element) {
+       sectionsRef.current[id] = element;
+     }
+   };
+   
   // Scroll tracking and active section management
   useEffect(() => {
     const analiticsEl = analiticsRef.current;
@@ -231,224 +147,78 @@ export default function Analytics() {
       });
     }
   };
-  /*
+
   if (!isAuth) {
     return null;
   }
-  */
+
   return (
     <>
-    <main className={styles.main}>
-      <Navbar/>
-      <div className={styles.userAnalitics}>
-    
-        <div className={styles.userAnaliticsContent}>
-          <div className={styles.sideBar}> 
-            <Sidebar/>
-          </div>
-          <div className={styles.userAnaliticsInfo}> 
-            <NavbarOptions/>
               {id ? (
                   <>
-                    {false && <p>Loading...</p>}
-                    {false && <p className={styles.error}>Error: {errorPortfolio}</p>}
+                    {loadingAnalytics && 
+                      <div className={styles.Loader}>
+                            <Loader />
+                      </div>
+                    }
                     
-                    {true && (
+                    {errorAnalytics && 
+                      <div className={styles.Loader}>
+                            <Error />
+                      </div>
+                    }
+
+                    {!errorAnalytics && !loadingAnalytics && analytics && (
                     <div className={styles.analiticsContent}>
                         <div className={styles.analitics} ref={analiticsRef} >
                           <section 
                             id="allocation" 
                             ref={(el) => registerSectionRef("allocation", el)} 
                             className={styles.assetAllocation}>
-                              <div  className={styles.assetAllocationWrapper}>
-                                <div className={styles.chartAsset}>
-                                    {/*   <Doughnut data={data} options={options} onElementsClick={(elems) => console.log(elems)} />       */}
-                                    <div className={styles.greatestValue}>
-                                      <div className={styles.greatestValueName}>
-                                        <img   className={assetsIcon ? styles.assetsIcon : styles.hidden} 
-                                        src={assetsIcon} alt="ETH"/>
-                                        <span>ETH</span>
-                                      </div>
-                                      <div>$ 3654.10</div>
-                                      <div>43.1%</div>
-                                    </div>
-                                </div>
-                                <div className={styles.assets}>
-                                  <div className={styles.topic}>Asset Allocations</div>
-                                  <div className={`${styles.assetsList} ${assets?.length > 6 ? styles.twoColumns : ''}`}>
-                                    <ul>
-                                      {/*                                    
-                                      {assets?.map((asset, index) => (
-                                      <li className={styles.assetListElement} key={index}>
-                                        <div className={styles.assetName}>
-                                            <span>{asset.symbol} </span>
-                                        </div>
-                                        <div className={styles.assetInterest}>
-                                          <span>{asset.interest} %</span>
-                                          <div
-                                            className={styles.assetColor}
-                                            style={{ backgroundColor: asset.color }}
-                                          ></div>
-                                        </div>
-                                      </li>
-                                    ))}
-                                      */}
-
-                                    </ul>
-                                  </div>
-                                </div>
-                              </div>
+                              <AssetAllocations data={analytics}/>
                           </section>
                           <section 
                             id="allocationByCategory" 
                             ref={(el) => registerSectionRef("allocationByCategory", el)} 
                             className={styles.allocationByCategory}>
-                              <div className={styles.allocationByCategoryWrapper}>
-                                <div className={styles.topic}>Asset Allocations by Category</div>
-                              </div>
+                            <img 
+                              className={styles.back} 
+                              src={Category} 
+                            />
                           </section>
                           <section 
                             id="changes" 
                             ref={(el) => registerSectionRef("changes", el)} 
                             className={styles.balanceChanges}>
+                            <img 
+                              className={styles.back} 
+                              src={Balance} 
+                            />
                           </section>
                           <section 
                             id="volatility" 
                             ref={(el) => registerSectionRef("volatility", el)} 
                             className={styles.riskVolatility}>
+                                                          <img 
+                              className={styles.back} 
+                              src={Risks} 
+                            />
                           </section>
                           <section 
                             id="profiitLoss" 
                             ref={(el) => registerSectionRef("profiitLoss", el)} 
                             className={styles.totalProfiitLoss}>
+                                                                                        <img 
+                              className={styles.back} 
+                              src={Profit} 
+                            />
                           </section>
 
                           <section 
                             id="cost" 
                             ref={(el) => registerSectionRef("cost", el)} 
                             className={styles.costAnalytics}>
-                              <div className={styles.costAnalysisWrapper}>
-                                <div className={styles.chartCostAnfLabels}>
-                                      <div className={styles.chartCost}>
-                                        <img className={styles.Diagram} src={Diagram} alt="Approve"/>  
-                                        <div className={styles.totalSpent}>
-                                            <span>Total</span>
-                                            <span>$567</span>
-                                            <span>Spent</span>
-                                        </div>
-                                      </div>
-                                      <div className={styles.chartLabels}>
-                                        <ul>
-                                          <li className={styles.chartLabel}>
-                                            <div className={styles.assetName}>
-                                              <img className={styles.chartLabelIcon} src={approveIcon} alt="Approve"/>
-                                              <span>Approve</span>
-                                            </div>
-                                            <div className={styles.assetInterest}>
-                                              <span>43.1%</span>
-                                              <div
-                                                className={styles.assetColor}
-                                                style={{ backgroundColor: `#59588D` }}
-                                              ></div>
-                                            </div>
-                                          </li>
-                                          <li className={styles.chartLabel}>
-                                            <div className={styles.assetName}>
-                                              <img className={styles.chartLabelIcon} src={transferIcon} alt="Transfer"/>
-                                              <span>Transfer</span>
-                                            </div>
-                                            <div className={styles.assetInterest}>
-                                              <span>43.1%</span>
-                                              <div
-                                                className={styles.assetColor}
-                                                style={{ backgroundColor: `#59588D` }}
-                                              ></div>
-                                            </div>
-                                          </li>
-                                          <li className={styles.chartLabel}>
-                                            <div className={styles.assetName}>
-                                              <img className={styles.chartLabelIcon} src={receivedIcon} alt="Received"/>
-                                              <span>Received</span>
-                                            </div>
-                                            <div className={styles.assetInterest}>
-                                              <span>43.1%</span>
-                                              <div
-                                                className={styles.assetColor}
-                                                style={{ backgroundColor: `#59588D` }}
-                                              ></div>
-                                            </div>
-                                          </li>
-                                          <li className={styles.chartLabel}>
-                                            <div className={styles.assetName}>
-                                              <img className={styles.chartLabelIcon} src={feeIcon} alt="Fee"/>
-                                              <span>Fee</span>
-                                            </div>
-                                            <div className={styles.assetInterest}>
-                                              <span>43.1%</span>
-                                              <div
-                                                className={styles.assetColor}
-                                                style={{ backgroundColor: `#59588D` }}
-                                              ></div>
-                                            </div>
-                                          </li>
-                                        </ul>
-                                      </div>
-                                </div>
-
-                                <div className={styles.tableCost}>
-                                  <div className={styles.topic}>Cost analysis</div>
-                                  <div className={styles.tradingFeesPaid}>
-                                    <div  className={styles.tradingFeesPaidWrapper}>
-                                      <div className={styles.topic}>Trading Fees Paid</div>
-                                      <div className={styles.tradingFeesPaidInfo}>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Total Fees</span>
-                                          <span>93.92 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Average</span>
-                                          <span>0.8945 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Highest Free</span>
-                                          <span>17.98 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Transaction Count</span>
-                                          <span>54.15 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Total Fee Count</span>
-                                          <span>115</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className={styles.totalGasSpent}>
-                                  <div  className={styles.totalGasSpentWrapper}>
-                                    <div className={styles.topic}>Total Gas Spent</div>
-                                      <div className={styles.totalGasSpentInfo}>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Total Value</span>
-                                          <span>93.92 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Average</span>
-                                          <span>0.8945 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Highest Free</span>
-                                          <span>17.98 USD</span>
-                                        </div>
-                                        <div className={styles.elemntInfo}>
-                                          <span className={styles.elemntInfoTopic}>Transaction Count</span>
-                                          <span>34.15 USD</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                            <CostAnalysis data={analytics.calculatedCoins}/>
                           </section>
                         </div>
                         <div 
@@ -504,11 +274,6 @@ export default function Analytics() {
                 )
 
               }
-          </div>
-        </div>
-      </div>
-      <Footer/>
-    </main>
     </>
   );
 }

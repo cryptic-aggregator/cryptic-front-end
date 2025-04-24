@@ -5,6 +5,7 @@ import styles from "./SignUp.module.css";
 import { Link,useNavigate  } from "react-router-dom";
 import { authApi } from '../../api/endpoints/authApi';
 import { useTranslation } from 'react-i18next';
+import React from 'react';
 
 
 export default function SignUp() {

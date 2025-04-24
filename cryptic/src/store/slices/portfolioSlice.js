@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { portfolioApi } from "../../api/endpoints/portfolioApi"; // Імпортуємо API
-
+import { setWalletAddress, clearWalletAddress } from "./walletSlice.js";
 // Async Thunk для отримання портфоліо
 export const fetchPortfolios = createAsyncThunk(
   "portfolioStore/fetchPortfolios",
@@ -55,12 +55,10 @@ export const infoPortfolio = createAsyncThunk(
 export const connectWalletToPortfolio = createAsyncThunk(
   "portfolioStore/connectWalletToPortfolio",
   async ({ id, data }, { dispatch, rejectWithValue }) => {
+
     try {
-      console.log(id);
-      console.log(data);
-
       await portfolioApi.connectWalletToPortfolio(id, data); // Надсилаємо POST-запит
-
+      dispatch(clearWalletAddress());
       dispatch(fetchPortfolios()); // Оновлюємо список після додавання
     } catch (error) {
       console.log("Помилка підключення гаманця до портфоліо:", error);
@@ -95,6 +93,7 @@ const initialState = {
   errorPortfolios: null, // Помилки при отриманні списку портфоліо
   errorPortfolio: null, // Помилки при отриманні окремого портфоліо
   errorConnect: null, // Помилки при отриманні окремого портфоліо
+  awaitConnect: false, // Помилки при отриманні окремого портфоліо
 };
 
 
@@ -151,9 +150,23 @@ const portfolioSlice = createSlice({
       // CONNECT WALLET TO PORTFOLIO
       .addCase(connectWalletToPortfolio.rejected, (state, action) => {
         state.errorConnect = action.payload;
+        state.awaitConnect = false;
+      })
+      .addCase(connectWalletToPortfolio.pending, (state) => {
+        state.awaitConnect = true;
+      })
+      .addCase(connectWalletToPortfolio.fulfilled, (state) => {
+        state.awaitConnect = false;
       })
       .addCase(addPortfolioAndConnectWallet.rejected, (state, action) => {
         state.errorConnect = action.payload;
+        state.awaitConnect = false;
+      })
+      .addCase(addPortfolioAndConnectWallet.pending, (state) => {
+        state.awaitConnect = true;
+      })
+      .addCase(addPortfolioAndConnectWallet.fulfilled, (state) => {
+        state.awaitConnect = false;
       })
       // INFO PORTFOLIO
       .addCase(infoPortfolio.pending, (state) => {

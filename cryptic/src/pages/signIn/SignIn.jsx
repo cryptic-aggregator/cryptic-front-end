@@ -4,14 +4,13 @@ import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 import styles from "./SignIn.module.css";
 import { Link,useNavigate  } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { authApi } from '../../api/endpoints/authApi';
 import { useDispatch } from "react-redux";
-import {setUser} from "../../store/slices/authSlice"
+import { loginUser } from "../../store/actions/authActions";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function SignIn() {
     const {t} = useTranslation();
     const dispatch = useDispatch();
-
       //show password
       const [passwordShown, setPasswordShown] = useState(false);
       const navigate = useNavigate();
@@ -33,24 +32,22 @@ export default function SignIn() {
           email: data.email,
           password: data.password
         };
-        const response = await authApi.login(userData);
-        const user = response.data;
-        console.log('Login successful:', user);
+        await dispatch(loginUser(userData)).unwrap();
         navigate('/dashboard');
 
       } catch (error) {
-        // Можна додати Toast повідомлення про помилку
-        console.error('Login failed:', error.response?.data);
+        toast.error('Login failed');
+        console.error('Login failed:', error);
       }
     };
 
+    
   return (
     <>
     <div className={styles.signIn}>
     <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
         <h1>{t('signIn.topic')}</h1>
         <div className={styles.inputForm}>
-
             <div className={styles.inputGroup}>
               <label>{t('signIn.email')}</label>
               <input {...register("email", { 
@@ -76,6 +73,7 @@ export default function SignIn() {
         <label className={styles.signUp} >{t('signIn.textSignUp')} <Link to="/signUp">{t('signIn.refSignUp')}</Link></label>
       </form>
     </div>
+
     </>
 
   );

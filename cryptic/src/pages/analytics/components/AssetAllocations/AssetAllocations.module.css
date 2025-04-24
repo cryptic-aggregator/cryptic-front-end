@@ -1,0 +1,81 @@
+.topic{
+  font-size: 28px;
+  color: white;
+  text-align: center;
+}
+.assetAllocation{
+  display: flex;
+  width: 100%;
+  background-color: #11141E;
+  border-radius: 30px;
+}
+.assetColor {
+  margin-left: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+}
+.assetAllocationWrapper{
+  display: flex;
+  padding: 30PX;
+  width: 100%;
+}
+.assetListElement {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #4c4c4c63;
+  width: 100%;
+  max-width: 200px;
+}
+.chartAsset{
+  position: relative;
+  width: 360px;
+  height: 360px;
+}
+.greatestValue{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: 20px;
+  font-size: 24px;
+}
+.greatestValueName{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.greatestValueName img{
+  width: 45px;
+  height: 45px;
+}
+.assetName,.assetInterest{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.assetsIcon{
+  width: 30px;
+  height: 30px;
+}
+.assetsList{
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+.twoColumns ul {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.assets{
+  margin-left: 45px;
+  flex: 1;
+}

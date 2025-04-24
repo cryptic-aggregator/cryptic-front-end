@@ -1,0 +1,69 @@
+
+.loader{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center ;
+
+}
+.animationBrandText{
+    color: #af4b4b;
+}
+.animationBrand{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    height: 60px;
+    width: 60px;
+}
+.animationBrand img{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes hideAnimation {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  @keyframes rotateAnimationFirstCircle {
+    0% { transform: rotate(0deg);}
+    80% { transform: rotate(450deg);}
+    100% { transform: rotate(450deg);}
+  }
+  
+  @keyframes rotateAnimationAnyother {
+    0% { transform: rotate(0deg); opacity: 1; }
+    80% { transform: rotate(-360deg); opacity: 1; }
+    100% { transform: rotate(-360deg); opacity: 0; display: none; }
+  }
+
+  @keyframes rotateAnimationThirdCircle {
+    0% { transform: rotate(0deg); opacity: 1;}
+    80% { transform: rotate(360deg); opacity: 1;}
+    100% { transform: rotate(360deg); opacity: 0; display: none;}
+  }
+  .animationBrandZeroCircle {
+    animation: hideAnimation 3s ease forwards;
+  }
+
+  .animationBrandFirstCircle {
+    animation: rotateAnimationFirstCircle 3s ease forwards;
+  }
+  
+  .animationBrandSecondCircle {
+    animation: rotateAnimationAnyother 3s ease forwards;
+  }
+  
+  .animationBrandThirdCircle {
+    animation: rotateAnimationThirdCircle 3s ease forwards;
+  }

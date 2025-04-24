@@ -1,46 +1,44 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import styles from "./UserProfile.module.css";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import Sidebar from "../../components/SideBarProfile";
+
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { useAuth } from "../../hooks/useAuth"; // Глобальний стан авторизації
-import { authApi } from '../../api/endpoints/authApi';
+import { useAuth } from "../../hooks/useAuth";
+import { useUser } from "../../hooks/useUser"; 
+import { fetchUser, updateUser } from "../../store/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 export default function UserProfile() {
   const {t} = useTranslation();
-  const { isAuth, user } = useAuth(); // Отримуємо інформацію про користувача 
-
+  const { isAuth } = useAuth(); // Отримуємо інформацію про користувача 
+  const { user } = useUser(); // Отримуємо інформацію про користувача
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: {errors} } = useForm({
     mode: 'onChange',
     defaultValues: {
-      login: user?.unique_name || "Відбувається завнтаження", 
-      email: user?.email ||  "Відбувається завнтаження"
+      login: user?.name, 
+      email: user?.email
     }
   });
 
   const onSubmit = (data) => {
     console.log(data);
+    dispatch(updateUser({
+      name: data.login,
+      email: data.email
+    }));
   };
- 
-  if (!isAuth) {
-    <>
-      <p>Not allow, you are Tramp</p>
-    </>
-}
+   useEffect(() => {
+     if (!isAuth) {
+       navigate("/signin"); // Якщо не авторизований, перенаправляємо на сторінку входу
+     }
+   }, [isAuth, navigate]);
+
   return (
     <>
-    <main className={styles.main}>
-      <Navbar/>
-      <div className={styles.userProfile}>
-    
-        <div className={styles.userProfileContent}>
-          <div className={styles.sideBar}> 
-            <Sidebar/>
-          </div>
-          <div className={styles.userProfileInfo}> 
+
               <div className={styles.topic}>{t('userProfile.userProfile')}</div>
               <div className={styles.textTopic}>{t('userProfile.infomation')}</div>
 
@@ -69,13 +67,7 @@ export default function UserProfile() {
                   <button className={styles.button} type="submit">{t('userProfile.updateProfile')}</button>
               </div>
               </form>
-              
-          </div>
-        </div>
-   
-      </div>
-      <Footer/>
-    </main>
+
     </>
 
   );

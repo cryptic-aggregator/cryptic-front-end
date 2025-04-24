@@ -12,6 +12,11 @@
     align-items: center;
 }
 
+.toaster{
+    background-color: #000411;
+    color: #491383;
+}
+
 .registerForm {
     background-color: #000411;
     position: relative;

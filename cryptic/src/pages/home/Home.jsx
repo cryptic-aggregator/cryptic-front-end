@@ -1,6 +1,7 @@
 import styles from "./Home.module.css";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+
+import Navbar from "../../components/navigation/MainNavbar/MainNavbar";
+import Footer from "../../components/layout/Footer/Footer";
 import settings from "../../assets/images/HomePage/settings.svg";
 import calendar from "../../assets/images/HomePage/calendar.svg";
 import checkMark from "../../assets/images/HomePage/checkMark.svg";
@@ -12,11 +13,9 @@ import metamaskLogo from "../../assets/images/HomePage/metamaskLogo.svg";
 import phantomLogo from "../../assets/images/HomePage/phantomLogo.svg";
 import mobileApp from "../../assets/images/HomePage/mobileApp.svg";
 import portfolioGoals from "../../assets/images/HomePage/PortfolioGoals.svg";
-import logo from "../../assets/images/HomePage/Logo.svg";
 import otherLogoEllipse from "../../assets/images/HomePage/otherLogoEllipse.svg";
 import phantomLogoEllipse from "../../assets/images/HomePage/phantomLogoEllipse.svg";
 import metamaskLogoEllipse from "../../assets/images/HomePage/metamaskLogoEllipse.svg";
-
 import zeroCircleAnim from "../../assets/images/HomePage/zeroCircleAnim.svg";
 import firstCircleAnim from "../../assets/images/HomePage/firstCircleAnim.svg";
 import secondCircleAnim from "../../assets/images/HomePage/secondCircleAnim.svg";
@@ -28,19 +27,17 @@ import transactionCostGoals from "../../assets/images/HomePage/TransactionCostGo
 import transferGoals from "../../assets/images/HomePage/TransferGoals.svg";
 import graph from "../../assets/images/HomePage/Graph.svg";
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link,useNavigate } from "react-router-dom";
-
+import { walletApi } from "../../api/endpoints/walletApi";
+import { setSelectedWallet } from "../../store/slices/walletSlice";
 import { useDispatch } from "react-redux";
-import { setSelectedWallet } from "../../store/slices/walletSlice.js";
+
 
 
 export default function Home() {
   const {t} = useTranslation();
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,7 +61,6 @@ export default function Home() {
             window.scrollY  > animItemOffset - animItemPoint &&
             window.scrollY  < animItemOffset + animItemHeight
           ) {
-            console.log(animItems)
             animItem.classList.add(`${styles.active}`);
           }else{
             animItem.classList.remove(`${styles.active}`);
@@ -99,7 +95,7 @@ export default function Home() {
             <div className={styles.title2}>{t('home.trackBalances')}</div>
             <Link to="/signUp" className={styles.startNowButton}>
               <label>{t('home.startNow')}</label>
-              <span class={styles.imgWrapper}>
+              <span className={styles.imgWrapper}>
                 <img src={rightArrowAngle}  alt="icon"/>
               </span>
             </Link>

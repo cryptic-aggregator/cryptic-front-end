@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
+import Navbar from "../../components/navigation/MainNavbar/MainNavbar";
+import Footer from "../../components/layout/Footer/Footer";
 import styles from "./ConnectWallet.module.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -13,15 +13,19 @@ import { setWalletAddress } from "../../store/slices/walletSlice";
 import { useWallet } from "../../hooks/useWallet";
 import { addPortfolioAndConnectWallet  } from "../../store/slices/portfolioSlice";
 import { usePortfolio } from "../../hooks/usePortfolio";
-const queryClient = new QueryClient();
+import toast, { Toaster } from 'react-hot-toast';
+import Loader from '../../components/common/Loader/Loader';
+import Error from '../../components/common/Error/Error';
 
 export default function ConnectWallet() {
+  const queryClient = new QueryClient();
+
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuth } = useAuth();
   const dispatch = useDispatch();
   const { connectWalletAddress }  = useWallet(); 
-  const { errorConnect }  = usePortfolio(); 
+  const { errorConnect, awaitConnect }  = usePortfolio(); 
   const [currentStep, setCurrentStep] = useState(1);
   const [portfolioName, setPortfolioName] = useState("");
   const [isManualInput, setIsManualInput] = useState(0);
@@ -31,28 +35,30 @@ export default function ConnectWallet() {
     }
   }, [isAuth, navigate]);
   
-    const createPorfolioConnectWallet = async => {
+    const createPorfolioConnectWallet = async() => {
         if(portfolioName && connectWalletAddress){
-          dispatch(addPortfolioAndConnectWallet({
-            namePortfolio:{ name: `${portfolioName}` },
-            wallets:{ 
-              wallet_addresses: [`${connectWalletAddress}`],
-              connection_type: isManualInput,
-           },
-          }));
-          if(errorConnect){
-            alert(errorConnect)
-          }else{
-            navigate("/dashboard")
-          }
-        }else if(portfolioName){
-          alert("portfolioName not find")
-        }else{
-          alert("connectWalletAddress not find")
-        }
-        
 
-    };
+          try {
+              await dispatch(addPortfolioAndConnectWallet({
+              namePortfolio:{ name: `${portfolioName}` },
+              wallets:{ 
+                wallet_addresses: [`${connectWalletAddress}`],
+                connection_type: isManualInput,
+              },
+            })).unwrap();
+            
+            navigate("/dashboard")
+          } catch (error) {
+            toast.error('Error connecting wallet');
+            console.error('Error connecting wallet' + error);
+          }
+
+        }else if(portfolioName){
+          toast.error('Portfolio name not find');
+        }else{
+          toast.error('Connect wallet address not find');
+        }
+  };
 
   return (
     <WagmiProvider config={wagmiConfig}>
@@ -69,13 +75,13 @@ export default function ConnectWallet() {
                   <div className={styles.connectionOptions}>
                     <button
                       className={`${styles.optionButton} ${!isManualInput ? styles.selected : ""}`}
-                      onClick={() => setIsManualInput(1)}
+                      onClick={() => setIsManualInput(0)}
                     >
                       {t("Automatic connection")}
                     </button>
                     <button
                       className={`${styles.optionButton} ${isManualInput ? styles.selected : ""}`}
-                      onClick={() => setIsManualInput(0)}
+                      onClick={() => setIsManualInput(1)}
                     >
                       {t("Manual Input")}
                     </button>
@@ -106,6 +112,7 @@ export default function ConnectWallet() {
                         onChange={(e) => dispatch(setWalletAddress(e.target.value))}
                         required
                       />
+
                     </form>
                   )}
                   <div className={styles.navigationButtonsFirstPage}>
@@ -117,7 +124,12 @@ export default function ConnectWallet() {
               )}
 
               {currentStep === 2 && (
-                <div className={styles.card}>
+                awaitConnect ? (
+                  <div className={styles.card}>
+                    <Loader />
+                  </div>
+                ):(
+                  <div className={styles.card}>
                   <p className={styles.title}>{t("Enter the name of your portfolio where this wallet will be located.")}</p>
                   <input
                     type="text"
@@ -136,6 +148,7 @@ export default function ConnectWallet() {
                     </button>
                   </div>
                 </div>
+                )
               )}
               {/* Індикатори сторінок */}
               <div className={styles.pageIndicators}>

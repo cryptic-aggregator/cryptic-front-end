@@ -1,10 +1,6 @@
-import { useState, useRef  } from "react";
+import { useRef  } from "react";
 import styles from "./UserProfile2FA.module.css";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import Sidebar from "../../components/SideBarProfile";
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import QRCode from "../../assets/images/UserProfile/QRCode.svg";
 import CopyAlt from "../../assets/images/UserProfile/CopyAlt.svg";
@@ -55,15 +51,7 @@ export default function UserProfile2FA() {
 
   return (
     <>
-    <main className={styles.main}>
-      <Navbar/>
-      <div className={styles.userProfile}>
-    
-        <div className={styles.userProfileContent}>
-          <div className={styles.sideBar}> 
-            <Sidebar/>
-          </div>
-          <div className={styles.userProfileInfo}> 
+
             <div className={styles.topic}>{t('userProfile2FA.topic')}</div>
             <div className={styles.textWithQR}>
               <div className={styles.textForQR}>
@@ -96,12 +84,7 @@ export default function UserProfile2FA() {
             <div className={styles.buttonWrapper}>
                   <button className={styles.button} type="submit">{t('userProfile2FA.verify')}</button>
             </div>
-          </div>
-        </div>
-   
-      </div>
-      <Footer/>
-    </main>
+
     </>
 
   );

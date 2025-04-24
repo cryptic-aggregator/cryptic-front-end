@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import store from "../store/index.js";
-import { setTokens, logout } from "../store/slices/authSlice";
+import { login, logout } from "../store/slices/authSlice";
 
 const httpClient = axios.create({
   baseURL: API_BASE_URL,
@@ -25,7 +25,7 @@ httpClient.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-/*
+
 // Оновлення токена, якщо він протух
 httpClient.interceptors.response.use(
   (response) => response,
@@ -50,7 +50,7 @@ httpClient.interceptors.response.use(
         const newAccessToken = res.data.accessToken;
 
         // Оновлюємо токени в Redux
-        store.dispatch(setTokens({ accessToken: newAccessToken, refreshToken }));
+        store.dispatch(login({ accessToken: newAccessToken, refreshToken }));
 
         // Додаємо новий токен в заголовки повторного запиту
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
@@ -66,6 +66,6 @@ httpClient.interceptors.response.use(
     
     return Promise.reject(error);
   }
-);*/
+);
 
 export default httpClient;

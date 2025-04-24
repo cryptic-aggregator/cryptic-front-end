@@ -1,20 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
-import {Provider} from "react-redux"
-import App from './App';
-import store, { initializeAuth } from './store/index';
+import { Provider } from "react-redux";
+import store from './store/index';
+import toast, { Toaster } from 'react-hot-toast';
+import RootWrapper from './RootWrapper';
 
+const rootElement = document.getElementById('root');
+const root = ReactDOM.createRoot(rootElement);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-initializeAuth().then(() => {
-  root.render(
-    <React.StrictMode>
+root.render(
+  <React.StrictMode>
+    <Provider store={store}>
       <BrowserRouter>
-        <Provider store={store}>
-          <App />
-        </Provider>
+        <RootWrapper />
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: '#313135',
+              padding: '5px 10px',
+              color: '#FFFFFFFF',
+            },
+          }}
+        />
       </BrowserRouter>
-    </React.StrictMode>
-  );
-});
+    </Provider>
+  </React.StrictMode>
+);

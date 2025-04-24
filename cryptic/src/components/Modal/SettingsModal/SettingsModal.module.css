@@ -1,0 +1,80 @@
+.modalWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2); /* Напівпрозорий фон */
+    z-index: 10000; /* Найбільший рівень */
+}
+
+.settingsModal{
+    position: absolute;
+    top: 70px;
+    right: 20px; 
+    background: #11141E;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 16px;
+    border-radius: 0px 0px 20px 20px;
+    overflow: hidden;
+    border-top: 2px solid #FFC205;
+    z-index: 9999;
+}
+.select{
+    position: relative;
+    padding: 10px 20px;
+    gap: 20px;
+    background: rgba(35, 37, 43, 0.5);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.select:hover{
+    position: relative;
+    padding: 10px 20px;
+    background: rgba(35, 37, 43, 1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.current img{
+    width: 25px;
+}
+.current{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+} 
+/* Список мов */
+.languageDropdown {
+    display: none;
+    gap: 2.5px;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    flex-direction: column;
+}
+.languageDropdown.open{
+    display: flex;
+}
+
+.languageOption {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(35, 37, 43, 1);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px 0px 10px 0px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.languageOption img{
+    margin-left: 20px;
+    width: 25px;
+}
+.languageOption:hover {
+    background: rgb(47, 48, 53);
+}

@@ -1,0 +1,69 @@
+.modalWrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Напівпрозорий фон */
+    display: flex;
+    justify-content: center; /* Вирівнює по горизонталі */
+    align-items: center; /* Вирівнює по вертикалі */
+  
+}
+.closeButton{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    cursor: pointer; 
+}
+.connectWalletContainer {
+    position: relative;
+    background: #11141E;
+    padding: 25px;
+    border-radius: 10px;
+
+    max-width: 450px; /* Або інша ширина */
+    max-height: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}  
+.connectWalletContainerWrapper{
+    width: 100%;
+    height: 100%;
+    max-width: 450px; /* Або інша ширина */
+    max-height: 520px;
+
+}
+.secretKey{
+    position: relative;
+    display: inline-block;
+    background-color: transparent;
+    outline: none;
+    border: 2px solid #292929 ;
+    color: #FFFFFF;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 17px;
+    width: 100%;
+
+    box-sizing: border-box; 
+    padding-right: 40px;
+    margin: 20px 0px 20px 0px;
+
+}
+.copyIcon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+.card {
+width: 100%;
+height: 100%;
+text-align: center;
+}
+  

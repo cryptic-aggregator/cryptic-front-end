@@ -1,0 +1,89 @@
+.topic{
+  font-size: 28px;
+  color: white;
+  text-align: center;
+}
+.costAnalytics{
+  display: flex;
+  width: 100%;
+  background-color: #11141E;
+  border-radius: 30px;
+}
+.costAnalysisWrapper{
+  width: 100%;
+  padding: 30PX 50PX 30PX 50PX;
+  display: flex;
+}
+.chartCost{
+  position: relative;
+  width: 360px;
+  height: 360px;
+}
+.totalSpent{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  gap: 20px;
+  font-size: 24px;
+}
+.tableCost{
+  width: 100%;
+  margin-left: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.tradingFeesPaid,.totalGasSpent{
+  border-radius: 10px;
+  border: 2px #999999 solid;
+  width: 100%;
+}
+.tradingFeesPaid{
+  margin-top: 15px;
+}
+.totalGasSpent{
+  margin-top: 40px;
+}
+.tradingFeesPaidInfo, .totalGasSpentInfo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.tradingFeesPaidWrapper,.totalGasSpentWrapper{
+  padding: 20px;
+}
+.elemntInfo{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-size: 18px;
+}
+.elemntInfoTopic{
+  color: #999999;
+  font-weight: 500;
+}
+.chartCostAnfLabels{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.chartLabels{
+  margin-top: 60px;
+  width: 300px;
+}
+.chartLabels ul{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.chartLabel{
+  display: flex;
+  justify-content: space-between;
+}

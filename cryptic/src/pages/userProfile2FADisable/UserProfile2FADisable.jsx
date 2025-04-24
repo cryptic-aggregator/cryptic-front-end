@@ -1,13 +1,8 @@
-import { useState, useRef  } from "react";
+import { useState  } from "react";
 import styles from "./UserProfile2FADisable.module.css";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
-import Sidebar from "../../components/SideBarProfile";
+
 import { useForm } from 'react-hook-form';
-import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import QRCode from "../../assets/images/UserProfile/QRCode.svg";
-import CopyAlt from "../../assets/images/UserProfile/CopyAlt.svg";
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
 
 export default function UserProfile2FA() {
@@ -32,15 +27,7 @@ export default function UserProfile2FA() {
 
   return (
     <>
-    <main className={styles.main}>
-      <Navbar/>
-      <div className={styles.userProfile}>
-    
-        <div className={styles.userProfileContent}>
-          <div className={styles.sideBar}> 
-            <Sidebar/>
-          </div>
-          <div className={styles.userProfileInfo}> 
+
               <div className={styles.topic}>{t('userProfile2FADisable.topic')}</div>
               <div className={styles.textTopic}>{t('userProfile2FADisable.topic')}</div>
 
@@ -72,13 +59,7 @@ export default function UserProfile2FA() {
                   <button className={styles.button} type="submit">{t('userProfile2FADisable.disable')}</button>
               </div>
               </form>
-              
-          </div>
-        </div>
-   
-      </div>
-      <Footer/>
-    </main>
+
     </>
 
   );

@@ -4,10 +4,8 @@ import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin';
 import { SolanaAdapter } from '@reown/appkit-adapter-solana';
 import { SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { mainnet, solana, bitcoin } from '@reown/appkit/networks';
-import { useState } from "react";
-import store from "../../store/index.js";
-import { setWalletAddress, clearWalletAddress } from "../../store/slices/walletSlice.js";
-import { watchAccount, getAccount } from "@wagmi/core";
+import store from '../../store/index.js';
+import { setWalletAddress, clearWalletAddress } from '../../store/slices/walletSlice.js';
 
 const projectId = import.meta.env.VITE_PROJECT_ID || '292ef0994972ab36ceb67522a5f9a3b4';
 
@@ -30,9 +28,7 @@ const solanaWeb3JsAdapter = new SolanaAdapter({
   wallets: [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
 });
 
-const bitcoinAdapter = new BitcoinAdapter({
-  projectId,
-});
+const bitcoinAdapter = new BitcoinAdapter({ projectId });
 
 const modal = createAppKit({
   adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
@@ -47,38 +43,40 @@ const modal = createAppKit({
   },
   allWallets: 'SHOW',
 });
+
+// контрольна змінна, щоб уникнути багаторазових підписок
+const isSubscribed  = false;
+
 export function getCurrentAddressAppKit() {
-  console.log("Get Current address",modal.getAddress() );
-  return modal.getAddress()
+  return modal.getAddress();
 }
+
 export function openAppKit() {
-  console.log("Open AppKit modal");
+  console.log("🔓 Opening AppKit modal...");
   modal.open();
 
-  const updateWalletState = () => {
-    const address = modal.getAddress();
-    if (address) {
-      console.log("Connected wallet address:", address);
-      store.dispatch(setWalletAddress(address));
-      modal.close();
-    } else {
-      console.log("Disconnected wallet address:", address);
-      store.dispatch(clearWalletAddress());
-    }
-  };
+  if (!isSubscribed) {
+    const updateWalletState = () => {
+      const address = modal.getAddress();
+      if (address) {
+        console.log("✅ Wallet connected:", address);
+        store.dispatch(setWalletAddress(address));
+        modal.close(); // Автоматично закриваємо після вибору
+      } else {
+        console.log("❌ Wallet disconnected");
+        store.dispatch(clearWalletAddress());
+      }
+    };
 
-  // Підписуємось на зміни мережі та адреси
-  modal.subscribeNetwork(updateWalletState);
-  modal.subscribeShouldUpdateToAddress(updateWalletState);
-
+    modal.subscribeNetwork(updateWalletState);
+    isSubscribed = true;
+  }
 }
 
-
-
 export function closeAppKit() {
-  console.log("Close AppKit modal");
+  console.log("🔒 Closing AppKit modal...");
+  store.dispatch(clearWalletAddress());
   modal.close();
 }
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig;
-

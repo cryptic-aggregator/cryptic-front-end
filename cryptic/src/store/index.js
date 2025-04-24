@@ -1,52 +1,48 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer, { setTokens, setUser, logout } from "./slices/authSlice";
+import authReducer, { login, logout } from "./slices/authSlice";
 import portfolioReducer from "./slices/portfolioSlice";
+import { createLogger } from "redux-logger";
 import analyticsReducer from "./slices/analyticsSlice";
+import userReducer, { setUser, fetchUser } from "./slices/userSlice"
 import walletReducer from "./slices/walletSlice";
-import httpClient from "../api/httpClient";
 import {jwtDecode} from "jwt-decode";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
+    walletStore: walletReducer,
     portfolioStore: portfolioReducer,
     analyticsStore: analyticsReducer,
-    walletStore: walletReducer
-  },
-});
+    userStore: userReducer,
+  }
 
+});
+//  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(thunk, logger),
 // Функція ініціалізації стану при завантаженні сторінки
 export const initializeAuth = async () => {
   const accessToken = sessionStorage.getItem("accessToken");
   const refreshToken = sessionStorage.getItem("refreshToken");
 
-  if (accessToken) {
-    try {
-      const decodedToken = jwtDecode(accessToken);
-      const currentTime = Date.now() / 1000; // Поточний час у секундах
+  if (!accessToken) {
+    store.dispatch(logout());
+    console.error("Немає accessToken");
+    return;
+  }
 
-      if (decodedToken.exp < currentTime) {
-        // Якщо токен прострочений, пробуємо оновити
-        if (refreshToken) {
-          try {
-            const res = await httpClient.post("/users/refresh", { refreshToken });
-            store.dispatch(setTokens({ accessToken: res.data.accessToken, refreshToken }));
-            const newDecoded = jwtDecode(res.data.accessToken);
-            store.dispatch(setUser(newDecoded));
-          } catch (error) {
-            store.dispatch(logout());
-          }
-        } else {
-          store.dispatch(logout());
-        }
-      } else {
-        // Якщо токен ще валідний, просто зберігаємо користувача
-        store.dispatch(setUser(decodedToken));
+  try {
+
+      store.dispatch(login({ accessToken, refreshToken }));
+      // Очікуємо результат fetchUser
+      const result = await store.dispatch(fetchUser());
+
+      // Перевірка статусу (rejected — якщо фетч не вдався)
+      if (fetchUser.rejected.match(result)) {
+        throw new Error("Не вдалося отримати користувача");
       }
-    } catch (error) {
-      console.error("Помилка при декодуванні токена:", error);
-      store.dispatch(logout());
-    }
+    
+  } catch (error) {
+    console.error("Помилка при ініціалізації авторизації", error);
+    store.dispatch(logout());
   }
 };
 
