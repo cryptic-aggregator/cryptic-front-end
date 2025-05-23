@@ -6,6 +6,7 @@ import Navbar from "../../../navigation/MainNavbar/MainNavbar";
 import Footer from "../../Footer/Footer";
 import NavbarOptions from "../../../navigation/PortfoliosNavbar/PortfoliosNavbar";
 import openBar from "../../../../assets/images/SideBarPortfolios/openBar.svg";
+import { useContainerWidth } from '../../../../hooks/useContainerWidth';
 const PortfoliosLayout = () => {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -15,7 +16,8 @@ const PortfoliosLayout = () => {
   useEffect(() => {
     localStorage.setItem("isSidebarOpen", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
-
+  const { ref, widthsState } = useContainerWidth([386]);
+  
   return (
     <main className={styles.main}>
       <Navbar/>
@@ -26,12 +28,12 @@ const PortfoliosLayout = () => {
               <img  title={'edit'} src={openBar} alt="Icon" />
               <span className={styles.spanButton}>Porfolios</span>
           </button>
-          <div  className={`${!isSidebarOpen  ? styles.hiddenSideBar : ""} ${styles.sideBar}`}> 
+          <div  className={`${!isSidebarOpen  ? styles.hiddenSideBar : ""} ${true ? styles.narrowSideBar : styles.sideBar}`}> 
             <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}/>
           </div>
-          <div className={`${!isSidebarOpen  ? styles.fullScreen : ""} ${styles.pageInfo}`} > 
+          <div  ref={ref} className={`${!isSidebarOpen  ? styles.fullScreen : ""} ${styles.pageInfo}`} > 
             <NavbarOptions/>
-            <Outlet />
+            <Outlet  />
           </div>
 
         </div>

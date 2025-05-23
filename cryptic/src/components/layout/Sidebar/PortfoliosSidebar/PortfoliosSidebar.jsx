@@ -70,7 +70,7 @@ export default function PortfoliosSidebar({ isOpen, setIsOpen }) {
                                     to={`/${basePath}/${portfolio.id}`} 
                                     title={portfolio.name}
                                     className={`
-                                        ${location.pathname === `/${portfolio.id}` ? styles.active : ""} 
+                                        ${location.pathname === `/${basePath}/${portfolio.id}` ? styles.active : ""} 
                                         ${styles.userPortfolio}
                                         ${hoveredDeleteId === portfolio.id ? styles.deleteHovered : ""}
                                     `}

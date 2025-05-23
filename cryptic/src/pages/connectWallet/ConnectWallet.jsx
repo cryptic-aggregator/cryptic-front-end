@@ -9,7 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { openAppKit, wagmiConfig } from "../../lib/reownAppkit/reownAppkit";
 import { useDispatch, useSelector } from "react-redux";
-import { setWalletAddress } from "../../store/slices/walletSlice";
+import { setWalletConnectionReown } from "../../store/slices/walletSlice";
 import { useWallet } from "../../hooks/useWallet";
 import { addPortfolioAndConnectWallet  } from "../../store/slices/portfolioSlice";
 import { usePortfolio } from "../../hooks/usePortfolio";
@@ -109,7 +109,7 @@ export default function ConnectWallet() {
                         id="addressInput"
                         className={styles.addressInput}
                         placeholder="Enter your address wallet"
-                        onChange={(e) => dispatch(setWalletAddress(e.target.value))}
+                        onChange={(e) => dispatch(setWalletConnectionReown(e.target.value))}
                         required
                       />
 

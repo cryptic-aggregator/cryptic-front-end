@@ -4,7 +4,6 @@ import { walletApi } from "../../api/endpoints/walletApi"; // Імпортуєм
 export const fetchWallets = createAsyncThunk(
   "walletStore/fetchWallets",
   async (data, { rejectWithValue }) => {
-    console.log(567567567)
     try {
       const response = await walletApi.getWallets(data);
       return response.data;
@@ -18,7 +17,6 @@ export const fetchWallets = createAsyncThunk(
 export const changeVisibilityWallet = createAsyncThunk(
   "walletStore/changeVisibilityWallet",
   async (data, { dispatch, rejectWithValue }) => {
-    console.log(567567567)
     try {
       await walletApi.changeVisibilityWallet(data.portfolioId, data.walletId, data.visibility);
       dispatch(fetchWallets(data.portfolioId)); // Оновлюємо список після додавання
@@ -30,7 +28,13 @@ export const changeVisibilityWallet = createAsyncThunk(
 
 const initialState = {
   selectedWallet: null,
-  connectWalletAddress: null,
+  connectWalletReown : {
+    address: null,
+    caipAddress: null,
+    walletInfoName: null,
+    walletInfoRdns: null,
+    providerName: null,
+  },
   listWalletsFromPortfolio: null,
   loadingListWalletsFromPortfolio: false,
   errorListWalletsFromPortfolio: null,
@@ -43,11 +47,17 @@ const initialState = {
         setSelectedWallet: (state, action) => {
           state.selectedWallet = action.payload;
         },
-        setWalletAddress: (state, action) => {
-          state.connectWalletAddress = action.payload;
+        setWalletConnectionReown: (state, action) => {
+          state.connectWalletReown = {
+            address: action.payload.address,
+            caipAddress: action.payload.caipAddress,
+            walletInfoName: action.payload.walletInfoName,
+            walletInfoRdns: action.payload.walletInfoRdns,
+            providerName: action.payload.providerName,
+          };
         },
-        clearWalletAddress: (state) => {
-          state.connectWalletAddress = null;
+        clearWalletConnectionReown: (state) => {
+          state.connectWalletReown = null;
         },
     },
       extraReducers: (builder) => {
@@ -69,5 +79,5 @@ const initialState = {
       },
     });
   
-  export const {  setSelectedWallet,setWalletAddress, clearWalletAddress } = walletSlice.actions;
+  export const {  setSelectedWallet,setWalletConnectionReown, clearWalletConnectionReown } = walletSlice.actions;
   export default walletSlice.reducer;

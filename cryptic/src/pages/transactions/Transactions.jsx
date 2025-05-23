@@ -2,31 +2,53 @@ import styles from "./Transactions.module.css";
 
 import currencyImg from "../../assets/images/Dashboard/currencyImg.svg";
 import openIcon from "../../assets/images/Dashboard/openIcon.svg";
-import assetsIcon from "../../assets/images/Dashboard/assetsIcon.svg";
 import walletIcon from "../../assets/images/Wallets/walletIcon.svg";
 import { useTranslation } from 'react-i18next';
 import { Line } from "react-chartjs-2"
 import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth"; // 
 import { useWallet } from "../../hooks/useWallet";
 
-import ethereumIcon from "../../assets/images/Wallets/ethereumIcon.svg";
-import bitcoinIcon from "../../assets/images/Wallets/bitcoinIcon.svg";
-import solanaIcon from "../../assets/images/Wallets/solanaIcon.svg";
+import asset from "../../assets/images/Transactions/asset.svg";
+import network from "../../assets/images/Transactions/network.svg";
+import received from "../../assets/images/Transactions/received.svg";
+import sent from "../../assets/images/Transactions/sent.svg";
+import recipient from "../../assets/images/Transactions/recipient.svg";
+
 import networkSelect from "../../assets/images/Wallets/networkSelect.svg";
 import qrCodeIcon from "../../assets/images/Wallets/qrCodeIcon.svg";
 import receivedIcon from "../../assets/images/AnalyticsPage/receivedIcon.svg";
 import transferIcon from "../../assets/images/AnalyticsPage/transferIcon.svg";
 import syncIcon from "../../assets/images/Dashboard/syncIcon.svg";
 import Modal from "../../components/Modal/WalletConnectModal/WalletConnectModal";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import DateRangePicker from "../../components/common/DateRangePicker/DateRangePicker";
+import MainNavbar from "../../components/navigation/MainNavbar/MainNavbar";
+
 export default function Dashboard() {
   const {t} = useTranslation();
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuth } = useAuth(); 
+  const today = new Date();
+const address = "0x9eb4878F60eA745AEB7ECfDad46DDd01B07bD3CE";
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    const monthAgo = new Date();
+    monthAgo.setMonth(today.getMonth() - 1);
+    return monthAgo;
+  });
+  const [endDate, setEndDate] = useState(new Date());
+const [dateRange, setDateRange] = useState({
+  startDate: null,
+  endDate: null,
+});
+  const [activeFilter, setActiveFilter] = useState("1W"); 
+  const filterOptions = ["24H", "1W", "1M", "3M", "6M", "1Y", "ALL"];
   const { listWalletsFromPortfolio, loadingListWalletsFromPortfolio, errorListWalletsFromPortfolio }  = useWallet(); 
   const [coins, setCoins] = useState([]);
   const [totalWorth, setTotalWorth] = useState(0);
@@ -107,46 +129,442 @@ export default function Dashboard() {
                             ))}
                           </div>
                         )}
-                      </div>
+                    </div>
+                    <div className={styles.filterContainer}>
+                      {filterOptions.map((option) => (
+                        <button
+                          key={option}
+                          className={`${styles.filterButton} ${activeFilter === option ? styles.filterButtonActive : ""}`}
+                          onClick={() => setActiveFilter(option)}
+                        >
+                          {option}
+                        </button>
+                      ))}
 
+                      <button
+                        className={`${styles.filterButton} ${activeFilter === `custom` ? styles.filterButtonActive : ""}`}
+                        onClick={() => setActiveFilter("custom")}
+                      >
+                        <DateRangePicker
+                          activeFilter={activeFilter}
+                          onRangeChange={(range) => {
+                            setDateRange(range);
+
+                          }}
+                        />
+                      </button>
+                    </div>
                   </div>
-                  <button onClick={() => setModalIsOpen(true)} className={styles.addWalletButton}>Add Wallet</button>
                   </div>
-                  <div className={styles.walletsList}>
+                  <div className={styles.transactionsList}>
                     <ul>
-                      <li className={styles.walletsListElement}>
-                        <div className={styles.walletsListElementWrapper}>
-                          <div className={styles.walletsImage}>
-                            <span className={styles.title}>Wallet</span>
-                            <img src={walletIcon} alt="Wallet" />
+                      <li className={styles.transactionsListElement}>
+                          <span className={styles.transactionsDate}> August 4, 2024 </span>
+                          <div className={styles.transactionsInfo}>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
                           </div>
-                          <div className={styles.walletsAddress}>
-                            <span className={styles.title}>Address</span>
-                            <span className={styles.address}>0xb56D4902aA6C455c3D06555080B9512703e88FE2</span>
+                      </li>
+                      <li className={styles.transactionsListElement}>
+                          <span className={styles.transactionsDate}> August 4, 2024 </span>
+                          <div className={styles.transactionsInfo}>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
                           </div>
-                          <div className={styles.walletsStatus}>
-                            <span className={styles.title}>Status</span>
-                            <button
-                              onClick={() => setEnabled(!enabled)}
-                              className={`${enabled ? styles.switchEnabled : styles.switchDisabled} ${styles.switch}`}
-                            >
-                              <span
-                                className={`${enabled ? styles.knobEnabled : styles.knobDisabled} ${styles.knob}`}
-                              />
-                            </button>
-                            <span className={styles.statusText}>
-                              {enabled ? "Wallet Enabled" : "Wallet Disabled"}
-                            </span>
+                      </li>
+                      <li className={styles.transactionsListElement}>
+                          <span className={styles.transactionsDate}> August 4, 2024 </span>
+                          <div className={styles.transactionsInfo}>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
                           </div>
-                          <div className={styles.walletsActions}>
-                            <button className={styles.receiveButton}>
-                              <img src={qrCodeIcon} alt="QRCode" />
-                              <span>Receive</span>
-                            </button>
-                            <Link className={styles.goToTransfer} href="#">Go to transfer</Link>
-                            <button className={styles.disconnect}>Disconnect</button>
+                      </li>
+                                            <li className={styles.transactionsListElement}>
+                          <span className={styles.transactionsDate}> August 4, 2024 </span>
+                          <div className={styles.transactionsInfo}>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
+                            <div className={styles.transactionsListElementWrapper}>
+
+                              <div className={styles.transactionsType}>
+                                <span className={styles.title}>Type</span>
+                                <div  className={styles.typeContainer}>
+                                  <img src={sent} alt="Type" />
+                                  <span className={styles.type}>Sent</span>
+                                </div>
+                                
+                              </div>
+
+                              <div className={styles.transactionsAsset}>
+                                <span className={styles.title}>Asset(s)</span>
+                                <div className={styles.assetContainer}>
+                                  <img src={asset} alt="Asset" />
+                                  <div className={styles.blanceChange}>
+                                    <span className={styles.asset}>-27.89 USDT</span>
+                                    <span className={styles.balance}>$28.54</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsRecipient}>
+                                <span className={styles.title}>To</span>
+                                <div  className={styles.recipientContainer}>
+                                  <img src={recipient} alt="Recipient" />
+                                  <span className={styles.address}>{address.slice(0, 6)}...${address.slice(-4)}</span>
+                                </div>
+                              </div>
+
+                              <div className={styles.transactionsCurrentValue}>
+                                <span className={styles.title}>Current Value</span>
+                                <div  className={styles.currentValueContainer}>
+                                  <span className={styles.value}>156.54 USDT</span>
+                                </div>
+
+                              </div>
+
+                              <div className={styles.transactionsNetwork}>
+                                <span className={styles.title}>Network</span>
+                                <div  className={styles.networkContainer}>
+                                  <img src={network} alt="Network" />
+                                  <span className={styles.network}>Ethereum</span>
+                                </div>
+                              </div>
+
+                            </div>
+
                           </div>
-                        </div>
                       </li>
                     </ul>
                   </div>

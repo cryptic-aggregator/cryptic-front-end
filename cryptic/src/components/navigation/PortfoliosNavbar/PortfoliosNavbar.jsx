@@ -1,6 +1,7 @@
 import styles from "./PortfoliosNavbar.module.css";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { useContainerWidth } from "../../../hooks/useContainerWidth";
 
 export default function PortfoliosNavbar() {
     const { t } = useTranslation();
@@ -11,11 +12,12 @@ export default function PortfoliosNavbar() {
     const isActiveAnalytics = location.pathname.startsWith("/analytics");
     const isActiveTransactions = location.pathname.startsWith("/transactions");
     const isActiveWallets = location.pathname.startsWith("/wallets");
-
+    const { ref, widthsState } = useContainerWidth([535]);
+  
     const generateLink = (basePath) => id ? `${basePath}/${id}` : basePath;
 
     return (
-        <nav className={styles.nav}>
+        <nav ref={ref} className={`${styles.nav} ${widthsState[535] ? styles.narrowNav : ''}`}>
             <Link to={generateLink("/dashboard")} className={`${isActiveDashboard ? styles.active : ""} ${styles.option}`}>
                 <span>Dashboard</span>
             </Link>

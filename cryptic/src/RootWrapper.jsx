@@ -5,6 +5,8 @@ import Loader from '../src/components/common/Loader/Loader';
 import Error from '../src/components/common/Error/Error';
 import { useUser } from "../src/hooks/useUser";
 import { initializeAuth } from '../src/store/index';
+import { WagmiProvider } from 'wagmi';
+import { wagmiConfig } from '../src/lib/reownAppkit/reownAppkit';  
 import "./styles/index.css";
 
 const RootWrapper = () => {
@@ -31,7 +33,12 @@ const RootWrapper = () => {
     );
   }
 
-  return <App />;
+
+  return (
+    <WagmiProvider config={wagmiConfig}>
+      <App />
+    </WagmiProvider>
+  );
 };
 
 export default RootWrapper;

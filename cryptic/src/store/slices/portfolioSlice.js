@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { portfolioApi } from "../../api/endpoints/portfolioApi"; // Імпортуємо API
-import { setWalletAddress, clearWalletAddress } from "./walletSlice.js";
+import { setWalletConnectionReown, clearWalletConnectionReown } from "./walletSlice.js";
 // Async Thunk для отримання портфоліо
 export const fetchPortfolios = createAsyncThunk(
   "portfolioStore/fetchPortfolios",
@@ -58,7 +58,7 @@ export const connectWalletToPortfolio = createAsyncThunk(
 
     try {
       await portfolioApi.connectWalletToPortfolio(id, data); // Надсилаємо POST-запит
-      dispatch(clearWalletAddress());
+      dispatch(clearWalletConnectionReown());
       dispatch(fetchPortfolios()); // Оновлюємо список після додавання
     } catch (error) {
       console.log("Помилка підключення гаманця до портфоліо:", error);

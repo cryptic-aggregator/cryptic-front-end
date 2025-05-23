@@ -21,6 +21,7 @@ import ModalQRCode from "../../components/Modal/QRCodeGenerateModal/QRCodeGenera
 import syncIcon from "../../assets/images/Dashboard/syncIcon.svg";
 import Loader from '../../components/common/Loader/Loader';
 import Error from '../../components/common/Error/Error';
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 
 export default function Wallets() {
   const {t} = useTranslation();
@@ -37,6 +38,8 @@ export default function Wallets() {
   const [modalQRCodeIsOpen, setModalQRCodeIsOpen] = useState(false);
   const [selectedWallet, setSelectedWallet] = useState(null); // Оголошуємо стан для selectedWallet
   const [isOpen, setIsOpen] = useState(false);
+  const { ref, widthsState } = useContainerWidth([811, 500]);
+  
   const [selectedNetwork, setSelectedNetwork] = useState({
     value: "type",
     label: "All Network",
@@ -84,7 +87,6 @@ export default function Wallets() {
 
   }, [listWalletsFromPortfolio]); // Перерахунок тільки при зміні listWalletsFromPortfolio
 
-  console.log(sortedWallets)
   if (!isAuth) {
     return null;  // Якщо не авторизований, нічого не відображається
   }
@@ -92,130 +94,128 @@ export default function Wallets() {
   return (
     <>
       {id ? (
-          <>
-                <div className={styles.walletsContent}>
-                  <div className={styles.toolbar}>
-                  <div className={styles.leftContainer }>
-                    <div className={styles.searchContainer}>
-                      <input
-                        type="text"
-                        placeholder="Search"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className={styles.searchInput}
-                      />
-                      <button className={styles.searchButton}>🔍</button>
+          <div ref={ref} className={styles.walletsContent}>
+            <div className={`${styles.toolbar} ${widthsState[811] ? styles.narrowToolbar : ''}`}>
+              <div className={styles.searchContainer}>
+                <input
+                  type="text"
+                  placeholder="Search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className={styles.searchInput}
+                />
+                <button className={styles.searchButton}>🔍</button>
+              </div>
+              <div className={styles.rightContainer}>
+                <div className={styles.networkSelector}>
+
+                    <div className={styles.selectBox} onClick={() => setIsOpen(!isOpen)}>
+                      <img src={selectedNetwork.icon} alt={selectedNetwork.label} className={styles.icon} />
+                      <span>{selectedNetwork.label}</span>
+                      <img src={networkSelect} alt="networkSelectIcon" className={styles.networkSelectIcon} />
                     </div>
-                    <div className={styles.networkSelector}>
 
-                        <div className={styles.selectBox} onClick={() => setIsOpen(!isOpen)}>
-                          <img src={selectedNetwork.icon} alt={selectedNetwork.label} className={styles.icon} />
-                          <span>{selectedNetwork.label}</span>
-                          <img src={networkSelect} alt="networkSelectIcon" className={styles.networkSelectIcon} />
-                        </div>
-
-                        {isOpen && (
-                          <div className={styles.dropdown}>
-                            {networks.map((network) => (
-                              <div
-                                key={network.value}
-                                className={styles.option}
-                                onClick={() => handleSelect(network)}
-                              >
-                                <img src={network.icon} alt={network.label} className={styles.icon} />
-                                <span>{network.label}</span>
-                              </div>
-                            ))}
+                    {isOpen && (
+                      <div className={styles.dropdown}>
+                        {networks.map((network) => (
+                          <div
+                            key={network.value}
+                            className={styles.option}
+                            onClick={() => handleSelect(network)}
+                          >
+                            <img src={network.icon} alt={network.label} className={styles.icon} />
+                            <span>{network.label}</span>
                           </div>
-                        )}
+                        ))}
                       </div>
-
-                  </div>
-                  <button onClick={() => setModalIsOpen(true)} className={styles.addWalletButton}>Add Wallet</button>
-                  </div>
-                  {loadingListWalletsFromPortfolio && 
-                    <div className={styles.Loader}>
-                          <Loader />
-                    </div>
-                  }
-                  
-                  {errorListWalletsFromPortfolio && 
-                    <div className={styles.Loader}>
-                          <Error />
-                    </div>
-                  }
-                  { !errorListWalletsFromPortfolio && !loadingListWalletsFromPortfolio && listWalletsFromPortfolio && (
-
-                    sortedWallets.length>0 ? (
-                      <div className={styles.walletsList}>
-                        <ul>
-                          {sortedWallets.map(wallet => (
-                            <li key={wallet.id} className={styles.walletsListElement}>
-                              <div className={styles.walletsListElementWrapper}>
-                                <div className={styles.walletsImage}>
-                                  <span className={styles.title}>Wallet</span>
-                                  <img src={walletIcon} alt="Wallet" />
-                                </div>
-                                <div className={styles.walletsAddress}>
-                                  <span className={styles.title}>Address</span>
-                                  <span className={styles.address}>{wallet.wallet_address}</span>
-                                </div>
-                                <div className={styles.walletsType}>
-                                  <span className={styles.title}>Сonnection type</span>
-                                  <span className={styles.type}>
-                                    {{
-                                      0: 'Automatic',
-                                      1: 'Manual',
-                                    }[wallet.connection_type] || 'Unknown'}
-                                  </span>
-                                </div>
-                                <div className={styles.walletsStatus}>
-                                  <span className={styles.title}>Status</span>
-                                  <button
-                                    onClick={() => toggleVisibility(wallet.id, wallet.visibility)}
-                                    className={`${wallet.visibility ? styles.switchEnabled : styles.switchDisabled} ${styles.switch}`}
-                                  >
-                                    <span
-                                      className={`${wallet.visibility ? styles.knobEnabled : styles.knobDisabled} ${styles.knob}`}
-                                    />
-                                  </button>
-                                  <span className={styles.statusText}>
-                                    {wallet.visibility ? "Wallet Enabled" : "Wallet Disabled"}
-                                  </span>
-                                </div>
-                                <div className={styles.walletsActions}>
-                                  <button onClick={() => { setModalQRCodeIsOpen(true); setSelectedWallet(wallet) }} className={styles.receiveButton}>
-                                    <img src={qrCodeIcon} alt="QRCode" />
-                                    <span>Receive</span>
-                                  </button>
-
-                                  {wallet.connection_type === 1 ? (
-                                    <div onClick={notify} className= {`${styles.goToTransferDisabled} ${styles.goToTransfer}`} >
-                                      {t('Go to transfer')} 
-                                    </div>
-                                  ) : (
-                                    <Link to={`/transfer/${wallet.id}`} className={styles.goToTransfer}>
-                                      {t('Go to transfer')}
-                                    </Link>
-                                  )}
-                                  <button className={styles.disconnect}>Disconnect</button>
-                                </div>
-                              </div>
-                            
-                            </li>
-                          ))}
-                        </ul>
-                        <ModalQRCode isOpen={modalQRCodeIsOpen} network={"Ethereum"} address={selectedWallet?.wallet_address} onClose={() => setModalQRCodeIsOpen(false)}></ModalQRCode>   
-                        
-                      </div>
-                    ) : (
-                      <div className={styles.needSelect}>
-                        You don't have any wallets connected yet, but you can easily solve that, just click on the add wallet button
-                      </div>
-                    )
-                  )}
+                    )}
                 </div>
-          </>
+                <button onClick={() => setModalIsOpen(true)} className={styles.addWalletButton}>Add Wallet</button>
+              </div>
+            </div>
+            {loadingListWalletsFromPortfolio && 
+              <div className={styles.Loader}>
+                    <Loader />
+              </div>
+            }
+            
+            {errorListWalletsFromPortfolio && 
+              <div className={styles.Loader}>
+                    <Error />
+              </div>
+            }
+            { !errorListWalletsFromPortfolio && !loadingListWalletsFromPortfolio && listWalletsFromPortfolio && (
+
+              sortedWallets.length>0 ? (
+                <div className={styles.walletsList}>
+                  <ul>
+                    {sortedWallets.map(wallet => (
+                      <li key={wallet.id} className={styles.walletsListElement}>
+                        <div className={styles.walletsListElementWrapper}>
+                          <div className={styles.walletsImage}>
+                            <span className={styles.title}>Wallet</span>
+                            <img src={walletIcon} alt="Wallet" />
+                          </div>
+                          <div className={styles.walletsAddress}>
+                            <span className={styles.title}>Address</span>
+                            <span className={styles.address}>{wallet.wallet_address}</span>
+                          </div>
+                          <div className={styles.walletsType}>
+                            <span className={styles.title}>Сonnection type</span>
+                            <span className={styles.type}>
+                              {{
+                                0: 'Automatic',
+                                1: 'Manual',
+                              }[wallet.connection_type] || 'Unknown'}
+                            </span>
+                          </div>
+                          <div className={styles.walletsStatus}>
+                            <span className={styles.title}>Status</span>
+                            <button
+                              onClick={() => toggleVisibility(wallet.id, wallet.visibility)}
+                              className={`${wallet.visibility ? styles.switchEnabled : styles.switchDisabled} ${styles.switch}`}
+                            >
+                              <span
+                                className={`${wallet.visibility ? styles.knobEnabled : styles.knobDisabled} ${styles.knob}`}
+                              />
+                            </button>
+                            <span className={styles.statusText}>
+                              {wallet.visibility ? "Wallet Enabled" : "Wallet Disabled"}
+                            </span>
+                          </div>
+                          <div className={styles.walletsActions}>
+                            <button onClick={() => { setModalQRCodeIsOpen(true); setSelectedWallet(wallet) }} className={styles.receiveButton}>
+                              <img src={qrCodeIcon} alt="QRCode" />
+                              <span>Receive</span>
+                            </button>
+
+                            {wallet.connection_type === 1 ? (
+                              <div onClick={notify} className= {`${styles.goToTransferDisabled} ${styles.goToTransfer}`} >
+                                {t('Go to transfer')} 
+                              </div>
+                            ) : (
+                              <Link to={`/transfer/${wallet.id}`} className={styles.goToTransfer}>
+                                {t('Go to transfer')}
+                              </Link>
+                            )}
+                            <button className={styles.disconnect}>Disconnect</button>
+                          </div>
+                        </div>
+                      
+                      </li>
+                    ))}
+                  </ul>
+                  <ModalQRCode isOpen={modalQRCodeIsOpen} network={"Ethereum"} address={selectedWallet?.wallet_address} onClose={() => setModalQRCodeIsOpen(false)}></ModalQRCode>   
+                  
+                </div>
+              ) : (
+                <div className={styles.needSelect}>
+                  You don't have any wallets connected yet, but you can easily solve that, just click on the add wallet button
+                </div>
+              )
+            )}
+          </div>
+
         ) : (
           <div className={styles.needSelect}>
             To view the information, you need to select the required portfolio from the list.

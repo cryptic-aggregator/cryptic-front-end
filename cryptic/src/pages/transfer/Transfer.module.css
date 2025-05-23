@@ -1,0 +1,236 @@
+.transferContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+}
+
+.toaster{
+    background-color: #000411;
+    color: #491383;
+}
+.transferWrapper{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.transferForm {
+    position: relative;
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    border-radius: 10px;
+    padding: 32px 45px;
+    width: 100%;
+    max-width: 550px;
+    min-height: 80%;
+}
+.currencyImg{
+    width: 27px;
+    height: 27px;
+    margin-right: 5px;
+}
+.changeCurrency{
+    font-weight: 500;
+    margin-left: 8px;
+    color: #999999;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.changeCurrencyButton{
+    color: #999999;
+    cursor: pointer;
+}
+.registerForm p{
+    color: red;
+    font-size: 14px;
+    margin: 2px 0px 0px 0px;
+    padding: 0;
+}
+.inputForm {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+.openAddressBook {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -42px;
+    margin-top: 5px;
+    background-color: #3C3C3C;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+}
+.maxAmount {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -57px;
+    margin-top: 9px;
+    background-color: #3C3C3C;
+    border-radius: 20px;
+    width: 50px;
+    height: 27px;
+}
+.maxAmount span{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+.backgroundAddressBook{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 23px;
+  height: 23px;
+}
+.inputForm label{
+    margin-bottom: 8px;
+    display: block;
+    color: #FFFFFF;
+    font-size: 30px;
+}
+.inputGroup{
+    position: relative;
+    width: 100%;
+}
+.inputForm input{
+    background-color: transparent;
+    outline: none;
+    border: 1px solid #313135 ;
+    color: #BFBFBF;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 20px;
+    width: 100%;
+    box-sizing: border-box; 
+}
+.labelGroup{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.availableAmount{
+    color: #626262;
+    font-size: 18px;
+    margin-top: 10px;
+}
+.networkNameWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    margin-bottom: 5px;
+}
+
+.networkName{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.networkName label{
+    font-size: 20px;
+    margin: 0;
+}
+.networkImg{
+    width: 24px;
+    height: 24px;
+    margin-right: 9px;
+}
+h1{
+    text-align: center;
+    color: #ffffff;
+    font-size: 48px;
+    font-weight: 600;
+    margin: 0 auto;
+}
+.manageForm{
+    margin-top: 70px;
+    display: flex;
+    gap: 70px;
+}
+.cancelButton{ 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #FF3737;
+    border-radius: 10px;
+    height: 50px;
+    width: 200px;
+}
+.cancelButton:hover {
+    background-color:  #ff373777;
+}
+.nextButton{ 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #009A24;
+    border-radius: 10px;
+    height: 50px;
+    width: 200px;
+}
+.nextButton:hover {
+    background-color:  #009a2438;
+}
+.signUp{
+    text-align: center;
+    margin-top: 8px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 20;
+}
+.signUp a{
+    text-decoration: none;
+    color: #FF971D;
+    font-size: 20px;
+    font-weight: 550;
+}
+.forgotPassword{
+    margin-top: 9px;
+    text-decoration: none;
+    color: #BFBFBF;
+    font-size: 20px;
+
+}
+/* Планшети та середні екрани */
+@media (max-width: 950px) {
+
+  }
+  
+  /* Смартфони (портретна орієнтація) */
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+    }
+  }
+  
+  /* Дуже малі екрани */
+  @media (max-width: 480px) {
+
+    .registerForm {
+        padding: 0px;
+        border-radius: 0px;
+        box-shadow:  0px 0px 0px ;
+    }
+    .inputForm {
+        gap: 16px;
+    }
+    .signIn {
+        background-image: none;
+    }
+  }
+  

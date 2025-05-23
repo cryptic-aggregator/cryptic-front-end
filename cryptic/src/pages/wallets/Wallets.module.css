@@ -37,36 +37,49 @@
 .toolbar {
     display: flex;
     align-items: center;
-    margin-top: 30px;
-    justify-content: space-between;
+    margin-top: 10px;
 }
-.leftContainer{
+.narrowToolbar{
+  flex-direction: column;
+}
+.narrowToolbar .addWalletButton{
+  margin-right: 0px;
+}
+.rightContainer{
     display: flex;
-    align-items: center; 
+    align-items: center;
+    justify-content: space-between; 
+    gap: 10px;
+    flex: 1;
 }
 /* Поле пошуку */
 .searchContainer {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-radius: 10px;
     border: 2px solid #292929;
     height: 40px;
-    padding: 0px 25px;
+    width: 100%;
+    max-width: 550px;
+    min-width: 250px;
     margin-right: 75px;
+    box-sizing: border-box;
 }
-  
+.narrowToolbar .searchContainer{
+    margin-right: 0px;
+    margin-bottom: 10px;
+}  
 .searchInput {
-    
     background: transparent;
     border: none;
     outline: none;
     color: white;
-    padding: 6px;
+    padding: 6px 0px 6px 20px;
     font-size: 20px;
+    width: 100%;
 }
-
 .searchButton {
-    
     background: none;
     border: none;
     color: white;
@@ -144,10 +157,10 @@
     border: 1px solid white;
     color: white;
     height: 40px;
-    padding: 0px 25px;
     border-radius: 10px;
     cursor: pointer;
-    margin-right: 48px;
+    margin-right: 20px;
+    min-width: 150px;
 }
 
 .addWalletButton:hover {
@@ -155,12 +168,14 @@
     color: black;
 }
 .walletsList {
-    width: 100%;
-    margin-top: 36px;  
-    overflow-y: auto;  
+  width: 100%;
+  margin-top: 36px;  
+  overflow-y: auto;  
+  overflow-x: auto; 
 }
 .walletsList::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
   border-radius: 10px;
 }
 
@@ -183,27 +198,28 @@
 }
  
 .walletsList  ul{
+  min-width: max-content; 
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 17px;
 }
 
+.walletsListElement {
+  border: 2px solid #292929;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  box-sizing: border-box;
+}
 
-
-  .walletsListElement {
-    border: 2px solid #292929;
-    border-radius: 10px;
-    padding: 12px;
-    display: flex;
-  }
-  
-  .walletsListElementWrapper {
-    display: grid;
-    grid-template-columns: 80px 1fr auto auto auto;
-    align-items: center;
-    gap: 20px;
-    width: 100%;
-  }
+.walletsListElementWrapper {
+  display: grid;
+  grid-template-columns: 80px 1fr auto auto auto;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
   
   .walletsImage {
     display: flex;

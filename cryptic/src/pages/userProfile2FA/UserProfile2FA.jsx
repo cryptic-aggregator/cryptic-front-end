@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import QRCode from "../../assets/images/UserProfile/QRCode.svg";
 import CopyAlt from "../../assets/images/UserProfile/CopyAlt.svg";
-
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function UserProfile2FA() {
   const {t} = useTranslation();

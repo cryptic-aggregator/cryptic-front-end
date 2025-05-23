@@ -10,6 +10,7 @@ import Analytics from "./pages/analytics/Analytics";
 import Wallets from "./pages/wallets/Wallets";
 import Transactions from "./pages/transactions/Transactions";
 import ConnectWallet from "./pages/connectWallet/ConnectWallet";
+import Transfer from "./pages/transfer/Transfer";
 import NotFound from "./pages/notFound/NotFound";
 import RecoveryPassword from "./pages/recoveryPassword/RecoveryPassword";
 import { Routes,Route } from "react-router-dom";
@@ -47,6 +48,8 @@ function App() {
           <Route path="signUp" element={<SignUp />} />
           <Route path="connectWallet" element={<ConnectWallet />} />
           <Route path="recovery" element={<RecoveryPassword />} />
+          <Route path="transfer" element={<Transfer />} />
+          <Route path="transfer/:id" element={<Transfer />} />
           <Route path="*" element={<NotFound />} />
       </Routes>
     </>

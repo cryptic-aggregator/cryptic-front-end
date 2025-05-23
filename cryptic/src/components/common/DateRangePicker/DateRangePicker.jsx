@@ -1,0 +1,82 @@
+import React, { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
+import calendarIcon from "../../../assets/images/Transactions/calendar.svg";
+import { registerLocale } from "react-datepicker";
+import en from "date-fns/locale/en-US";
+import uk from "date-fns/locale/uk";
+import { useTranslation } from "react-i18next";
+// ❌ Не імпортуємо стандартні стилі
+import "react-datepicker/dist/react-datepicker.css";
+import "./DateRangePickerCustom.css"; // ✅ Підключаємо свої глобальні стилі
+
+export default function DateRangePicker({ activeFilter, onRangeChange }) {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const { i18n } = useTranslation();
+  const currentLang = i18n.language;
+  registerLocale("en", en);
+  registerLocale("uk", uk);
+  // коли змінюється активний фільтр — змінюємо діапазон
+  useEffect(() => {
+    const now = new Date();
+    let start = null;
+
+    switch (activeFilter) {
+      case "24H":
+        start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        break;
+      case "1W":
+        start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "1M":
+        start = new Date(now.setMonth(now.getMonth() - 1));
+        break;
+      case "3M":
+        start = new Date(now.setMonth(now.getMonth() - 3));
+        break;
+      case "6M":
+        start = new Date(now.setMonth(now.getMonth() - 6));
+        break;
+      case "1Y":
+        start = new Date(now.setFullYear(now.getFullYear() - 1));
+        break;
+      case "ALL":
+        start = new Date(2000, 0, 1); // довільна стартова дата
+        break;
+      default:
+        return; // якщо custom — нічого не оновлюємо
+    }
+
+    const newEnd = new Date();
+    setStartDate(start);
+    setEndDate(newEnd);
+    onRangeChange?.({ startDate: start, endDate: newEnd });
+  }, [activeFilter]);
+
+  // коли вручну змінюється діапазон — повідомляємо
+  const handleChange = ([start, end]) => {
+    setStartDate(start);
+    setEndDate(end);
+
+    if (start && end) {
+      onRangeChange?.({ startDate: start, endDate: end });
+    }
+  };
+
+  return (
+    <div className="datepicker-wrapper">
+    <img src={calendarIcon} alt="Calendar" className={`calendar-icon ${activeFilter === "custom" ? "calendar-icon-active" : ""}`}  />
+      <DatePicker
+        selectsRange
+        startDate={startDate}
+        endDate={endDate}
+        onChange={handleChange}
+        calendarClassName="custom-calendar"
+        wrapperClassName={`custom-input-wrapper ${activeFilter === "custom" ? "custom-input-wrapper-active" : ""}`} 
+        dayClassName={() => "custom-day"}
+        dateFormat="dd/MM/yyyy"
+        locale={currentLang}
+      />
+    </div>
+  );
+}

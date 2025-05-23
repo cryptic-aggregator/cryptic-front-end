@@ -48,7 +48,7 @@ export default function MainNavbar() {
                                 <Link to="/analytics">{t("navBar.analytics")}</Link>
                             </li>
                             <li className={styles.select}>
-                                <Link to="/none">{t("navBar.transfer")}</Link>
+                                <Link to="/transfer">{t("navBar.transfer")}</Link>
                             </li>
                         </ul>
                     </>
@@ -74,7 +74,7 @@ export default function MainNavbar() {
                                     <Link to="/analytics">{t("navBar.analytics")}</Link>
                                 </li>
                                 <li >
-                                    <Link to="/none">{t("navBar.transfer")}</Link>
+                                    <Link to="/transfer">{t("navBar.transfer")}</Link>
                                 </li>
                             </>
 
