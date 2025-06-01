@@ -2,7 +2,9 @@ import { Chart as ChartJS, ArcElement, PointElement, LinearScale, CategoryScale,
 import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2"
 import styles from "./AssetAllocations.module.css";
+import Reset from "../../../../components/common/Reset/Reset";
 import assetsIcon from "../../../../assets/images/Dashboard/assetsIcon.svg";
+import Loader from "../../../../components/common/Loader/Loader";
 
 const options = {
   responsive: true,
@@ -35,13 +37,11 @@ export default function AssetAllocations({ data }) {
   ChartJS.register(ArcElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
   const [assets, setAssets] = useState([]);
   const [dataForChart, setDataForChart] = useState(null);
-  
   useEffect(() => {
-    if (data?.calculatedCoins && Array.isArray(data.calculatedCoins) && data.calculatedCoins.length > 0) {
-      console.log(data);
-      
-      const assetLabels = data.calculatedCoins.map((coin) => coin.symbol);
-      const assetData = data.calculatedCoins.map((coin) => parseFloat(coin.percentage));
+    if (data && Array.isArray(data) && data.length > 0) {
+
+      const assetLabels = data.map((coin) => coin.symbol);
+      const assetData = data.map((coin) => parseFloat(coin.percentage));
   
       const baseColors = ["#59588D", "#FFC205", "#FF3737", "#9747FF", "#00C300", "#FF9F40"];
       const getColor = (index) => baseColors[index % baseColors.length];
@@ -50,7 +50,8 @@ export default function AssetAllocations({ data }) {
         symbol,
         interest: assetData[index],
         color: getColor(index),
-      }));
+      }
+    ));
       
       // Make sure we have valid data before setting it
       if (assetLabels.length > 0 && assetData.length > 0) {
@@ -71,7 +72,7 @@ export default function AssetAllocations({ data }) {
       }
   
       setAssets(newAssets);
-      console.log(newAssets);
+
     }
   }, [data]);
   
@@ -84,22 +85,29 @@ export default function AssetAllocations({ data }) {
 
   return (
     <>
-      {dataForChart && dataForChart.datasets && dataForChart.datasets[0] && dataForChart.datasets[0].data && (
+
         <div className={styles.assetAllocationWrapper}>
           <div className={styles.chartAsset}>
-            <Doughnut data={dataForChart} options={options}/>
-            <div className={styles.greatestValue}>
-              <div className={styles.greatestValueName}>
-                <img 
-                  className={assetsIcon ? styles.assetsIcon : styles.hidden} 
-                  src={assetsIcon} 
-                  alt={greatestAsset?.symbol || "Asset"}
-                />
-                <span>{greatestAsset?.symbol || "N/A"}</span>
-              </div>
-              <div>$ 268379</div>
-              <div>{greatestAsset?.interest || "0"}%</div>
-            </div>
+              {dataForChart ? (
+                <>
+                  <Doughnut data={dataForChart} options={options} />
+                  <div className={styles.greatestValue}>
+                    <div className={styles.greatestValueName}>
+                      <img 
+                        className={assetsIcon ? styles.assetsIcon : styles.hidden} 
+                        src={assetsIcon} 
+                        alt={greatestAsset?.symbol || "Asset"}
+                      />
+                      <span>{greatestAsset?.symbol || "N/A"}</span>
+                    </div>
+                    <div>$ 268379</div>
+                    <div>{greatestAsset?.interest || "0"}%</div> 
+                  </div>
+                </>
+                ) : (
+                  <Loader text="Loading chart"/>
+                )}
+
           </div>
           <div className={styles.assets}>
             <div className={styles.topic}>Asset Allocations</div>
@@ -123,7 +131,6 @@ export default function AssetAllocations({ data }) {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 }

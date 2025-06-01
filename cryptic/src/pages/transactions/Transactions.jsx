@@ -94,43 +94,44 @@ const [dateRange, setDateRange] = useState({
             
             {true && (
               <>
-                <div className={styles.walletsContent}>
+                <div className={styles.transactionsContent}>
                   <div className={styles.toolbar}>
-                  <div className={styles.leftContainer }>
-                    <div className={styles.searchContainer}>
-                      <input
-                        type="text"
-                        placeholder="Search"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className={styles.searchInput}
-                      />
-                      <button className={styles.searchButton}>🔍</button>
-                    </div>
-                    <div className={styles.networkSelector}>
+                    <div className={styles.leftContainer }>
+                      <div className={styles.searchContainer}>
+                        <input
+                          type="text"
+                          placeholder="Search"
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                          className={styles.searchInput}
+                        />
+                        <button className={styles.searchButton}>🔍</button>
+                      </div>
+                      <div className={styles.networkSelector}>
 
-                        <div className={styles.selectBox} onClick={() => setIsOpen(!isOpen)}>
-                          <img src={selectedNetwork.icon} alt={selectedNetwork.label} className={styles.icon} />
-                          <span>{selectedNetwork.label}</span>
-                          <img src={networkSelect} alt="networkSelectIcon" className={styles.networkSelectIcon} />
-                        </div>
-
-                        {isOpen && (
-                          <div className={styles.dropdown}>
-                            {networks.map((network) => (
-                              <div
-                                key={network.value}
-                                className={styles.option}
-                                onClick={() => handleSelect(network)}
-                              >
-                                <img src={network.icon} alt={network.label} className={styles.icon} />
-                                <span>{network.label}</span>
-                              </div>
-                            ))}
+                          <div className={styles.selectBox} onClick={() => setIsOpen(!isOpen)}>
+                            <img src={selectedNetwork.icon} alt={selectedNetwork.label} className={styles.icon} />
+                            <span>{selectedNetwork.label}</span>
+                            <img src={networkSelect} alt="networkSelectIcon" className={styles.networkSelectIcon} />
                           </div>
-                        )}
+
+                          {isOpen && (
+                            <div className={styles.dropdown}>
+                              {networks.map((network) => (
+                                <div
+                                  key={network.value}
+                                  className={styles.option}
+                                  onClick={() => handleSelect(network)}
+                                >
+                                  <img src={network.icon} alt={network.label} className={styles.icon} />
+                                  <span>{network.label}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                      </div>
                     </div>
-                    <div className={styles.filterContainer}>
+                     <div className={styles.filterContainer}>
                       {filterOptions.map((option) => (
                         <button
                           key={option}
@@ -154,7 +155,6 @@ const [dateRange, setDateRange] = useState({
                         />
                       </button>
                     </div>
-                  </div>
                   </div>
                   <div className={styles.transactionsList}>
                     <ul>

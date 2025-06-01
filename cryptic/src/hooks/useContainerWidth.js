@@ -9,11 +9,18 @@ export const useContainerWidth = (breakpoints) => {
   useEffect(() => {
     const observer = new ResizeObserver(([entry]) => {
       const width = entry.contentRect.width;
+
       const newStates = breakpoints.reduce((acc, bp) => {
         acc[bp] = width < bp;
         return acc;
       }, {});
-      setWidthsState(newStates);
+
+      // Checking if the new values ​​are really different
+      const isChanged = breakpoints.some(bp => newStates[bp] !== widthsState[bp]);
+
+      if (isChanged) {
+        setWidthsState(newStates);
+      }
     });
 
     if (ref.current) observer.observe(ref.current);
@@ -21,7 +28,7 @@ export const useContainerWidth = (breakpoints) => {
     return () => {
       if (ref.current) observer.unobserve(ref.current);
     };
-  }, [breakpoints]);
+  }, [breakpoints, widthsState]);
 
   return { ref, widthsState };
 };

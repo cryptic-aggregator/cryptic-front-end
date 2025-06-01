@@ -6,11 +6,13 @@ import Error from '../src/components/common/Error/Error';
 import { useUser } from "../src/hooks/useUser";
 import { initializeAuth } from '../src/store/index';
 import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../src/lib/reownAppkit/reownAppkit';  
 import "./styles/index.css";
 
 const RootWrapper = () => {
   const { isLoading, error }  = useUser(); 
+  const queryClient = new QueryClient();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +38,9 @@ const RootWrapper = () => {
 
   return (
     <WagmiProvider config={wagmiConfig}>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </WagmiProvider>
   );
 };

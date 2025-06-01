@@ -7,6 +7,7 @@ import feeIcon from "../../../../assets/images/AnalyticsPage/feeIcon.svg";
 import receivedIcon from "../../../../assets/images/AnalyticsPage/receivedIcon.svg";
 import transferIcon from "../../../../assets/images/AnalyticsPage/transferIcon.svg";
 import Diagram from "../../../../assets/images/AnalyticsPage/Diagram.svg";
+import Loader from "../../../../components/common/Loader/Loader";
 
 const options = {
   responsive: true,
@@ -36,31 +37,33 @@ const options = {
   },
 };
 
-export default function CostAnalysis(data) {
+export default function CostAnalysis({data}) {
   ChartJS.register(ArcElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
   const [assets, setAssets] = useState([]);
-/*
+  const [dataForChart, setDataForChart] = useState(null);
+
   useEffect(() => {
-        if (data) {
-          const assetLabels = data.calculatedCoins.map((coin) => coin.symbol);
-          const assetData = data.calculatedCoins.map((coin) => parseFloat(coin.percentage));
-      
-          const baseColors = ["#59588D", "#FFC205", "#FF3737", "#9747FF", "#00C300", "#FF9F40"];
-          const getColor = (index) => baseColors[index % baseColors.length];
-      
-          const newAssets = assetLabels.map((symbol, index) => ({
-            symbol,
-            interest: assetData[index],
-            color: getColor(index),
-          }));
+    if (data && Array.isArray(data) && data.length > 0) {
+      const assetLabels = data.map((coin) => coin.symbol);
+      const assetData = data.map((coin) => parseFloat(coin.percentage));
+  
+      const baseColors = ["#59588D", "#FFC205", "#FF3737", "#9747FF", "#00C300", "#FF9F40"];
+      const getColor = (index) => baseColors[index % baseColors.length];
+  
+      const newAssets = assetLabels.map((symbol, index) => ({
+        symbol,
+        interest: assetData[index],
+        color: getColor(index),
+      }));
     
-          setData({
+      if (assetLabels.length > 0 && assetData.length > 0) {
+        setDataForChart({
             labels: assetLabels,
             datasets: [
               {
                 label: "Cost Analysis",
                 data: assetData,
-                backgroundColor: colors,
+                backgroundColor: newAssets.map((asset) => asset.color),
                 borderColor: "#11141E",
                 borderWidth: 2,
                 hoverOffset: 20,
@@ -68,23 +71,30 @@ export default function CostAnalysis(data) {
               },
             ],
           });
+        }
     
           setAssets(newAssets);
-  
         }
-      }, [data]); // Виконувати, коли змінюється analytics
-  */
+    }, [data]); // Виконувати, коли змінюється analytics
+
   return (
     <>
       <div className={styles.costAnalysisWrapper}>
         <div className={styles.chartCostAnfLabels}>
-              <div className={styles.chartCost}>
-                <img className={styles.Diagram} src={Diagram} alt="Approve"/>  
-                <div className={styles.totalSpent}>
-                    <span>Total</span>
-                    <span>$567</span>
-                    <span>Spent</span>
-                </div>
+              <div className={styles.chartCost}> 
+                {dataForChart ? (
+                  <>
+                    <Doughnut data={dataForChart} options={options} />
+                    <div className={styles.totalSpent}>
+                        <span>Total</span>
+                        <span>$567</span>
+                        <span>Spent</span>
+                    </div>
+                  </>
+                ) : (
+                  <Loader text="Loading chart"/>
+                )}
+
               </div>
               <div className={styles.chartLabels}>
                 <ul>
@@ -143,7 +153,6 @@ export default function CostAnalysis(data) {
                 </ul>
               </div>
         </div>
-
         <div className={styles.tableCost}>
           <div className={styles.topic}>Cost analysis</div>
           <div className={styles.tradingFeesPaid}>

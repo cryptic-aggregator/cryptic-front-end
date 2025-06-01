@@ -34,8 +34,8 @@ export default function PortfoliosSidebar({ isOpen, setIsOpen }) {
 
     const handleDelete = async (e, portfolioId) => {
         e.preventDefault(); 
-        
-        dispatch(deletePortfolio(portfolioId));
+        await dispatch(deletePortfolio(portfolioId));
+        navigate("/wallets");
     }
     if (!isAuth) {
         return null;  // Якщо не авторизований, нічого не відображається

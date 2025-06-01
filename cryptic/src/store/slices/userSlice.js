@@ -13,6 +13,42 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
+export const setupTwoFactor = createAsyncThunk(
+  "userStore/setupTwoFactor",
+  async (_,{ rejectWithValue }) => {
+    try {
+      const response = await userApi.setupTwoFactor();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error setup Two Factor");
+    }
+  }
+);
+
+export const sendCodeTwoFactor = createAsyncThunk(
+    "userStore/sendCodeTwoFactor",
+    async (data,{ rejectWithValue }) => {
+      try {
+        const response = await userApi.sendCodeTwoFactor(data);
+        return response.data;
+      } catch (error) {
+        return rejectWithValue(error.response?.data || "Error send code");
+      }
+    }
+  );
+
+export const disableTwoFactor = createAsyncThunk(
+  "userStore/disableTwoFactor",
+  async (_,{ rejectWithValue }) => {
+    try {
+      const response = await userApi.disableTwoFactor();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error setup Two Factor");
+    }
+  }
+);
+
 export const sendRecoveryCode = createAsyncThunk(
     "userStore/sendRecoveryCode",
     async (data,{ rejectWithValue }) => {
@@ -54,6 +90,7 @@ const initialState = {
     isLoading: false,
     error: false,
     messageRecoveryPassword: null,
+    messageConfirmTwoFactor: null,
   };
   
   const userSlice = createSlice({
@@ -103,7 +140,16 @@ const initialState = {
         })
         .addCase(resetPassword.fulfilled, (state) => {
             state.errorRecoveryPassword = null;
-        });
+        })
+        .addCase(sendCodeTwoFactor.rejected, (state, action) => {
+            state.messageConfirmTwoFactor  = action.payload.message || action.payload;
+            const serverMessage = action.payload.message || action.payload;
+            if (serverMessage === "Невірний код.") {
+              state.messageConfirmTwoFactor = "Невірний код";
+            } else {
+              state.messageConfirmTwoFactor = "Щось пішло не так. Спробуйте ще раз.";
+            }
+          });
     },
   });
   

@@ -28,13 +28,7 @@ export const changeVisibilityWallet = createAsyncThunk(
 
 const initialState = {
   selectedWallet: null,
-  connectWalletReown : {
-    address: null,
-    caipAddress: null,
-    walletInfoName: null,
-    walletInfoRdns: null,
-    providerName: null,
-  },
+  connectWalletReown : null,
   listWalletsFromPortfolio: null,
   loadingListWalletsFromPortfolio: false,
   errorListWalletsFromPortfolio: null,

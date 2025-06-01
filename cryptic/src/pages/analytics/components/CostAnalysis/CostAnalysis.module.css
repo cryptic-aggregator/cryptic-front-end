@@ -13,8 +13,13 @@
   width: 100%;
   padding: 30PX 50PX 30PX 50PX;
   display: flex;
+  justify-content: space-between;
+  gap: 70px;
 }
 .chartCost{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 360px;
   height: 360px;
@@ -33,11 +38,10 @@
 }
 .tableCost{
   width: 100%;
-  margin-left: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+
 }
 .tradingFeesPaid,.totalGasSpent{
   border-radius: 10px;

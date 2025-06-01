@@ -8,7 +8,7 @@
     transition: 0.4s;
     background-color: transparent;
     background-color: #000411;
-    z-index: 10000; /* Найбільший рівень */
+    z-index: 997; /* Найбільший рівень */
 }
 .sideMenuButton{
     margin-right: 20px;

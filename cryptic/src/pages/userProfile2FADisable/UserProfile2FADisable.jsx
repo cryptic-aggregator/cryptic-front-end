@@ -4,11 +4,17 @@ import styles from "./UserProfile2FADisable.module.css";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
+import { disableTwoFactor, fetchUser } from "../../store/slices/userSlice";
+import { useDispatch } from "react-redux";
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfile2FA() {
   const {t} = useTranslation();
   const [passwordShown, setPasswordShown] = useState(false);
   const [passwordConfirmShown, setPasswordConfirmShown] = useState(false);
+  const dispatch = useDispatch();
+    const navigate = useNavigate();
   let password;
   
   const { register, handleSubmit, watch, formState: {errors} } = useForm({mode: 'onChange',});
@@ -21,16 +27,25 @@ export default function UserProfile2FA() {
     setPasswordConfirmShown(passwordConfirmShown ? false : true);
   };
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const disable2FA = () => {
+    dispatch(disableTwoFactor())
+      .unwrap()
+      .then(() => {
+        toast.success('Successful disabling Two Factor Authentication');
+        dispatch(fetchUser())
+        navigate('/twoAuthenticator');
+      })
+      .catch((error) => {
+        console.error("setupTwoFactor error:", error);
+      });
   };
 
   return (
     <>
 
               <div className={styles.topic}>{t('userProfile2FADisable.topic')}</div>
-              <div className={styles.textTopic}>{t('userProfile2FADisable.topic')}</div>
-
+              <div className={styles.textTopic}>{t('userProfile2FADisable.first')}</div>
+              {/*
               <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.inputForm}>
 
@@ -58,7 +73,10 @@ export default function UserProfile2FA() {
                 <div className={styles.buttonWrapper}>
                   <button className={styles.button} type="submit">{t('userProfile2FADisable.disable')}</button>
               </div>
-              </form>
+              </form>*/}
+               <div className={styles.buttonWrapper}>
+                  <button onClick={disable2FA} className={styles.button} type="submit">{t('userProfile2FADisable.disable')}</button>
+              </div>
 
     </>
 

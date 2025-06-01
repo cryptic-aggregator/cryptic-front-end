@@ -4,19 +4,21 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { openAppKit } from "../../../lib/reownAppkit/reownAppkit";
+import { closeAppKit, wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../../lib/reownAppkit/reownAppkit";
 import { useDispatch } from "react-redux";
 import { useWallet } from "../../../hooks/useWallet";
 import { connectWalletToPortfolio } from "../../../store/slices/portfolioSlice";
 import { usePortfolio } from "../../../hooks/usePortfolio";
 import close from "../../../assets/images/PortfoliosCreateModals/close.svg";
+import store from '../../../store/index.js';
+import { setWalletConnectionReown, clearWalletConnectionReown } from '../../../store/slices/walletSlice.js';
 
 import {
     useAppKitState,
-    useAppKitTheme,
+    createAppKit,
     useAppKitEvents,
     useAppKitAccount,
-    useWalletInfo
+    useWalletInfo,
      } from '@reown/appkit/react'
 import { cookieStorage, useAccount, useConnect, useConnectorClient, createStorage } from 'wagmi';
      
@@ -47,35 +49,113 @@ export default function WalletConnectModal({ isOpen, onClose, id }) {
     }
   }, [isAuth, navigate]);
 
-useEffect(() => {
-      console.log('Change connectWalletReown')
-  if(connectWalletReown){
-    if (
-      connectWalletReown.address && connectWalletReown!=null &&
-      connectWalletReown.address !== handledAddressRef.current
-    ) {
-      console.log('i am connect this wallet ')
-      syncWalletToPortfolio(connectWalletReown);
-      handledAddressRef.current = connectWalletReown.address;
-    }
+const { open } = useAppKitState();
+
+const modal = createAppKit({
+  adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+  networks,
+  projectId,
+  metadata,
+  features: {
+    email: false,
+    analytics: false,
+    socials: false,
+    emailShowWallets: false,
+    legalCheckbox: true,
+  },
+  allWallets: 'SHOW',
+});
+
+const updateWalletState = async () => {
+  const address = modal.getAddress();
+  if (!address) {
+    toast.error("Wallet address not found");
+    return;
   }
 
-}, [connectWalletReown]);
+    const caipAddress = modal.getCaipAddress();
+    const info = modal.getWalletInfo() || {};
+    const providerObj = modal.getWalletProvider();
+    let provider = "unknown";
+    if (providerObj) {
+      if (typeof providerObj.name === "string") provider = providerObj.name;
+      else if (providerObj.constructor?.name) provider = providerObj.constructor.name;
+      else if (typeof providerObj.walletName === "string") provider = providerObj.walletName;
+    }
 
+  // Перевірка чи вже підключено
+  const isWalletAlreadyConnected = listWalletsFromPortfolio.some(
+    (wallet) => wallet.wallet_address === address
+  );
+  if (isWalletAlreadyConnected) {
+    toast.error("The wallet is already connected.");
+    modal.close();
+    return;
+  }
+
+  const updatedWalletInfo = {
+    name: info.name || connector?.name || provider || "",
+    rdns: info.rdns || connector?.id || "",
+  };
+  console.log(updatedWalletInfo);
+  try {
+    await dispatch(
+      connectWalletToPortfolio({
+        id,
+        data: {
+          wallets: [
+            {
+              name: updatedWalletInfo.name,
+              caip_address: caipAddress,
+              connector: updatedWalletInfo.rdns,
+              connection_type: isManualInput,
+              wallet_address: address,
+            },
+          ],
+        },
+      })
+    ).unwrap();
+
+    await dispatch(fetchWallets(id)).unwrap();
+    modal.adapter?.connectionControllerClient?.disconnect();
+    modal.close();
+    console.log("🔒 Closing AppKit modal...");
+    onClose();
+  } catch (error) {
+    toast.error("Error connecting wallet");
+    console.error("Error connecting wallet", error);
+  }
+  
+};
+
+
+useEffect(() => {
+
+  if (!isConnected || !open) return;
+  setTimeout(() => {
+    updateWalletState();
+  }, 500);
+  
+}, [isConnected]);
+
+/*
+useEffect(() => {
+  handledAddressRef.current = ""; // скидуємо при переході між портфоліо
+}, [id]);
 
 const syncWalletToPortfolio = async (connectWallet) => {
   try {
   let updatedWallet = { ...connectWallet }; // створюємо копію
 
   if(updatedWallet){
-    if (updatedWallet.walletInfoName==null) {
+    if (updatedWallet.walletInfoName=="") {
       if (connector?.name) {
         updatedWallet.walletInfoName = connector.name;
       } else if (updatedWallet.providerName) {
         updatedWallet.walletInfoName = updatedWallet.providerName;
       }
     }
-    if (updatedWallet.walletInfoRdns==null) {
+    if (updatedWallet.walletInfoRdns=="") {
       if (connector?.id) {
         updatedWallet.walletInfoRdns = connector.id;
       }
@@ -86,28 +166,33 @@ const syncWalletToPortfolio = async (connectWallet) => {
     console.log("Wallet Rdns:", updatedWallet.walletInfoRdns);
     console.log("Wallet name:", updatedWallet.walletInfoName);
   }
-/*
+
     await dispatch(
       connectWalletToPortfolio({
         id: id,
         data: {
-          wallet_addresses: [connectWallet.address],
-          connection_type: isManualInput,
-          connection_type: isManualInput,
-          connector_id: connectorId || null
+          wallets: [{
+            name: updatedWallet.walletInfoName,
+            caip_address: updatedWallet.caipAddress,
+            connector: updatedWallet.walletInfoRdns,
+            connection_type: isManualInput,
+            wallet_address: updatedWallet.address
+          }]
         },
       })
     ).unwrap();
-*/
+
     await dispatch(fetchWallets(id)).unwrap();
+    closeAppKit() 
     onClose();
   } catch (error) {
     toast.error('Error syncing wallet');
+    handledAddressRef.current = null;
     console.error('❌ Error syncing wallet:', error);
   }
 };
 
-
+*/
 
   const handleWalletConnect = async (walletAddress) => {
     if (!walletAddress) {
@@ -129,15 +214,20 @@ const syncWalletToPortfolio = async (connectWallet) => {
       await dispatch(
         connectWalletToPortfolio({
           id: id,
-          data: { 
-            wallet_addresses: [walletAddress],
-            connection_type: isManualInput,
+          data: {
+            wallets: [{
+              name: "",
+              caip_address: "",
+              connector: "",
+              connection_type: isManualInput,
+              wallet_address: walletAddress
+            }]
           },
         })
       ).unwrap();
 
       await dispatch( fetchWallets(id) ).unwrap();
-
+      closeAppKit() 
       onClose();
 
     } catch (error) {
@@ -157,6 +247,7 @@ const syncWalletToPortfolio = async (connectWallet) => {
   const onModalClick = (event) => {
     if (event.target.classList.contains(styles.modalWrapper)) {
       onClose();
+      closeAppKit() 
     }
   };
 
@@ -195,7 +286,7 @@ const syncWalletToPortfolio = async (connectWallet) => {
 
                   {!isManualInput ? (
                     <div className={styles.web3ModalOption}>
-                      <button onClick={() => openAppKit(connector)} className={styles.connectButton}>
+                      <button onClick={() => modal.open()} className={styles.connectButton}>
                         {connectWalletReown ? "Change wallet" : "Connect wallet"}
                       </button>
                     </div>

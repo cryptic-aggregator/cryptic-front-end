@@ -16,10 +16,10 @@ const PortfoliosLayout = () => {
   useEffect(() => {
     localStorage.setItem("isSidebarOpen", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
-  const { ref, widthsState } = useContainerWidth([386]);
-  
+
   return (
     <main className={styles.main}>
+      {isSidebarOpen && <div className={styles.backdrop} onClick={() => setIsSidebarOpen(!isSidebarOpen)} />}
       <Navbar/>
       <div className={styles.contentWrapper}>
         <div className={styles.content}>
@@ -28,10 +28,10 @@ const PortfoliosLayout = () => {
               <img  title={'edit'} src={openBar} alt="Icon" />
               <span className={styles.spanButton}>Porfolios</span>
           </button>
-          <div  className={`${!isSidebarOpen  ? styles.hiddenSideBar : ""} ${true ? styles.narrowSideBar : styles.sideBar}`}> 
+          <div  className={`${!isSidebarOpen  ? styles.hiddenSideBar : ""} ${styles.sideBar}`}> 
             <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}/>
           </div>
-          <div  ref={ref} className={`${!isSidebarOpen  ? styles.fullScreen : ""} ${styles.pageInfo}`} > 
+          <div className={`${!isSidebarOpen  ? styles.fullScreen : ""} ${styles.pageInfo}`} > 
             <NavbarOptions/>
             <Outlet  />
           </div>

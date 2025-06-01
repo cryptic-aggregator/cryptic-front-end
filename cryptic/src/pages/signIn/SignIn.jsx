@@ -61,7 +61,6 @@ export default function SignIn() {
               <label>{t('signIn.password')}</label>
               <input {...register("password", { 
                 required: `${t('signIn.required')}`, 
-
               })} 
               type={passwordShown ? "text" : "password"} placeholder={t('signIn.placeholderPassword')}  autoComplete="off"/>
               <i className={styles.passwordShown} onClick={togglePasswordVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>

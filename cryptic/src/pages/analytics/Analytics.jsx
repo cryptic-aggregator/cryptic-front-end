@@ -4,14 +4,14 @@ import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth"; // 
-import { getAnalytics  } from "../../store/slices/analyticsSlice";
+import { fetchAssetAllocation, fetchPerformance, fetchRiskScore, fetchTokenDistribution, fetchWalletActivity  } from "../../store/slices/analyticsSlice";
 import Category from "../../assets/images/AnalyticsPage/Category.jpg";
 import Balance from "../../assets/images/AnalyticsPage/Balance.jpg";
 import Profit from "../../assets/images/AnalyticsPage/Profit.jpg";
 import Risks from "../../assets/images/AnalyticsPage/Risks.jpg";
 import { useRef } from "react";
 import { useAnalyics } from "../../hooks/useAnalytics";
-
+import AnalyticsSection from './components/AnalyticsSection/AnalyticsSection';
 import AssetAllocations from "./components/AssetAllocations/AssetAllocations";
 import CostAnalysis from "./components/CostAnalysis/CostAnalysis";
 
@@ -30,21 +30,20 @@ export default function Analytics() {
   const sectionsRef = useRef({});
   const analiticsRef = useRef(null);
   const { isAuth } = useAuth(); 
-  const { analytics,errorAnalytics,loadingAnalytics } = useAnalyics(); 
+  const { assetAllocation, performance, tokenDistribution, walletActivity, riskScore } = useAnalyics(); 
 
 
     // Authorization check and portfolio info loading
     useEffect(() => {
-      if (!isAuth) {
-        navigate("/signin");
-        return;
-      }
       if (id) {
-        dispatch(getAnalytics(id));
-        console.log(analytics)
+        dispatch(fetchAssetAllocation(id));
+        /*
+        dispatch(fetchPerformance(id));
+        dispatch(fetchRiskScore(id));
+        ispatch(fetchTokenDistribution(id));
+        dispatch(fetchWalletActivity(id));*/
       }
-    }, [isAuth, navigate, dispatch, id]);
-    
+    }, [navigate, dispatch, id]);
     
   // Register section ref
    const registerSectionRef = (id, element) => {
@@ -156,70 +155,63 @@ export default function Analytics() {
     <>
               {id ? (
                   <>
-                    {loadingAnalytics && 
-                      <div className={styles.Loader}>
-                            <Loader />
-                      </div>
-                    }
-                    
-                    {errorAnalytics && 
-                      <div className={styles.Loader}>
-                            <Error />
-                      </div>
-                    }
 
-                    {!errorAnalytics && !loadingAnalytics && analytics && (
                     <div className={styles.analiticsContent}>
                         <div className={styles.analitics} ref={analiticsRef} >
-                          <section 
-                            id="allocation" 
-                            ref={(el) => registerSectionRef("allocation", el)} 
-                            className={styles.assetAllocation}>
-                              <AssetAllocations data={analytics}/>
-                          </section>
-                          <section 
-                            id="allocationByCategory" 
-                            ref={(el) => registerSectionRef("allocationByCategory", el)} 
-                            className={styles.allocationByCategory}>
-                            <img 
-                              className={styles.back} 
-                              src={Category} 
-                            />
-                          </section>
-                          <section 
-                            id="changes" 
-                            ref={(el) => registerSectionRef("changes", el)} 
-                            className={styles.balanceChanges}>
-                            <img 
-                              className={styles.back} 
-                              src={Balance} 
-                            />
-                          </section>
-                          <section 
-                            id="volatility" 
-                            ref={(el) => registerSectionRef("volatility", el)} 
-                            className={styles.riskVolatility}>
-                                                          <img 
-                              className={styles.back} 
-                              src={Risks} 
-                            />
-                          </section>
-                          <section 
-                            id="profiitLoss" 
-                            ref={(el) => registerSectionRef("profiitLoss", el)} 
-                            className={styles.totalProfiitLoss}>
-                                                                                        <img 
-                              className={styles.back} 
-                              src={Profit} 
-                            />
-                          </section>
+                          <AnalyticsSection
+                            sectionId="allocation"
+                            title="Asset Allocation"
+                            dataState={assetAllocation}
+                            renderData={(data) => <AssetAllocations data={data} />}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
 
-                          <section 
-                            id="cost" 
-                            ref={(el) => registerSectionRef("cost", el)} 
-                            className={styles.costAnalytics}>
-                            <CostAnalysis data={analytics.calculatedCoins}/>
-                          </section>
+                          <AnalyticsSection
+                            sectionId="changes"
+                            title="Balance Changes"
+                            dataState={{loading: false, error: false,data: null}}
+                            renderData={null}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
+                          <AnalyticsSection
+                            sectionId="volatility"
+                            title="Total Profit & Loss"
+                            dataState={{loading: false, error: false,data: null}}
+                            renderData={null}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
+                          <AnalyticsSection
+                            sectionId="profiitLoss"
+                            title="Risks and volatility"
+                            dataState={{loading: false, error: false,data: null}}
+                            renderData={null}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
+                          <AnalyticsSection
+                            sectionId="cost"
+                            title="Cost analysis"
+                            dataState={{
+                              loading: false,
+                              error: false,
+                              data: 
+                               [
+                                  { symbol: "BTC", percentage: "40" },
+                                  { symbol: "ETH", percentage: "25" },
+                                  { symbol: "USDT", percentage: "15" },
+                                  { symbol: "BNB", percentage: "10" },
+                                  { symbol: "ADA", percentage: "5" },
+                                  { symbol: "SOL", percentage: "5" },
+                                ]
+                              
+                            }}
+                            renderData={(data) => <CostAnalysis data={data} />}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
                         </div>
                         <div 
                           className={styles.analiticsNav}
@@ -229,12 +221,6 @@ export default function Analytics() {
                             <li className={activeSection === "allocation" ? styles.active : ""}>
                               <a href="#allocation" onClick={(e) => handleNavClick(e, "allocation")}>
                                 Asset Allocations
-                              </a>
-                            </li>
-                            
-                            <li className={activeSection === "allocationByCategory" ? styles.active : ""}>
-                              <a href="#allocationByCategory" onClick={(e) => handleNavClick(e, "allocationByCategory")}>
-                              Asset Allocations by Category
                               </a>
                             </li>
 
@@ -265,7 +251,7 @@ export default function Analytics() {
                       </div>
 
                     </div>  
-                    )}
+
                   </>
                 ) : (
                   <div className={styles.needSelect}>

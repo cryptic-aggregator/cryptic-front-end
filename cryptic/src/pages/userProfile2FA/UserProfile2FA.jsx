@@ -1,14 +1,36 @@
-import { useRef  } from "react";
+import { useEffect, useRef, useState  } from "react";
 import styles from "./UserProfile2FA.module.css";
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import QRCode from "../../assets/images/UserProfile/QRCode.svg";
 import CopyAlt from "../../assets/images/UserProfile/CopyAlt.svg";
 import { QRCodeCanvas } from "qrcode.react";
+import { useDispatch } from "react-redux";
+import { fetchUser, sendCodeTwoFactor, setupTwoFactor } from "../../store/slices/userSlice";
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfile2FA() {
   const {t} = useTranslation();
   const { register, handleSubmit, formState: {errors} } = useForm({mode: 'onChange',});
+  const [secret, setSecret] = useState(null);
+  const [qrCode, setQrCode] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    dispatch(setupTwoFactor())
+      .unwrap()
+      .then((data) => {
+        setSecret(data.secret);
+        setQrCode(data.qrCodeBase64);
+      })
+      .catch((error) => {
+        console.error("setupTwoFactor error:", error);
+      });
+  }, [dispatch]);
+
+
 
   const onSubmit = (data) => {
     console.log(data);
@@ -19,8 +41,9 @@ export default function UserProfile2FA() {
     if (secretKeyRef.current) {
       const text = secretKeyRef.current.innerText.trim();
       navigator.clipboard.writeText(text)
-        .then(() => console.log("Copied to clipboard!"))
-        .catch((err) => console.error("Failed to copy: ", err));
+        .then(() =>
+          toast.success('Copied to clipboard!'))
+        .catch((err) => toast.error("Failed to copy: ", err));
     }
   };
   const handleInput = (e) => {
@@ -32,6 +55,21 @@ export default function UserProfile2FA() {
       e.target.value = value; // Дозволяємо тільки одну цифру
       if (index < inputs.length - 1) {
         inputs[index + 1].focus(); // Перехід на наступний input
+      } 
+      // Перевірка: всі інпути заповнені по 1 цифрі
+      const code = Array.from(inputs).map(input => input.value).join('');
+      if (code.length === inputs.length && /^\d{6}$/.test(code)) {
+        console.log("Sending code:", code);
+        dispatch(sendCodeTwoFactor({code: code}))
+          .unwrap()
+          .then(() => {
+            toast.success('Successful Two Factor Authentication connection');
+            dispatch(fetchUser())
+            navigate('/twoAuthenticatorDisable');
+          })
+          .catch((error) => {
+            console.error("setupTwoFactor error:", error);
+          });
       }
     } else {
       e.target.value = ""; // Видаляємо нецифрові символи
@@ -60,12 +98,21 @@ export default function UserProfile2FA() {
                 <div className={styles.textTopic}>{t('userProfile2FA.secondText')}</div>
               </div>
               <div className={styles.imgQR}>
-                 <img src={QRCode} alt="Show password" />
+                {qrCode ? (
+                  <img src={`data:image/png;base64,${qrCode}`} alt="QR Code" />
+                ) : (
+                  <span>Loading QR...</span>
+                )}
               </div>
             </div>
             <div className={styles.secretKey} ref={secretKeyRef}>
-              7F3H5K6L8M2P1Q0R
-              <img className={styles.copyIcon} src={CopyAlt} alt="Copy to clipboard" onClick={copyToClipboard}/>
+              {secret || "Loading..."}
+              <img
+                className={styles.copyIcon}
+                src={CopyAlt}
+                alt="Copy to clipboard"
+                onClick={copyToClipboard}
+              />
             </div>
 
             <div className={styles.textTopic3}>{t('userProfile2FA.third')}</div>

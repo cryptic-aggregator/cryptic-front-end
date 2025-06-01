@@ -1,0 +1,33 @@
+.Loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.assetNoFind,.analyticsContentLoader{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 120PX;
+  background-color: #11141E;
+  border-radius: 30px;
+}
+.reset{
+  color: #FFC205;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.assetNoFind span{
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+}
+.allocation,.changes,.volatility,.profiitLoss,.cost{
+    display: flex;
+    width: 100%;
+    background-color: #11141E;
+    border-radius: 30px;
+}

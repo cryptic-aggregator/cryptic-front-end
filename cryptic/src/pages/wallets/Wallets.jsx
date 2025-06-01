@@ -39,7 +39,6 @@ export default function Wallets() {
   const [selectedWallet, setSelectedWallet] = useState(null); // Оголошуємо стан для selectedWallet
   const [isOpen, setIsOpen] = useState(false);
   const { ref, widthsState } = useContainerWidth([811, 500]);
-  
   const [selectedNetwork, setSelectedNetwork] = useState({
     value: "type",
     label: "All Network",

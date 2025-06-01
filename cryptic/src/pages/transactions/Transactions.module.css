@@ -151,7 +151,7 @@
   margin-right: 8px;
 }
 
-.walletsContent{
+.transactionsContent{
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -164,15 +164,19 @@
   width: 100%;
   margin-top: 36px;
   overflow-y: auto;  
+  overflow-x: auto; 
 }
 
 .transactionsList  ul{
+  min-width: max-content; 
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 .transactionsList::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
   border-radius: 10px;
 }
 

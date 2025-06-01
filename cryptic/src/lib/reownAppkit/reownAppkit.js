@@ -1,10 +1,10 @@
 import { createAppKit } from '@reown/appkit/react';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
-
+import toast, { Toaster } from 'react-hot-toast';
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin';
 import { SolanaAdapter } from '@reown/appkit-adapter-solana';
 import { SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { mainnet, solana, bitcoin } from '@reown/appkit/networks';
+import { mainnet, sepolia, solana, bitcoin } from '@reown/appkit/networks';
 import store from '../../store/index.js';
 import { setWalletConnectionReown, clearWalletConnectionReown } from '../../store/slices/walletSlice.js';
 import { cookieStorage, useAccount, useConnect, useConnectorClient, createStorage } from 'wagmi';
@@ -22,7 +22,7 @@ export const metadata = {
   icons: ['https://assets.reown.com/reown-profile-pic.png'],
 };
 
-export const networks = [mainnet,solana,bitcoin];
+export const networks = [mainnet, sepolia, solana,bitcoin];
 
 export const wagmiAdapter = new WagmiAdapter({
   storage: createStorage({
@@ -52,22 +52,30 @@ export const modal = createAppKit({
   allWallets: 'SHOW',
 });
 
+
+
 let isSubscribed = false;
 
 function subscribeToWalletEvents() {
   if (isSubscribed) return;
 
   modal.subscribeNetwork(updateWalletState);
+  
   isSubscribed = true;
 }
 
 let lastAddress = null;
 
 const updateWalletState = () => {
-  setTimeout(() => {
     const address =   modal.getAddress();
     if (address) {
-      if (address === lastAddress) return;
+
+      if(address===lastAddress){
+        toast.error('Цей гаманець уже приєднаний до поточного портфоліо.');
+        console.log('🔒 Closing AppKit modal...');
+        modal.close();
+        return
+      }
       const caipAddress =  modal.getCaipAddress();
 
       const walletInfo = modal.getWalletInfo();
@@ -84,21 +92,20 @@ const updateWalletState = () => {
 
       lastAddress = address;
 
-    console.log("provider:", providerName);
+      console.log("provider:", providerName);
       store.dispatch(setWalletConnectionReown({
-        address: address || null,
-        caipAddress: caipAddress || null,
-        walletInfoName: walletInfo?.name || null,
-        walletInfoRdns: walletInfo?.rdns || null,
-        providerName: providerName || null,
+        address: address || "",
+        caipAddress: caipAddress || "",
+        walletInfoName: walletInfo?.name || "",
+        walletInfoRdns: walletInfo?.rdns || "",
+        providerName: providerName || "",
       }));
-
       modal.close();
+      console.log('🔒 Closing AppKit modal...');
     } else {
       console.log("❌ Wallet disconnected");
       store.dispatch(clearWalletConnectionReown());
     }
-  }, 500);
 };
 
 /*
@@ -144,14 +151,13 @@ export async function openAppKit(connector) {
   console.log("🔓 Opening AppKit modal...");
  // await connector.connect();
   //console.log('✅ Перепідключено до Trust Wallet');
-  modal.open();
-
-  subscribeToWalletEvents();
+  await modal.open();
+  await modal.subscribeNetwork(updateWalletState);
 }
-export function closeAppKit() {
+export async function closeAppKit() {
   console.log('🔒 Closing AppKit modal...');
   store.dispatch(clearWalletConnectionReown());
-  modal.close();
+  await modal.close();
 }
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig;

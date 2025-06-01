@@ -14,33 +14,40 @@ import addressBook from "../../assets/images/Transfer/addressBook.svg";
 import network from "../../assets/images/Transfer/network.svg";
 import currencyImg from "../../assets/images/Dashboard/currencyImg.svg";
 import { ethers } from "ethers";
-
-async function sendTransaction(recipientAddress, amount, privateKey) {
-  // Створення інстансу провайдера
-  const provider = new ethers.JsonRpcProvider("https://mainnet.infura.io/v3/292ef0994972ab36ceb67522a5f9a3b4");
-  
-  // Створення гаманця з приватним ключем
-  const wallet = new ethers.Wallet(privateKey, provider);
-  
-  // Базові параметри транзакції
-  const tx = {
-    to: recipientAddress,
-    value: ethers.parseEther(amount)
-  };
-  
-  // Підписування та відправка транзакції
-  const transaction = await wallet.sendTransaction(tx);
-  console.log("Transaction hash:", transaction.hash);
-  
-  // Очікування підтвердження
-  const receipt = await transaction.wait();
-  return receipt;
-}
+import { useSendTransaction, useEstimateGas } from 'wagmi';
+import { parseEther } from 'viem';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { closeAppKit, wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../lib/reownAppkit/reownAppkit";
+import {
+    useAppKitState,
+    createAppKit,
+    useAppKitEvents,
+    useAppKitAccount,
+    useWalletInfo,
+     } from '@reown/appkit/react'
+import { cookieStorage, useAccount, useConnect, useConnectorClient, createStorage } from 'wagmi';
+     
+const modal = createAppKit({
+  adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+  networks,
+  projectId,
+  metadata,
+  features: {
+    email: false,
+    analytics: false,
+    socials: false,
+    emailShowWallets: false,
+    legalCheckbox: true,
+  },
+  allWallets: 'SHOW',
+});
 
 
 export default function Transfer() {
     const {t} = useTranslation();
+
     const dispatch = useDispatch();
+
       //show password
       const [passwordShown, setPasswordShown] = useState(false);
       const navigate = useNavigate();
@@ -54,95 +61,125 @@ export default function Transfer() {
         setPasswordShown(passwordShown ? false : true);
       };
 
-    const { register, handleSubmit, formState: {errors} } = useForm({mode: 'onChange',});
 
-    const onSubmit = async (data) => {
-      try {
-        const userData = {
-          email: data.email,
-          password: data.password
-        };
-        await dispatch(loginUser(userData)).unwrap();
-        navigate('/dashboard');
+    const { register, handleSubmit, formState: {errors}, watch  } = useForm({mode: 'onChange',});
+    
+    const toAddress = watch('addressTo');
+    const amount = watch('amountCurrency');
+    const { data: gasEstimate } = useEstimateGas({
+      to: toAddress,
+      value: amount ? parseEther(amount) : undefined,
+      enabled: !!toAddress && !!amount,
+    });
+    const { sendTransaction, isLoading, error } = useSendTransaction();
 
-      } catch (error) {
-        toast.error('Login failed');
-        console.error('Login failed:', error);
-      }
-    };
+
+    const { address: connectedAddress, isConnected, connector } = useAccount();
+
+const onSubmit = async () => {
+    if (!isConnected) {
+      alert("Please connect your wallet first");
+      return;
+    }
+
+    if (!toAddress || !amount) {
+      alert("Enter valid 'to' address and amount");
+      return;
+    }
+
+    try {
+      // Виклик відправки транзакції з параметрами та оцінкою газу
+      const tx = await sendTransaction({
+        to: toAddress,
+        value: parseEther(amount),
+        gas: gasEstimate,
+      });
+
+      console.log("Transaction sent:", tx);
+      alert("Transaction sent successfully!");
+    } catch (err) {
+      console.error("Error sending transaction:", err);
+      alert("Transaction failed");
+    }
+};
 
     
   return (
     <>
-    <div className={styles.transferContent}>
-      <MainNavbar/>
-      <div className={styles.transferWrapper}>
-        <form className={styles.transferForm} onSubmit={handleSubmit(onSubmit)}>
-          <h1>Transfer</h1>
 
-          <div className={styles.changeCurrency}>
-            <img className={styles.currencyImg} src={currencyImg} alt="Current Currency" />
-            <span>USDT</span>
-            <button className={styles.changeCurrencyButton}>
-              <img className={styles.openIcon} src={openIcon} alt="Open Currency" />
-            </button>
-          </div>
+      <div className={styles.transferContent}>
+        <MainNavbar/>
+        <div className={styles.transferWrapper}>
+          <form className={styles.transferForm} onSubmit={handleSubmit(onSubmit)}>
+            
+            <h1>Transfer</h1>
+             {isLoading && <>
+                <div>
+                  "Sending...
+                </div>
+             </>
+             }
+            <div className={styles.changeCurrency}>
+              <img className={styles.currencyImg} src={currencyImg} alt="Current Currency" />
+              <span>USDT</span>
+              <button className={styles.changeCurrencyButton}>
+                <img className={styles.openIcon} src={openIcon} alt="Open Currency" />
+              </button>
+            </div>
 
-          <div className={styles.inputForm}>
-              <div className={styles.inputGroup}>
-                <div className={styles.labelGroup}>
-                  <label>From</label>
-                  <div className={styles.networkNameWrapper}>
-                    <div className={styles.networkName}>
-                     <img className={styles.networkImg} src={network} alt="Network" />
-                     <label>Ethereum</label>
+            <div className={styles.inputForm}>
+                <div className={styles.inputGroup}>
+                  <div className={styles.labelGroup}>
+                    <label>From</label>
+                    <div className={styles.networkNameWrapper}>
+                      <div className={styles.networkName}>
+                      <img className={styles.networkImg} src={network} alt="Network" />
+                      <label>Ethereum</label>
+                      </div>
                     </div>
                   </div>
+                  <input {...register("addressFrom", { 
+                    required: `${t('signIn.required')}`,
+                  })} 
+                  placeholder={t('0xb56D4902aA6C455c3D06555080B9512703e88FE2')} autoComplete="off"
+                  />
+                  <p>{errors.addressFrom?.message}</p>
                 </div>
-                <input {...register("addressFrom", { 
-                  required: `${t('signIn.required')}`,
-                })} 
-                placeholder={t('0xb56D4902aA6C455c3D06555080B9512703e88FE2')} autoComplete="off"
-                />
-                <p>{errors.email?.message}</p>
-              </div>
 
-              <div className={styles.inputGroup}>
-                <label>To</label>
-                <input {...register("addressTo", { 
-                  required: `${t('signIn.required')}`, 
-
-                })} 
-                placeholder={t('Recipient`s address')}  autoComplete="off"/>
-                <i className={styles.openAddressBook} onClick={togglePasswordVisiblity}><img className={styles.backgroundAddressBook} src={addressBook} alt="Show password" /></i>
-                <p>{errors.password?.message}</p>
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label>Amount</label>
-                <input {...register("amountCurrency", { 
-                  required: `${t('signIn.required')}`, 
-
-                })} 
-                placeholder={t('Enter amount')}  autoComplete="off"/>
-                <i className={styles.maxAmount} onClick={togglePasswordVisiblity}>
-                  <span>Max</span>
-                </i>
-                <div className={styles.labelGroup}>
-                  <p>{errors.password?.message}</p>
-                  <span className={styles.availableAmount}>Available 3 USDT</span>
+                <div className={styles.inputGroup}>
+                  <label>To</label>
+                  <input {...register("addressTo", { 
+                    required: `${t('signIn.required')}`, 
+                  })} 
+                  placeholder={t('Recipient`s address')}  autoComplete="off"/>
+                  <i className={styles.openAddressBook} onClick={togglePasswordVisiblity}><img className={styles.backgroundAddressBook} src={addressBook} alt="Show password" /></i>
+                  <p>{errors.addressTo?.message}</p>
                 </div>
-              </div>
-          </div>
 
-          <div className={styles.manageForm}>
-            <button className={styles.cancelButton} type="submit" >{t('Cancel')}</button>
-            <button className={styles.nextButton} type="submit" >{t('Next')}</button>
-          </div>
-        </form>
+                <div className={styles.inputGroup}>
+                  <label>Amount</label>
+                  <input {...register("amountCurrency", { 
+                    required: `${t('signIn.required')}`, 
+                  })} 
+                  placeholder={t('Enter amount')}  autoComplete="off"/>
+                  <i className={styles.maxAmount} onClick={togglePasswordVisiblity}>
+                    <span>Max</span>
+                  </i>
+                  <div className={styles.labelGroup}>
+                    <p>{errors.amountCurrency?.message}</p>
+                    <span className={styles.availableAmount}>Available 3 USDT</span>
+                  </div>
+                </div>
+            </div>
+
+            <div className={styles.manageForm}>
+              <button className={styles.cancelButton} >{t('Cancel')}</button>
+              <button className={styles.nextButton} type="submit" >{t('Next')}</button>
+            </div>
+          </form>
+        </div>
+        <Footer/>
       </div>
-      <Footer/>
-    </div>
 
     </>
 
