@@ -1,13 +1,10 @@
 import { createAppKit } from '@reown/appkit/react';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
-import toast, { Toaster } from 'react-hot-toast';
 import { BitcoinAdapter } from '@reown/appkit-adapter-bitcoin';
 import { SolanaAdapter } from '@reown/appkit-adapter-solana';
 import { SolflareWalletAdapter, PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { mainnet, sepolia, solana, bitcoin } from '@reown/appkit/networks';
-import store from '../../store/index.js';
-import { setWalletConnectionReown, clearWalletConnectionReown } from '../../store/slices/walletSlice.js';
-import { cookieStorage, useAccount, useConnect, useConnectorClient, createStorage } from 'wagmi';
+import { cookieStorage, createStorage } from 'wagmi';
 
 export const projectId = import.meta.env.VITE_PROJECT_ID || '292ef0994972ab36ceb67522a5f9a3b4';
 
@@ -51,113 +48,5 @@ export const modal = createAppKit({
   },
   allWallets: 'SHOW',
 });
-
-
-
-let isSubscribed = false;
-
-function subscribeToWalletEvents() {
-  if (isSubscribed) return;
-
-  modal.subscribeNetwork(updateWalletState);
-  
-  isSubscribed = true;
-}
-
-let lastAddress = null;
-
-const updateWalletState = () => {
-    const address =   modal.getAddress();
-    if (address) {
-
-      if(address===lastAddress){
-        toast.error('Цей гаманець уже приєднаний до поточного портфоліо.');
-        console.log('🔒 Closing AppKit modal...');
-        modal.close();
-        return
-      }
-      const caipAddress =  modal.getCaipAddress();
-
-      const walletInfo = modal.getWalletInfo();
-
-      const provider = modal.getWalletProvider();
-
-      let providerName = 'unknown';
-
-      if (provider) {
-        if (typeof provider.name === 'string') providerName = provider.name;
-        else if (provider.constructor?.name) providerName = provider.constructor.name;
-        else if (typeof provider.walletName === 'string') providerName = provider.walletName;
-      }
-
-      lastAddress = address;
-
-      console.log("provider:", providerName);
-      store.dispatch(setWalletConnectionReown({
-        address: address || "",
-        caipAddress: caipAddress || "",
-        walletInfoName: walletInfo?.name || "",
-        walletInfoRdns: walletInfo?.rdns || "",
-        providerName: providerName || "",
-      }));
-      modal.close();
-      console.log('🔒 Closing AppKit modal...');
-    } else {
-      console.log("❌ Wallet disconnected");
-      store.dispatch(clearWalletConnectionReown());
-    }
-};
-
-/*
-const updateWalletState = () => {
-  setTimeout(() => {
-    const address =   modal.getAddress();
-
-    // 🚫 Якщо адреса не змінилась — не оновлюй
-    if (address) {
-      if (address === lastAddress) return;
-          const provider = modal.getWalletProvider();
-        const walletInfo = modal.getWalletInfo();
-
-      lastAddress = address;
-
-      console.log("💼 Wallet info:", walletInfo?.rdns);
-      console.log("Wallet name:", walletInfo?.name);
-      console.log("caipAddress:", modal.getCaipAddress());
-      console.log("caipAddress:", modal.getCaipAddress());
-
-      let providerName = 'unknown';
-
-      if (provider) {
-        if (typeof provider.name === 'string') providerName = provider.name;
-        else if (provider.constructor?.name) providerName = provider.constructor.name;
-        else if (typeof provider.walletName === 'string') providerName = provider.walletName;
-      }
-
-      console.log("Wallet connected via provider:", providerName);
-
-      store.dispatch(setWalletAddress(address));
-      modal.close();
-    } else {
-      console.log("❌ Wallet disconnected");
-      store.dispatch(clearWalletAddress());
-    }
-  }, 200);
-};
-*/
-export async function openAppKit(connector) {
-  //const connector = wagmiConfig.connectors.find((c) => c.id === 'app.phantom');
-
-  console.log("🔓 Opening AppKit modal...");
- // await connector.connect();
-  //console.log('✅ Перепідключено до Trust Wallet');
-  await modal.open();
-  await modal.subscribeNetwork(updateWalletState);
-}
-export async function closeAppKit() {
-  console.log('🔒 Closing AppKit modal...');
-  store.dispatch(clearWalletConnectionReown());
-  await modal.close();
-}
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig;

@@ -15,9 +15,9 @@ import network from "../../assets/images/Transfer/network.svg";
 import currencyImg from "../../assets/images/Dashboard/currencyImg.svg";
 import { ethers } from "ethers";
 import { useSendTransaction, useEstimateGas } from 'wagmi';
-import { parseEther } from 'viem';
+import { parseEther, } from 'viem';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { closeAppKit, wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../lib/reownAppkit/reownAppkit";
+import { wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../lib/reownAppkit/reownAppkit";
 import {
     useAppKitState,
     createAppKit,
@@ -45,7 +45,7 @@ const modal = createAppKit({
 
 export default function Transfer() {
     const {t} = useTranslation();
-
+    const { connect, connectors, isPending } = useConnect();
     const dispatch = useDispatch();
 
       //show password
@@ -66,41 +66,72 @@ export default function Transfer() {
     
     const toAddress = watch('addressTo');
     const amount = watch('amountCurrency');
+
     const { data: gasEstimate } = useEstimateGas({
       to: toAddress,
       value: amount ? parseEther(amount) : undefined,
       enabled: !!toAddress && !!amount,
     });
-    const { sendTransaction, isLoading, error } = useSendTransaction();
 
 
     const { address: connectedAddress, isConnected, connector } = useAccount();
 
+    
+const { sendTransactionAsync } = useSendTransaction();
+
+
 const onSubmit = async () => {
     if (!isConnected) {
-      alert("Please connect your wallet first");
-      return;
+      if(wallet?.connector){
+          const сonnector = connectors.find(c => c.id === wallet.connector);
+          if (сonnector) {
+            try {
+              await connect({ connector: сonnector });
+              return; 
+            } catch (err) {
+              toast.error("Failed to connect wallet");
+              console.error("Failed to connect wallet:", err);
+              return;
+            }
+          } else {
+            toast.error("Please connect your wallet first");
+            return;
+          }
+        }
     }
 
     if (!toAddress || !amount) {
-      alert("Enter valid 'to' address and amount");
+      toast.error("Enter valid 'to' address and amount");
       return;
     }
 
     try {
-      // Виклик відправки транзакції з параметрами та оцінкою газу
-      const tx = await sendTransaction({
-        to: toAddress,
-        value: parseEther(amount),
-        gas: gasEstimate,
-      });
+        toast.loading("Waiting for confirmation...");
+        // Sending a transaction
+        const tx = await sendTransactionAsync({
+          to: toAddress,
+          value: parseEther(amount),
+          gas: gasEstimate,
+        });
 
-      console.log("Transaction sent:", tx);
-      alert("Transaction sent successfully!");
-    } catch (err) {
-      console.error("Error sending transaction:", err);
-      alert("Transaction failed");
-    }
+        if (!tx?.hash) {
+          toast.error("Transaction was not sent properly");
+          return;
+        }
+
+        // Waiting for transaction confirmation
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.waitForTransaction(tx.hash, 1);
+
+        toast.dismiss();
+        toast.success("Transaction confirmed successfully!");
+
+      } catch (error) {
+        toast.dismiss();
+        toast.error("Transaction failed");
+        console.error("Transaction error:", error);
+      }
+
 };
 
     
@@ -113,12 +144,8 @@ const onSubmit = async () => {
           <form className={styles.transferForm} onSubmit={handleSubmit(onSubmit)}>
             
             <h1>Transfer</h1>
-             {isLoading && <>
-                <div>
-                  "Sending...
-                </div>
-             </>
-             }
+
+     
             <div className={styles.changeCurrency}>
               <img className={styles.currencyImg} src={currencyImg} alt="Current Currency" />
               <span>USDT</span>

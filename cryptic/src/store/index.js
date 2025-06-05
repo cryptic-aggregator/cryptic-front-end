@@ -3,6 +3,7 @@ import authReducer, { login, logout } from "./slices/authSlice";
 import portfolioReducer from "./slices/portfolioSlice";
 import { createLogger } from "redux-logger";
 import analyticsReducer from "./slices/analyticsSlice";
+import transactionReducer from "./slices/transactionSlice";
 import userReducer, { setUser, fetchUser } from "./slices/userSlice"
 import walletReducer from "./slices/walletSlice";
 import {jwtDecode} from "jwt-decode";
@@ -14,6 +15,7 @@ const store = configureStore({
     portfolioStore: portfolioReducer,
     analyticsStore: analyticsReducer,
     userStore: userReducer,
+    transactionStore: transactionReducer,
   }
 
 });

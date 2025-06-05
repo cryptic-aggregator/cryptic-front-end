@@ -11,17 +11,14 @@ const AnalyticsSection = ({ sectionId, title, dataState, renderData, onReset, re
           <Loader />
         </div>
       )}
-
       {dataState.error && (
         <div className={styles.analyticsContentLoader}>
           <Error />
         </div>
       )}
-
       {!dataState.error && !dataState.loading && dataState.data != null && dataState.data?.length > 0 && (
         renderData(dataState.data)
       )}
-
       {!dataState.error && !dataState.loading && (dataState.data == null || dataState.data?.length == 0) && (
         <div className={styles.assetNoFind}>
           <span>

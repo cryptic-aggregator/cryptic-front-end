@@ -17,6 +17,7 @@ import CostAnalysis from "./components/CostAnalysis/CostAnalysis";
 
 import Loader from '../../components/common/Loader/Loader';
 import Error from '../../components/common/Error/Error';
+import BalanceChanges from "./components/BalanceChanges/BalanceChanges";
 
 export default function Analytics() {
   const [activeSection, setActiveSection] = useState(null);
@@ -133,6 +134,16 @@ export default function Analytics() {
     return () => analiticsEl.removeEventListener("scroll", handleScroll);
   }, []);
   
+  const handleDateRangeChange = async (startDate, endDate) => {
+/*
+    try {
+      await dispatch(fetchAssetAllocation(id));
+
+    } catch (err) {
+
+    }*/
+  };
+
   // Handle click on navigation items
   const handleNavClick = (e, sectionId) => {
     e.preventDefault();
@@ -170,8 +181,21 @@ export default function Analytics() {
                           <AnalyticsSection
                             sectionId="changes"
                             title="Balance Changes"
-                            dataState={{loading: false, error: false,data: null}}
-                            renderData={null}
+                            dataState={{loading: false, error: false, data: 
+                              [
+                                { date: 'Sep 13', balance: 18.5, timestamp: 1694649600 },
+                                { date: 'Sep 20', balance: 12.8, timestamp: 1695254400 },
+                                { date: 'Oct 13', balance: 38.2, timestamp: 1697155200 },
+                                { date: 'Nov 12', balance: 35.7, timestamp: 1699747200 },
+                                { date: 'Dec 12', balance: 37.1, timestamp: 1702339200 },
+                                { date: 'Jan 12', balance: 24.3, timestamp: 1704931200 },
+                                { date: 'Feb 11', balance: 72.5, timestamp: 1707609600 },
+                                { date: 'Mar 11', balance: 45.8, timestamp: 1710115200 },
+                                { date: 'Apr 10', balance: 46.7, timestamp: 1712707200 },
+                                { date: 'May 10', balance: 38.2, timestamp: 1715299200 },
+                              ]
+                            }}
+                            renderData={(data) => <BalanceChanges data={data} onDateRangeChange={handleDateRangeChange} />}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
                           />
@@ -199,12 +223,11 @@ export default function Analytics() {
                               error: false,
                               data: 
                                [
-                                  { symbol: "BTC", percentage: "40" },
-                                  { symbol: "ETH", percentage: "25" },
-                                  { symbol: "USDT", percentage: "15" },
-                                  { symbol: "BNB", percentage: "10" },
-                                  { symbol: "ADA", percentage: "5" },
-                                  { symbol: "SOL", percentage: "5" },
+                                  { symbol: "Approve", percentage: "40" },
+                                  { symbol: "Transfer", percentage: "25" },
+                                  { symbol: "Received", percentage: "15" },
+                                  { symbol: "Fee", percentage: "10" },
+
                                 ]
                               
                             }}

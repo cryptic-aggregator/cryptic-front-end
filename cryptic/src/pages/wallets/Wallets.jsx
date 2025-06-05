@@ -65,12 +65,9 @@ export default function Wallets() {
     }));
   };
   useEffect(() => {
-    if (!isAuth) {
-      navigate("/signin"); // Якщо не авторизований, перенаправляємо на сторінку входу
-    } else if (id) {
-      dispatch(fetchWallets(id)); // Якщо авторизований, отримуємо портфоліо
-    }
-  }, [isAuth, navigate, dispatch, id]);
+    dispatch(fetchWallets(id)); // Якщо авторизований, отримуємо портфоліо
+  
+  }, [navigate, dispatch, id]);
   
   const sortedWallets = useMemo(() => {
     if(listWalletsFromPortfolio!=null){
@@ -204,7 +201,7 @@ export default function Wallets() {
                       </li>
                     ))}
                   </ul>
-                  <ModalQRCode isOpen={modalQRCodeIsOpen} network={"Ethereum"} address={selectedWallet?.wallet_address} onClose={() => setModalQRCodeIsOpen(false)}></ModalQRCode>   
+                  <ModalQRCode isOpen={modalQRCodeIsOpen} network={"Ethereum"} address={selectedWallet?.wallet_address} caip_address={selectedWallet?.caip_address}  onClose={() => setModalQRCodeIsOpen(false)}></ModalQRCode>   
                   
                 </div>
               ) : (
@@ -221,7 +218,7 @@ export default function Wallets() {
           </div>
         )
         }
-      <Modal isOpen={modalIsOpen} id={id} onClose={() => setModalIsOpen(false)}></Modal>  
+      <Modal isOpen={modalIsOpen} portfolioId={id} onClose={() => setModalIsOpen(false)}></Modal>  
 
     </>
   );

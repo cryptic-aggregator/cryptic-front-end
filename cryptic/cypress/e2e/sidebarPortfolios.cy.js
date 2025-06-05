@@ -11,14 +11,14 @@ describe('SideBarPortfolios', () => {
     });
 
     it('Відображає список портфелів, якщо вони існують', () => {
-        cy.intercept('GET', 'http://20.215.241.137/api/portfolio/list', { fixture: 'portfolios.json' }).as('getPortfolios');
+        cy.intercept('GET', 'http://37.27.196.233:30080/api/portfolio/list', { fixture: 'portfolios.json' }).as('getPortfolios');
         cy.wait('@getPortfolios');
         cy.contains('Test Portfolio').should('be.visible');
         
     });
 
     it('Відображає повідомлення, якщо портфелів немає', () => {
-        cy.intercept('GET', 'http://20.215.241.137/api/portfolios', {
+        cy.intercept('GET', 'http://37.27.196.233:30080/api/portfolios', {
             statusCode: 200,
             body: []
         }).as('getPortfoliosEmpty');
@@ -42,7 +42,7 @@ describe('SideBarPortfolios', () => {
     });
 
     it('Дозволяє видаляти портфель', () => {
-        cy.intercept('GET', 'http://20.215.241.137/api/portfolios', {
+        cy.intercept('GET', 'http://37.27.196.233:30080/api/portfolios', {
             statusCode: 200,
             body: [{ id: 1, name: 'Test Portfolio' }]
         }).as('getPortfolios');

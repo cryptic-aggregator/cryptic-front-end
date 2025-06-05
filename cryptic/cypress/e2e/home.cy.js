@@ -5,9 +5,8 @@ describe('Home Page Tests', () => {
   
     it('Перевіряє, що сторінка завантажується', () => {
 
-// Очікувати появи локалізованого тексту (з урахуванням можливих перекладів)
-cy.contains(/Simple and Secure Management of Your Crypto Wallets|Просте та безпечне управління вашими крипто-гаманцями/i);
-cy.contains(/Track balances, analyze portfolios, and receive notifications with one click.|Відстежуйте баланси, аналізуйте портфелі та отримуйте сповіщення одним кліком./i);
+    cy.contains(/Simple and Secure Management of Your Crypto Wallets|Просте та безпечне управління вашими крипто-гаманцями/i);
+    cy.contains(/Track balances, analyze portfolios, and receive notifications with one click.|Відстежуйте баланси, аналізуйте портфелі та отримуйте сповіщення одним кліком./i);
     });
   
     it('Перевіряє, що кнопка "Start Now" працює', () => {

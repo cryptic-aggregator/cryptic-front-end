@@ -1,68 +1,125 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
 import Navbar from "../../components/navigation/MainNavbar/MainNavbar";
 import Footer from "../../components/layout/Footer/Footer";
 import styles from "./ConnectWallet.module.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider } from "wagmi";
-import { openAppKit, wagmiConfig } from "../../lib/reownAppkit/reownAppkit";
-import { useDispatch, useSelector } from "react-redux";
-import { setWalletConnectionReown } from "../../store/slices/walletSlice";
-import { useWallet } from "../../hooks/useWallet";
+import { wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../lib/reownAppkit/reownAppkit";
+import { useDispatch } from "react-redux";
 import { addPortfolioAndConnectWallet  } from "../../store/slices/portfolioSlice";
 import { usePortfolio } from "../../hooks/usePortfolio";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Loader from '../../components/common/Loader/Loader';
 import Error from '../../components/common/Error/Error';
+import {useAppKitState, createAppKit, useDisconnect, useAppKitAccount} from '@reown/appkit/react'
+import { useAccount } from 'wagmi';  
 
 export default function ConnectWallet() {
-  const queryClient = new QueryClient();
-
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isAuth } = useAuth();
   const dispatch = useDispatch();
-  const { connectWalletAddress }  = useWallet(); 
+  const [connectWallet, setConnectWallet] = useState(null);
   const { errorConnect, awaitConnect }  = usePortfolio(); 
   const [currentStep, setCurrentStep] = useState(1);
   const [portfolioName, setPortfolioName] = useState("");
   const [isManualInput, setIsManualInput] = useState(0);
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/signin");
-    }
-  }, [isAuth, navigate]);
+  const {isConnected} = useAppKitAccount();
+  const { disconnect } = useDisconnect();
+  const { connector } = useAccount();
+  const { open } = useAppKitState();
   
-    const createPorfolioConnectWallet = async() => {
-        if(portfolioName && connectWalletAddress){
+  const modal = createAppKit({
+      adapters: [wagmiAdapter, solanaWeb3JsAdapter, bitcoinAdapter],
+      networks,
+      projectId,
+      metadata,
+      features: {
+        email: false,
+        analytics: false,
+        socials: false,
+        emailShowWallets: false,
+        legalCheckbox: true,
+      },
+      allWallets: 'SHOW',
+  });
 
-          try {
-              await dispatch(addPortfolioAndConnectWallet({
-              namePortfolio:{ name: `${portfolioName}` },
-              wallets:{ 
-                wallet_addresses: [`${connectWalletAddress}`],
-                connection_type: isManualInput,
-              },
-            })).unwrap();
-            
-            navigate("/dashboard")
-          } catch (error) {
-            toast.error('Error connecting wallet');
-            console.error('Error connecting wallet' + error);
-          }
+  const updateWalletState = async () => {
+    const address = modal.getAddress();
+    if (!address) {
+      toast.error("Wallet address not found");
+      return;
+    }
 
-        }else if(portfolioName){
-          toast.error('Portfolio name not find');
-        }else{
-          toast.error('Connect wallet address not find');
-        }
+      const caipAddress = modal.getCaipAddress();
+      const info = modal.getWalletInfo() || {};
+      const providerObj = modal.getWalletProvider();
+      let provider = "unknown";
+      if (providerObj) {
+        if (typeof providerObj.name === "string") provider = providerObj.name;
+        else if (providerObj.constructor?.name) provider = providerObj.constructor.name;
+        else if (typeof providerObj.walletName === "string") provider = providerObj.walletName;
+      }
+
+      const updatedWalletInfo = {
+        name: info.name || connector?.name || provider || "",
+        rdns: info.rdns || connector?.id || "",
+      };
+      console.log(updatedWalletInfo);
+
+    setConnectWallet({
+      name: updatedWalletInfo.name,
+      caip_address: caipAddress,
+      connector: updatedWalletInfo.rdns,
+      connection_type: isManualInput,
+      wallet_address: address,
+    });
+
+    modal.close();
+    console.log("🔒 Closing AppKit modal...");
   };
 
+  const createPorfolioConnectWallet = async() => {
+      if(portfolioName && connectWallet){
+        try {
+          await dispatch(addPortfolioAndConnectWallet({
+            namePortfolio:{ name: `${portfolioName}` },
+            wallets:{
+                wallets: [{ ...connectWallet }],
+              },
+          })).unwrap();
+          setConnectWallet(null)
+          navigate("/dashboard")
+        } catch (error) {
+          toast.error('Error connecting wallet');
+          console.error('Error connecting wallet' + error);
+        }
+
+      }else if(!portfolioName){
+        toast.error('Portfolio name not find');
+      }else{
+        toast.error('Connect wallet address not find');
+      }
+  };
+
+  useEffect(() => {
+    if (!isConnected || !open) return;
+    setTimeout(() => {
+      updateWalletState();
+      disconnect();
+      setCurrentStep(2);
+    }, 500); 
+  }, [isConnected]);
+  
+   const handleWalletConnect = (walletAddress) => {
+      setConnectWallet({
+        name: "",
+        caip_address: "",
+        connector: "",
+        connection_type: isManualInput,
+        wallet_address: walletAddress,
+      });
+  };
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
         <main className={styles.main}>
           <Navbar />
           <div className={styles.userConnectWallet}>
@@ -89,15 +146,15 @@ export default function ConnectWallet() {
 
                   {!isManualInput ? (
                     <>
-                      {connectWalletAddress && (
+                      {connectWallet?.wallet_address && (
                         <div className={styles.card}>
-                          <p className={styles.subtitle}>{t("You choose wallet:")} {connectWalletAddress.slice(0, 8)}...{connectWalletAddress.slice(-5)}</p>
+                          <p className={styles.subtitle}>{t("You choose wallet:")} {connectWallet.wallet_address.slice(0, 8)}...{connectWallet.wallet_address.slice(-5)}</p>
                         </div>
                       )}
 
                       <div className={styles.web3ModalOption}>
-                        <button onClick={openAppKit} className={styles.connectButton}>
-                          {connectWalletAddress ? (`Change wallet`):(`Connect wallet`)}
+                        <button onClick={() => modal.open()} className={styles.connectButton}>
+                          {connectWallet ? (`Change wallet`):(`Connect wallet`)}
                         </button>
                       </div>
                     </>
@@ -109,7 +166,7 @@ export default function ConnectWallet() {
                         id="addressInput"
                         className={styles.addressInput}
                         placeholder="Enter your address wallet"
-                        onChange={(e) => dispatch(setWalletConnectionReown(e.target.value))}
+                        onChange={(e) => handleWalletConnect(e.target.value)}
                         required
                       />
 
@@ -150,7 +207,7 @@ export default function ConnectWallet() {
                 </div>
                 )
               )}
-              {/* Індикатори сторінок */}
+
               <div className={styles.pageIndicators}>
                 <span onClick={() => setCurrentStep(1)} className={`${styles.indicator} ${currentStep === 1 ? styles.active : ""}`} />
                 <span onClick={() => setCurrentStep(2)}className={`${styles.indicator} ${currentStep === 2 ? styles.active : ""}`} />
@@ -159,7 +216,5 @@ export default function ConnectWallet() {
           </div>
           <Footer />
         </main>
-      </QueryClientProvider>
-    </WagmiProvider>
   );
 }

@@ -25,17 +25,15 @@ import {
   Tooltip,
   Filler
 } from "chart.js";
-import { useElementCompressed } from "../../hooks/useElementCompressed";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 
 export default function Dashboard() {
   const {t} = useTranslation();
-  const mainInfoRef = useRef(null);
   ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip,Filler);
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isCompressed = useElementCompressed(mainInfoRef, 812);
-
+  const { ref, widthsState } = useContainerWidth([812]);
   const { isAuth } = useAuth(); 
   const { portfolio, loadingPortfolio, errorPortfolio }  = usePortfolio(); 
   const [coins, setCoins] = useState([]);
@@ -152,8 +150,8 @@ export default function Dashboard() {
 
               { !errorPortfolio && !loadingPortfolio && portfolio && (
                 <>
-                  <div ref={mainInfoRef} className={styles.compressedInfo}>
-                    <div  className={`${styles.mainInfo} ${isCompressed ? styles.compressed : ''}`}>
+                  <div ref={ref} className={styles.compressedInfo}>
+                    <div  className={`${styles.mainInfo} ${widthsState[812]  ? styles.compressed : ''}`}>
                       <div className={styles.compressedInfoText}>
                         <span className={styles.title}>Total Worth</span>
                         <div className={styles.balance}>
@@ -178,8 +176,8 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      <div className={`${styles.compressedInfoGraph} ${isCompressed ? styles.compressedInfoGraphCompressed : ''}`}>
-                        <Line data={data} options={options} onElementsClick={(elems) => console.log(elems)} />
+                      <div className={`${styles.compressedInfoGraph} ${widthsState[812] ? styles.compressedInfoGraphCompressed : ''}`}>
+                        <Line data={data} options={options} onClick={(elems) => console.log(elems)} />
                       </div>
                     </div>
                     <div className={styles.syncAll}>

@@ -20,7 +20,7 @@ describe("SignUp Page", () => {
   });
 
   it("Успішна реєстрація", () => {
-    cy.intercept("POST", "http://20.215.241.137/api/users/register", { statusCode: 201 }).as("register");
+    cy.intercept("POST", "http://37.27.196.233:30080/api/users/register", { statusCode: 201 }).as("register");
 
     cy.get("input[placeholder='Enter your login']").type("TestUser");
     cy.get("input[placeholder='Enter your email']").type("test@example.com");

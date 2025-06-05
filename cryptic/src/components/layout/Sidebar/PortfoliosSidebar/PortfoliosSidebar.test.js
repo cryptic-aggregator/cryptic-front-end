@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import SideBarPortfolios from "./SideBarPortfolios";
+import SideBarPortfolios from "./PortfoliosSidebar";
 import { fetchPortfolios, deletePortfolio } from "../../../../store/slices/portfolioSlice";
 import { useAuth } from "../../../../hooks/useAuth";
 import { usePortfolio } from "../../../../hooks/usePortfolio";
@@ -10,13 +10,12 @@ import { thunk } from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import "@testing-library/jest-dom";
 
-// Correctly create the mock store with middleware
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
-jest.mock("../hooks/useAuth");
-jest.mock("../hooks/usePortfolio");
-jest.mock("../store/slices/portfolioSlice", () => ({
+jest.mock("../../../../hooks/useAuth");
+jest.mock("../../../../hooks/usePortfolio");
+jest.mock("../../../../store/slices/portfolioSlice", () => ({
   fetchPortfolios: jest.fn(),
   deletePortfolio: jest.fn(),
 }));
@@ -51,7 +50,7 @@ describe("SideBarPortfolios", () => {
     fetchPortfolios.mockReturnValue({ type: "portfolioStore/fetchPortfolios/pending" });
   });
 
-  it("Renders portfolio list when portfolios exist", () => {
+  it("Відтворює список портфоліо, якщо портфоліо існує", () => {
     usePortfolio.mockReturnValue({
       portfolios: [{ id: 1, name: "Test Portfolio" }],
       loadingPortfolios: false,
@@ -69,7 +68,7 @@ describe("SideBarPortfolios", () => {
     expect(screen.getByText("Test Portfolio")).toBeInTheDocument();
   });
 
-  it("Displays message when no portfolios exist", () => {
+  it("Відображає повідомлення, якщо немає портфоліо", () => {
     usePortfolio.mockReturnValue({
       portfolios: [],
       loadingPortfolios: false,
@@ -89,7 +88,7 @@ describe("SideBarPortfolios", () => {
     ).toBeInTheDocument();
   });
 
-  it("Handles portfolio deletion", () => {
+  it("Займається видаленням портфоліо", () => {
     usePortfolio.mockReturnValue({
       portfolios: [{ id: 1, name: "Test Portfolio" }],
       loadingPortfolios: false,

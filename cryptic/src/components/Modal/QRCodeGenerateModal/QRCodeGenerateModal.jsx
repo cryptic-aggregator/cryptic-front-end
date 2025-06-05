@@ -6,41 +6,37 @@ import { useAuth } from "../../../hooks/useAuth";
 import close from "../../../assets/images/PortfoliosCreateModals/close.svg";
 import { QRCodeCanvas } from "qrcode.react";
 import CopyAlt from "../../../assets/images/UserProfile/CopyAlt.svg";
+import toast from 'react-hot-toast';
 
-export default function QRCodeGenerateModal({ isOpen, onClose, address, network}) {
+export default function QRCodeGenerateModal({ isOpen, onClose, address, caip_address, network}) {
   const { t } = useTranslation();
   const secretKeyRef = useRef(null);
-  const navigate = useNavigate();
-  const { isAuth } = useAuth();
+  let uri = detectChainType(caip_address)+`${address}`;
 
-  let uri = "";
+  function detectChainType(address) {
+    if (typeof address !== 'string') return "";
+    const [namespace] = address.split(':');
+    if (!namespace) return "";
 
-  switch (network) {
-    case "Bitcoin":
-      uri = `bitcoin:${address}`;
-      break;
-    case "Ethereum":
-      uri = `ethereum:${address}`;
-      break;
-    case "Solana":
-      uri = `solana:${address}`;
-      break;
-    default:
-      uri = address; // Якщо інша валюта, просто виводимо адресу
-  }
-
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/signin");
+    switch (namespace) {
+      case 'eip155':
+        return 'ethereum:';
+      case 'solana':
+        return 'solana:';
+      case 'bip122':
+        return 'bitcoin:';
+      default:
+        return '';
     }
-  }, [isAuth, navigate]);
+  }
 
   const copyToClipboard = () => {
     if (secretKeyRef.current) {
       const text = secretKeyRef.current.innerText.trim();
       navigator.clipboard.writeText(text)
-        .then(() => console.log("Copied to clipboard!"))
-        .catch((err) => console.error("Failed to copy: ", err));
+        .then(() => toast.success("Copied to clipboard"))
+        .catch((err) => toast.error("Failed to copy"),
+        console.error("Failed to copy: ", err));
     }
   };
   const onModalClick = (event) => {

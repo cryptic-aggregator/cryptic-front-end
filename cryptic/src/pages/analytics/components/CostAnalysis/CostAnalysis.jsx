@@ -47,12 +47,14 @@ export default function CostAnalysis({data}) {
       const assetLabels = data.map((coin) => coin.symbol);
       const assetData = data.map((coin) => parseFloat(coin.percentage));
   
-      const baseColors = ["#59588D", "#FFC205", "#FF3737", "#9747FF", "#00C300", "#FF9F40"];
+      const baseColors = ["#FFC205", "#FF3737", "#00C300","#C2C2C2FF", "#59588D",  "#FF9F40"];
+      const baseImg = [approveIcon, transferIcon, receivedIcon,feeIcon];
       const getColor = (index) => baseColors[index % baseColors.length];
   
       const newAssets = assetLabels.map((symbol, index) => ({
         symbol,
         interest: assetData[index],
+        img: baseImg[index],
         color: getColor(index),
       }));
     
@@ -98,58 +100,21 @@ export default function CostAnalysis({data}) {
               </div>
               <div className={styles.chartLabels}>
                 <ul>
-                  <li className={styles.chartLabel}>
-                    <div className={styles.assetName}>
-                      <img className={styles.chartLabelIcon} src={approveIcon} alt="Approve"/>
-                      <span>Approve</span>
-                    </div>
-                    <div className={styles.assetInterest}>
-                      <span>43.1%</span>
-                      <div
-                        className={styles.assetColor}
-                        style={{ backgroundColor: `#59588D` }}
-                      ></div>
-                    </div>
-                  </li>
-                  <li className={styles.chartLabel}>
-                    <div className={styles.assetName}>
-                      <img className={styles.chartLabelIcon} src={transferIcon} alt="Transfer"/>
-                      <span>Transfer</span>
-                    </div>
-                    <div className={styles.assetInterest}>
-                      <span>43.1%</span>
-                      <div
-                        className={styles.assetColor}
-                        style={{ backgroundColor: `#59588D` }}
-                      ></div>
-                    </div>
-                  </li>
-                  <li className={styles.chartLabel}>
-                    <div className={styles.assetName}>
-                      <img className={styles.chartLabelIcon} src={receivedIcon} alt="Received"/>
-                      <span>Received</span>
-                    </div>
-                    <div className={styles.assetInterest}>
-                      <span>43.1%</span>
-                      <div
-                        className={styles.assetColor}
-                        style={{ backgroundColor: `#59588D` }}
-                      ></div>
-                    </div>
-                  </li>
-                  <li className={styles.chartLabel}>
-                    <div className={styles.assetName}>
-                      <img className={styles.chartLabelIcon} src={feeIcon} alt="Fee"/>
-                      <span>Fee</span>
-                    </div>
-                    <div className={styles.assetInterest}>
-                      <span>43.1%</span>
-                      <div
-                        className={styles.assetColor}
-                        style={{ backgroundColor: `#59588D` }}
-                      ></div>
-                    </div>
-                  </li>
+                  {assets?.map((asset, index) => (
+                    <li className={styles.chartLabel} key={index}>
+                      <div className={styles.assetName}>
+                        <img className={styles.chartLabelIcon} src={asset.img} alt="Approve"/>
+                        <span>{asset.symbol}</span>
+                      </div>
+                      <div className={styles.assetInterest}>
+                        <span>{asset.interest} %</span>
+                        <div
+                          className={styles.assetColor}
+                          style={{ backgroundColor: asset.color }}
+                        ></div>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
               </div>
         </div>
@@ -161,23 +126,23 @@ export default function CostAnalysis({data}) {
               <div className={styles.tradingFeesPaidInfo}>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Total Fees</span>
-                  <span>93.92 USD</span>
+                  <span>94.36 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Average</span>
-                  <span>0.8945 USD</span>
+                  <span>0.7997 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Highest Free</span>
-                  <span>17.98 USD</span>
+                  <span>17.65 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Transaction Count</span>
-                  <span>54.15 USD</span>
+                  <span>178</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Total Fee Count</span>
-                  <span>115</span>
+                  <span>118</span>
                 </div>
               </div>
             </div>
@@ -188,19 +153,19 @@ export default function CostAnalysis({data}) {
               <div className={styles.totalGasSpentInfo}>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Total Value</span>
-                  <span>93.92 USD</span>
+                  <span>92.16 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Average</span>
-                  <span>0.8945 USD</span>
+                  <span>4.189 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Highest Free</span>
-                  <span>17.98 USD</span>
+                  <span>17.65 USD</span>
                 </div>
                 <div className={styles.elemntInfo}>
                   <span className={styles.elemntInfoTopic}>Transaction Count</span>
-                  <span>34.15 USD</span>
+                  <span>39</span>
                 </div>
               </div>
             </div>

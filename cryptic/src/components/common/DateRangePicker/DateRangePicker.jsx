@@ -40,26 +40,39 @@ export default function DateRangePicker({ activeFilter, onRangeChange }) {
       case "1Y":
         start = new Date(now.setFullYear(now.getFullYear() - 1));
         break;
-      case "ALL":
-        start = new Date(2000, 0, 1); // довільна стартова дата
+      case "2Y":
+        start = new Date(now.setFullYear(now.getFullYear() - 2));
         break;
       default:
         return; // якщо custom — нічого не оновлюємо
     }
-
+    start.setHours(0, 0, 0, 0);
     const newEnd = new Date();
+    newEnd.setHours(23, 59, 59, 999);
     setStartDate(start);
     setEndDate(newEnd);
     onRangeChange?.({ startDate: start, endDate: newEnd });
   }, [activeFilter]);
 
   // коли вручну змінюється діапазон — повідомляємо
-  const handleChange = ([start, end]) => {
-    setStartDate(start);
-    setEndDate(end);
+ const handleChange = ([start, end]) => {
+    if (!start) return;
+    
+    // Створюємо копії дат, щоб не мутувати оригінальні
+    const newStart = new Date(start);
+    const newEnd = end ? new Date(end) : null;
+    
+    newStart.setHours(0, 0, 0, 0);
+    if (newEnd) {
+      newEnd.setHours(23, 59, 59, 999);
+    }
+    
+    setStartDate(newStart);
+    setEndDate(newEnd);
 
-    if (start && end) {
-      onRangeChange?.({ startDate: start, endDate: end });
+    // Викликаємо колбек тільки коли обидві дати вибрані
+    if (newStart && newEnd) {
+      onRangeChange?.({ startDate: newStart, endDate: newEnd });
     }
   };
 
