@@ -59,7 +59,11 @@ export const connectWalletToPortfolio = createAsyncThunk(
     try {
       await portfolioApi.connectWalletToPortfolio(id, data); // Надсилаємо POST-запит
       console.log(id);
-      dispatch(fetchWallets(id)); // Оновлюємо список після додавання
+      dispatch(fetchWallets({
+        portfolioId:id,
+        search: null,
+        networks:null,
+      })); // Оновлюємо список після додавання
     } catch (error) {
       console.log("Помилка підключення гаманця до портфоліо:", error);
       return rejectWithValue(error.response?.data || "Error connect Wallet To Portfolio");

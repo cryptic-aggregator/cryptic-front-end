@@ -117,9 +117,10 @@
     align-items: end;
 }
 .syncAllButton{
-    width: 123px;
+    min-width: 113px;
     height: 30px;
     font-size: 20px;
+    padding: 0px 5px;
     margin: 0px 5px 8px 0px;
     border: 1px solid #999999;
     color: #999999;

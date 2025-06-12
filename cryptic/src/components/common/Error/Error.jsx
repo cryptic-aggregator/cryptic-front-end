@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './Error.module.css';         
-import zeroCircleAnim from "../../../assets/images/HomePage/zeroCircleAnim.svg";
-import firstCircleAnim from "../../../assets/images/HomePage/firstCircleAnim.svg";
-import secondCircleAnim from "../../../assets/images/HomePage/secondCircleAnim.svg";
-import thirdCircleAnim from "../../../assets/images/HomePage/thirdCircleAnim.svg";
+import zeroCircleAnim from "../../../assets/images/Home/zeroCircleAnim.svg";
+import firstCircleAnim from "../../../assets/images/Home/firstCircleAnim.svg";
+import secondCircleAnim from "../../../assets/images/Home/secondCircleAnim.svg";
+import thirdCircleAnim from "../../../assets/images/Home/thirdCircleAnim.svg";
           
 const Error = () => {
     return (

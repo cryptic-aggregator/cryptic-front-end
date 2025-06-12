@@ -1,0 +1,81 @@
+.inputForm{
+    display: flex;
+    gap: 30px;
+}
+.inputForm label{
+    margin-bottom: 8px;
+    display: block;
+    color: #777E90;
+    font-size: 20px;
+}
+.inputForm input{
+    background-color: transparent;
+    outline: none;
+    border: 1px solid #313135 ;
+    color: #BFBFBF;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 17px;
+    width: 300px;
+    box-sizing: border-box; 
+}
+.passwordShown {
+    cursor: pointer;
+    position: absolute;
+    margin-left: -30px;
+    margin-top: 9px;
+}
+.passwordConfirmShown{
+    cursor: pointer;
+    position: absolute;  
+    margin-left: -30px;
+    margin-top: 9px;
+}
+.topic{
+    color: white;
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+.registerForm{
+    margin-top: 60px;
+}
+
+.textTopic{
+    color: white;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.buttonWrapper {
+    display: flex;
+    margin-top: 85px;
+}
+.button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #FF3737;
+    border-radius: 10px;
+    height: 50px;
+    width: 240px;
+}
+.button:hover{
+    background-color:  #ff373777;
+}
+
+@media (max-width: 920px) {
+    .inputForm{
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 640px) {
+
+    .buttonWrapper {
+        margin-top: 50px;
+        justify-content: center;
+    }
+    .topic{
+        text-align: center;
+    }
+}

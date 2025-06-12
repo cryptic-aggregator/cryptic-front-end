@@ -22,25 +22,25 @@ export default function DateRangePicker({ activeFilter, onRangeChange }) {
     let start = null;
 
     switch (activeFilter) {
-      case "24H":
+      case "h24":
         start = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         break;
-      case "1W":
+      case "w1":
         start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         break;
-      case "1M":
+      case "m1":
         start = new Date(now.setMonth(now.getMonth() - 1));
         break;
-      case "3M":
+      case "m3":
         start = new Date(now.setMonth(now.getMonth() - 3));
         break;
-      case "6M":
+      case "m6":
         start = new Date(now.setMonth(now.getMonth() - 6));
         break;
-      case "1Y":
+      case "y1":
         start = new Date(now.setFullYear(now.getFullYear() - 1));
         break;
-      case "2Y":
+      case "y2":
         start = new Date(now.setFullYear(now.getFullYear() - 2));
         break;
       default:

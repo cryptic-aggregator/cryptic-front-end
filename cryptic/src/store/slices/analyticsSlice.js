@@ -26,9 +26,9 @@ export const fetchPerformance = createAsyncThunk(
 );
 export const fetchRiskScore = createAsyncThunk(
   "analyticsStore/fetchRiskScore",
-  async (data, { rejectWithValue }) => {
+  async ({id, data}, { rejectWithValue }) => {
     try {
-      const response = await analyticsApi.getAnalyticsAllocations(data); // Використовуємо API
+      const response = await analyticsApi.getRisksAndVolatility(id, data); // Використовуємо API
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error fetching Asset Allocation");
@@ -63,22 +63,22 @@ const initialState = {
     loading: false,
     error: false,
   },
-  performance: {
+  balanceChanges: {
     data: null,
     loading: false,
     error: false,
   },
-  tokenDistribution: {
+  totalProfitLoss: {
     data: null,
     loading: false,
     error: false,
   },
-  walletActivity: {
+  costAnalysis: {
     data: null,
     loading: false,
     error: false,
   },
-  riskScore: {
+  risksAndVolatility: {
     data: null,
     loading: false,
     error: false,
@@ -88,9 +88,6 @@ const initialState = {
 const analyticsSlice = createSlice({
   name: "analyticsStore",
   initialState,
-  reducers: {
-
-  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchAssetAllocation.pending, (state) => {
@@ -104,6 +101,19 @@ const analyticsSlice = createSlice({
       .addCase(fetchAssetAllocation.rejected, (state, action) => {
         state.assetAllocation.loading = false;
         state.assetAllocation.error = true;
+      })
+
+      .addCase(fetchRiskScore.pending, (state) => {
+        state.risksAndVolatility.loading = true;
+        state.risksAndVolatility.error = false;
+      })
+      .addCase(fetchRiskScore.fulfilled, (state, action) => {
+        state.risksAndVolatility.loading = false;
+        state.risksAndVolatility.data = action.payload.points;
+      })
+      .addCase(fetchRiskScore.rejected, (state, action) => {
+        state.risksAndVolatility.loading = false;
+        state.risksAndVolatility.error = true;
       });
   },
 });

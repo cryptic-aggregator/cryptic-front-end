@@ -1,29 +1,32 @@
-import Home from "./pages/home/Home";
-import SignUp from "./pages/signUp/SignUp";
-import SignIn from "./pages/signIn/SignIn";
-import UserProfile from "./pages/userProfile/UserProfile";
-import UserProfile2FA from "./pages/userProfile2FA/UserProfile2FA";
-import UserProfile2FADisable from "./pages/userProfile2FADisable/UserProfile2FADisable";
-import UserProfileChangePassword from "./pages/userProfileChangePassword/UserProfileChangePassword";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Analytics from "./pages/analytics/Analytics";
-import Wallets from "./pages/wallets/Wallets";
-import Transactions from "./pages/transactions/Transactions";
-import ConnectWallet from "./pages/connectWallet/ConnectWallet";
-import Transfer from "./pages/transfer/Transfer";
-import NotFound from "./pages/notFound/NotFound";
-import RecoveryPassword from "./pages/recoveryPassword/RecoveryPassword";
+import Home from "./pages/Home/Home";
+import SignUp from "./pages/SignUp/SignUp";
+import SignIn from "./pages/SignIn/SignIn";
+
+import UserProfile from "./pages/UserProfile/UserProfile";
+import UserProfile2FA from "./pages/UserProfile/TwoFA/TwoFA";
+import UserProfile2FADisable from "./pages/UserProfile/TwoFADisable/TwoFADisable";
+import UserProfileChangePassword from "./pages/UserProfile/ChangePassword/ChangePassword";
+
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Analytics from "./pages/Analytics/Analytics";
+import Wallets from "./pages/Wallets/Wallets";
+import Transactions from "./pages/Transactions/Transactions";
+import ConnectWallet from "./pages/ConnectWallet/ConnectWallet";
+import Transfer from "./pages/Transfer/Transfer";
+import NotFound from "./pages/NotFound/NotFound";
+import RecoveryPassword from "./pages/PasswordRecovery/PasswordRecovery";
 import { Routes,Route } from "react-router-dom";
-import PortfoliosLayout from './components/layout/Layouts/PortfoliosLayout/PortfoliosLayout';
-import ProfileLayout from './components/layout/Layouts/ProfileLayout/ProfileLayout';
+import PortfoliosLayout from './components/layout/Portfolio/Portfolio';
+import ProfileLayout from './components/layout/Profile/Profile';
 
 import "./lib/i18n"
 import "./styles/index.css";
 import { useAuth } from "./hooks/useAuth";
 import PublicOnlyRoute from "./components/routes/PublicOnlyRoute";
 import PrivateRoute from "./components/routes/PrivateRoute";
-import TwoFactorGate from "./components/routes/TwoFactorGate ";
+import TwoFactorGate from "./components/routes/TwoFactorGate";
 import { useUser } from "./hooks/useUser";
+import Premium from "./pages/UserProfile/Premium/Premium";
 
 function App() {
   const { isAuth } = useAuth();
@@ -55,12 +58,13 @@ function App() {
             <Route element={<ProfileLayout />}>
               <Route path="profile" element={<UserProfile />} />
               <Route element={<TwoFactorGate isTwoFactorEnabled={user?.isTwoFactorEnabled} allowIf2FAActive={false} />}>
-                <Route path="twoAuthenticator" element={<UserProfile2FA />} />
+                <Route path="twoAuthenticator/enabled" element={<UserProfile2FA />} />
               </Route>
               <Route element={<TwoFactorGate isTwoFactorEnabled={user?.isTwoFactorEnabled} allowIf2FAActive={true} />}>
-                <Route path="twoAuthenticatorDisable" element={<UserProfile2FADisable />} />
+                <Route path="twoAuthenticator/disable" element={<UserProfile2FADisable />} />
               </Route>
               <Route path="changePassword" element={<UserProfileChangePassword />} />
+              <Route path="premium" element={<Premium />} />
             </Route>
 
             <Route path="connectWallet" element={<ConnectWallet />} />

@@ -7,7 +7,12 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, thunkAPI) => {
     try {
-      const { accessToken, refreshToken } = await authApi.login(credentials);
+      const { accessToken, refreshToken, requires2FA } = await authApi.login(credentials);
+
+            // Якщо сервер повернув requires2FA: true
+      if (requires2FA) {
+        return { requires2FA: true };
+      }
 
       thunkAPI.dispatch(login({ accessToken, refreshToken }));
       thunkAPI.dispatch(fetchUser());

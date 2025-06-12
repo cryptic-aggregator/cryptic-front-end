@@ -1,0 +1,310 @@
+/* ========================
+   ОСНОВНИЙ КОНТЕЙНЕР
+   ======================== */
+.balanceChangesSection {
+    display: flex;
+    width: 100%;
+    background-color: #11141E;
+    border-radius: 30px;
+}  
+.balanceChangesWrapper {
+  width: 100%;
+  padding: 15px 30px 10px 30px;
+  display: flex;
+  overflow: hidden;
+}
+.balanceChanges{
+    width: 100%;
+    height: 100%;
+}
+/* ========================
+   ЗАГОЛОВОК
+   ======================== */
+.header {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 15px;
+}
+
+/* ========================
+   КОНТЕЙНЕР ДІАГРАМИ
+   ======================== */
+.chartContainer {
+  height: 450px;
+  width: 100%;
+  position: relative;
+}
+
+/* ========================
+   СТАНИ ЗАВАНТАЖЕННЯ
+   ======================== */
+.assetNoFind, .loaderContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  background-color: #11141E;
+  border-radius: 30px;
+}
+.reset{
+  color: #FFC205;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+}
+.assetNoFind span{
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+}
+.Loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+.noDataContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.noDataText {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ========================
+   ІНФОРМАЦІЯ ПРО ПЕРІОД
+   ======================== */
+.filterContainer{
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  height: 40px;
+  padding: 0px 25px;
+  margin-top: 10px;
+
+}
+.filterButton{
+  cursor: pointer;
+  color: #999999;
+
+  padding: 0px 2px;
+  border-radius: 7px;
+  font-size: 16px;
+}
+.filterButton:hover {
+  background-color: #1a1a1a;
+}
+.filterButtonActive{
+  background-color: #4D4D4D;
+    color: #ffffff;
+}
+/* ========================
+   СЕЛЕКТОР МЕРЕЖІ
+   ======================== */
+
+.networkSelector {
+    position: relative;
+    width: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background-color: #454545;
+    height: 40px;
+    padding: 0px 12px;
+    font-size: 16px;
+    margin-bottom: 10PX;
+  }
+  
+  .selectBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+
+  .networkSelectIcon{
+    margin-left: 15px;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 10;
+  }
+  
+  .option {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .option:hover {
+    background: #333;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+  }
+.container {
+  display: flex;
+  gap: 30px;
+  margin-top: 15px;
+  align-items: center;
+  padding: 0px 25px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.price {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.change {
+  font-size: 12px;
+}
+  
+/* ========================
+   АДАПТИВНІСТЬ
+   ======================== */
+@media (max-width: 768px) {
+  .balanceChangesWrapper {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .chartContainer {
+    height: 300px;
+    padding: 12px;
+  }
+
+  .loaderContainer,
+  .noDataContainer {
+    height: 300px;
+  }
+
+  .timeframeContainer {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .timeframeButton {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: 40px;
+  }
+
+  .periodInfo {
+    padding: 8px 16px;
+  }
+
+  .periodLabel {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .balanceChangesWrapper {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .chartContainer {
+    height: 250px;
+    padding: 8px;
+  }
+
+  .loaderContainer,
+  .noDataContainer {
+    height: 250px;
+  }
+
+  .timeframeContainer {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .timeframeButton {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-width: 36px;
+  }
+}
+
+/* ========================
+   АНІМАЦІЇ
+   ======================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.balanceChangesWrapper {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.chartContainer {
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.timeframeContainer {
+  animation: fadeIn 0.8s ease-out 0.4s both;
+}
+
+.periodInfo {
+  animation: fadeIn 0.8s ease-out 0.6s both;
+}

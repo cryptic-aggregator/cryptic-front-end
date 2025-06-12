@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
-import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
+import showPassword from "../../assets/images/SignUp/eyeOff.svg";
 import styles from "./SignUp.module.css";
 import { Link,useNavigate  } from "react-router-dom";
 import { authApi } from '../../api/endpoints/authApi';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 export default function SignUp() {
@@ -43,9 +44,9 @@ export default function SignUp() {
         };
         const response = await authApi.register(userData);
         navigate('/signIn');
-        console.log('Registration successful:', response.data);
+        console.log('Registration successful',);
       } catch (error) {
-        // Можна додати Toast повідомлення про помилку
+        toast.error(t('auth.signIn.failedSignUp'));
         console.error('Registration failed:', error.response?.data);
       }
     };
@@ -54,53 +55,53 @@ export default function SignUp() {
     <>
     <div className={styles.signUp}>
     <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
-        <h1>{t('signUp.topic')}</h1>
+        <h1>{t('auth.signUp.topic')}</h1>
         <div className={styles.inputForm}>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label>{t('signUp.login')}</label>
+              <label>{t('auth.signUp.login')}</label>
               <input {...register("login", { 
-                required: `${t('signUp.required')}` 
+                required: `${t('common.required')}` 
               })} 
-              placeholder={t('signUp.placeholderLogin')} autoComplete="off"/>
+              placeholder={t('auth.signUp.placeholderLogin')} autoComplete="off"/>
               <p>{errors.login?.message}</p>
             </div>
             <div className={styles.inputGroup}>
-              <label>{t('signUp.email')}</label>
+              <label>{t('auth.signUp.email')}</label>
               <input {...register("email", { 
-                required: `${t('signUp.required')}`, 
+                required: `${t('common.required')}`, 
                 pattern:{
                   value: /^[A-Z0-9._%+-]+@[a-z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: `${t('signUp.patternEmail')}`,
+                  message: `${t('common.patternEmail')}`,
                 },
               })} 
-              placeholder={t('signUp.placeholderEmail')} autoComplete="off"
+              placeholder={t('auth.signUp.placeholderEmail')} autoComplete="off"
               />
               <p>{errors.email?.message}</p>
             </div>
           </div>
           <div className={styles.row}>
             <div className={styles.inputGroup}>
-              <label>{t('signUp.password')}</label>
+              <label>{t('auth.signUp.password')}</label>
               <input {...register("password", { 
-                required: `${t('signUp.required')}`, 
+                required: `${t('common.required')}`, 
                 minLength:{ 
                   value: 6, 
-                  message: `${t('signUp.patternPassword')}`
+                  message: `${t('auth.signUp.patternPassword')}`
                 }
               })} 
-              type={passwordShown ? "text" : "password"} placeholder={t('signUp.placeholderPassword')} autoComplete="off"/>
+              type={passwordShown ? "text" : "password"} placeholder={t('auth.signUp.placeholderPassword')} autoComplete="off"/>
               <i className={styles.passwordShown} onClick={togglePasswordVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>
               <p>{errors.password?.message}</p>
             </div>
             <div className={styles.inputGroup}>
-              <label>{t('signUp.confirmPassword')}</label>
+              <label>{t('auth.signUp.confirmPassword')}</label>
               <input {...register("confirmPassword", { 
-                required: `${t('signUp.required')}`,
-                validate: (value) => value === password || `${t('signUp.patternConfirmPassword')}`
+                required: `${t('common.required')}`,
+                validate: (value) => value === password || `${t('auth.signUp.patternConfirmPassword')}`
                 }
               )} 
-              type={passwordConfirmShown ? "text" : "password"}placeholder={t('signUp.placeholderConfirmPassword')} autoComplete="off"/>
+              type={passwordConfirmShown ? "text" : "password"}placeholder={t('auth.signUp.placeholderConfirmPassword')} autoComplete="off"/>
               <i className={styles.passwordConfirmShown} onClick={togglePasswordConfirmVisiblity}><img className={styles.backgroundGoals} src={showPassword} alt="Show password" /></i>
               <p>{errors.confirmPassword?.message}</p>
             </div>
@@ -109,14 +110,14 @@ export default function SignUp() {
 
         <div className={styles.checkboxTerms}>
           <input id="check" type="checkbox" {...register("agreeUseTerms", { 
-            required: `${t('signUp.required')}` 
+            required: `${t('common.required')}` 
           })}/>
-          <label htmlFor="check">{t('signUp.check')}</label>
+          <label htmlFor="check">{t('auth.signUp.check')}</label>
         </div>
         <p>{errors.agreeUseTerms?.message}</p>
 
-        <button className={styles.signUpButton} type="submit" >{t('signUp.button')}</button>
-        <label className={styles.signIn} >{t('signUp.textSignIn')}<Link to="/signIn">{t('signUp.refSignIn')}</Link></label>
+        <button className={styles.signUpButton} type="submit" >{t('auth.signUp.button')}</button>
+        <label className={styles.signIn} >{t('auth.signUp.textSignIn')}<Link to="/signIn">{t('auth.signUp.refSignIn')}</Link></label>
       </form>
     </div>
     </>

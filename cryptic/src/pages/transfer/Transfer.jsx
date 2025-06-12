@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useForm } from 'react-hook-form';
-import showPassword from "../../assets/images/SignUpPage/eyeOff.svg";
+import showPassword from "../../assets/images/SignUp/eyeOff.svg";
 import styles from "./Transfer.module.css";
 import { Link,useNavigate  } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../store/actions/authActions";
 import toast, { Toaster } from 'react-hot-toast';
-import MainNavbar from "../../components/navigation/MainNavbar/MainNavbar";
-import Footer from "../../components/layout/Footer/Footer";
+import MainNavbar from "../../components/navigation/Navbar/Main/Main";
+import Footer from "../../components/navigation/Footer/Footer";
 import openIcon from "../../assets/images/Dashboard/openIcon.svg";
 import addressBook from "../../assets/images/Transfer/addressBook.svg";
 import network from "../../assets/images/Transfer/network.svg";

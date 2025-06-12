@@ -1,13 +1,17 @@
 import { useSelector } from "react-redux";
 
 export function useAnalyics() {
-  const { assetAllocation, performance, tokenDistribution, walletActivity, riskScore} = useSelector((state) => state.analyticsStore);
+  const { assetAllocation, balanceChanges, totalProfitLoss, costAnalysis, risksAndVolatility } = useSelector((state) => state.analyticsStore);
 
   return {
     assetAllocation,
-    performance,
-    tokenDistribution,
-    walletActivity,
-    riskScore
+    balanceChanges,
+    totalProfitLoss,
+    costAnalysis,
+    risksAndVolatility
   };
+}
+
+export function useAnalyticsSection(sectionId) {
+  return useSelector((state) => state.analyticsStore[sectionId]);
 }

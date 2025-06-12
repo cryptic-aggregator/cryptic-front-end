@@ -1,22 +1,23 @@
 import styles from "./Transactions.module.css";
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import toast from 'react-hot-toast';
+import i18n from "i18next";
 
 // Імпорт зображень
 import network from "../../assets/images/Transactions/network.svg";
 import recipient from "../../assets/images/Transactions/recipient.svg";
 import sender from "../../assets/images/Transactions/sender.svg";
 import networkSelect from "../../assets/images/Wallets/networkSelect.svg";
-import receivedIcon from "../../assets/images/AnalyticsPage/receivedIcon.svg";
-import transferIcon from "../../assets/images/AnalyticsPage/transferIcon.svg";
+import receivedIcon from "../../assets/images/Analytics/receivedIcon.svg";
+import transferIcon from "../../assets/images/Analytics/transferIcon.svg";
 import syncIcon from "../../assets/images/Dashboard/syncIcon.svg";
 import CopyAlt from "../../assets/images/UserProfile/CopyAlt.svg";
-
+import searchIcon from "../../assets/images/Transactions/search.svg";
 // Імпорт компонентів
-import Modal from "../../components/Modal/WalletConnectModal/WalletConnectModal";
+import Modal from "../../components/modals/WalletConnect/WalletConnect";
 import DateRangePicker from "../../components/common/DateRangePicker/DateRangePicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -25,6 +26,7 @@ import { fetchTransaction } from "../../store/slices/transactionSlice";
 import { useTransaction } from "../../hooks/useTransaction";
 import Loader from "../../components/common/Loader/Loader";
 import Error from "../../components/common/Error/Error";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 
 export default function Transaction() {
   // ========================
@@ -34,6 +36,7 @@ export default function Transaction() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const scrollContainerRef = useRef(null);
+  const { ref, widthsState } = useContainerWidth([1226, 631]);
 
   // ========================
   // КОНСТАНТИ КОНФІГУРАЦІЇ
@@ -41,18 +44,22 @@ export default function Transaction() {
   const ITEMS_PER_PAGE = 5;
   const SCROLL_THRESHOLD = 100;
   
-  const filterOptions = ["24H", "1W", "1M", "3M", "6M", "1Y", "2Y"];
-  
-  const transactionTypes = [
-    { value: 0, label: "All Transaction Type", icon: syncIcon },
-    { value: 1, label: "Received", icon: receivedIcon },
-    { value: 2, label: "Sent", icon: transferIcon },
-  ];
-  
-  const displayTransactionTypes = [
-    { value: 0, label: "Received", icon: receivedIcon },
-    { value: 1, label: "Sent", icon: transferIcon },
-  ];
+ const filterKeys = ["h24", "w1", "m1", "m3", "m6", "y1", "y2"];
+  const filterOptions = filterKeys.map((key) => ({
+    value: key,
+    label: t(`common.filters.short.${key}`)
+  }));
+
+  const transactionTypes = useMemo(() => [
+    { value: 0, label: t("transactions.toolBar.all"), icon: syncIcon },
+    { value: 1, label: t("transactions.toolBar.received"), icon: receivedIcon },
+    { value: 2, label: t("transactions.toolBar.sent"), icon: transferIcon },
+  ], [i18n.language]);
+
+  const displayTransactionTypes = useMemo(() => [
+    { value: 0, label: t("transactions.toolBar.received"), icon: receivedIcon },
+    { value: 1, label: t("transactions.toolBar.sent"), icon: transferIcon },
+  ], [i18n.language]);
 
   // ========================
   // СТАН КОМПОНЕНТА
@@ -60,16 +67,19 @@ export default function Transaction() {
   
   // Стан для фільтрації та пошуку
   const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState("1W");
+  const [activeFilter, setActiveFilter] = useState(filterOptions[1].value);
   const [dateRange, setDateRange] = useState({
     startDate: null,
     endDate: null,
   });
-  const [selectedType, setSelectedType] = useState({
-    value: 0,
-    label: "All Transaction Type",
-    icon: syncIcon,
-  });
+  const [selectedType, setSelectedType] = useState(transactionTypes[0]);
+
+  useEffect(() => {
+    setSelectedType(prev => {
+      const newType = transactionTypes.find(t => t.value === prev.value);
+      return newType || transactionTypes[0];
+    });
+  }, [transactionTypes]);
 
   // Стан для UI та модалів
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -111,8 +121,8 @@ export default function Transaction() {
   const copyToClipboard = (address) => {
     if (address) {
       navigator.clipboard.writeText(address)
-        .then(() => toast.success('Copied to clipboard!'))
-        .catch((err) => toast.error("Failed to copy: ", err));
+        .then(() => toast.success(t("transactions.toast.successCopy")))
+        .catch((err) => toast.error(t("transactions.toast.errorCopy")));
     }
   };
 
@@ -168,23 +178,24 @@ export default function Transaction() {
         await dispatch(fetchTransaction({
           id,
           data: {
-            Page: page,
-            PerPage: ITEMS_PER_PAGE,
-            TransactionType: selectedType.value,
-            DateFrom: Math.floor(new Date(dateRange.startDate.setHours(0, 0, 0, 0)) / 1000),
-            DateTo: Math.floor(new Date(dateRange.endDate.setHours(23, 59, 59, 999)) / 1000),
+            page: page,
+            perPage: ITEMS_PER_PAGE,
+            transactionType: selectedType.value,
+            dateFrom: Math.floor(new Date(dateRange.startDate.setHours(0, 0, 0, 0)) / 1000),
+            dateTo: Math.floor(new Date(dateRange.endDate.setHours(23, 59, 59, 999)) / 1000),
+            search: search,
           },
         }));
       } catch (error) {
         console.error("Помилка при отриманні транзакцій:", error);
-        toast.error("Failed to load transactions");
+        toast.error(t("transactions.toast.errorLoadTransaction"));
       } finally {
         setIsLoadingMore(false);
       }
     };
 
     getTransactions();
-  }, [id, selectedType.value, dateRange.startDate, dateRange.endDate, page, hasMore, dispatch]);
+  }, [id, selectedType.value, dateRange.startDate, dateRange.endDate, page, hasMore, dispatch, search]);
 
   /**
    * Обробляє скрол для нескінченного завантаження
@@ -264,19 +275,21 @@ export default function Transaction() {
    * Рендерить панель інструментів з фільтрами
    */
   const renderToolbar = () => (
-    <div className={styles.toolbar}>
+    <div className={`${styles.toolbar}  ${widthsState[1226] ? styles.narrowToolbar : ''} ${widthsState[631] ? styles.moreNarrowToolbar : ''}`}>
       {/* Ліва частина з пошуком та селектором типу */}
-      <div className={styles.leftContainer}>
+      <div className={styles.leftContainer } >
         {/* Поле пошуку */}
         <div className={styles.searchContainer}>
           <input
             type="text"
-            placeholder="Search"
+            placeholder={t("transactions.toolBar.placeholderSearch")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={styles.searchInput}
           />
-          <button className={styles.searchButton}>🔍</button>
+          <button className={styles.searchButton}>
+              <img src={searchIcon} alt="Search" className={styles.searchIcon} />
+          </button>
         </div>
 
         {/* Селектор типу транзакцій */}
@@ -323,19 +336,19 @@ export default function Transaction() {
       <div className={styles.filterContainer}>
         {filterOptions.map((option) => (
           <button
-            key={option}
+            key={option.value}
             className={`${styles.filterButton} ${
-              activeFilter === option ? styles.filterButtonActive : ""
+              activeFilter === option.value ? styles.filterButtonActive : ""
             }`}
-            onClick={() => setActiveFilter(option)}
+            onClick={() => setActiveFilter(option.value)}
           >
-            {option}
+            {option.label}
           </button>
         ))}
         
         {/* Кастомний селектор дат */}
         <div
-          className={`${styles.filterButton} ${
+          className={`${styles.filterButton} ${styles.doubleColumn} ${
             activeFilter === "custom" ? styles.filterButtonActive : ""
           }`}
           onClick={() => setActiveFilter("custom")}
@@ -358,7 +371,7 @@ export default function Transaction() {
     <div key={tx.transaction_id || index} className={styles.transactionsListElementWrapper}>
       {/* Тип транзакції */}
       <div className={styles.transactionsType}>
-        <span className={styles.title}>Type</span>
+        <span className={styles.title}>{t("transactions.table.type")}</span>
         <div className={styles.typeContainer}>
           <img 
             loading="lazy" 
@@ -373,7 +386,7 @@ export default function Transaction() {
 
       {/* Активи */}
       <div className={styles.transactionsAsset}>
-        <span className={styles.title}>Asset(s)</span>
+        <span className={styles.title}>{t("transactions.table.asset")}</span>
         <div className={styles.assetContainer}>
           <img 
             loading="lazy" 
@@ -393,7 +406,7 @@ export default function Transaction() {
 
       {/* Адреса відправника */}
       <div className={styles.transactionsRecipient}>
-        <span className={styles.title}>From</span>
+        <span className={styles.title}>{t("transactions.table.from")}</span>
         <div className={styles.recipientContainer}>
           <img loading="lazy" src={sender} alt="Sender" />
           <span
@@ -417,7 +430,7 @@ export default function Transaction() {
 
       {/* Адреса отримувача */}
       <div className={styles.transactionsRecipient}>
-        <span className={styles.title}>To</span>
+        <span className={styles.title}>{t("transactions.table.to")}</span>
         <div className={styles.recipientContainer}>
           <img loading="lazy" src={recipient} alt="Recipient" />
           <span
@@ -441,7 +454,7 @@ export default function Transaction() {
 
       {/* Мережа */}
       <div className={styles.transactionsNetwork}>
-        <span className={styles.title}>Network</span>
+        <span className={styles.title}>{t("transactions.table.network")}</span>
         <div className={styles.networkContainer}>
           <img loading="lazy" src={network} alt="Network" />
           <span className={styles.network}>{tx.chain}</span>
@@ -480,7 +493,7 @@ export default function Transaction() {
    */
   const renderEmptyState = () => (
     <div className={styles.needSelect}>
-      Unfortunately, no transactions were found for the selected portfolio.
+      {t("transactions.dataUnavailable")}
     </div>
   );
 
@@ -492,7 +505,7 @@ export default function Transaction() {
 
   const renderSelectPortfolioMessage = () => (
     <div className={styles.needSelect}>
-      To view the information, you need to select the required portfolio from the list.
+      {t("transactions.selectPortfolioMessage")}
     </div>
   );
 
@@ -507,7 +520,7 @@ export default function Transaction() {
 
   return (
     <>
-      <div className={styles.transactionsContent}>
+      <div  ref={ref} className={styles.transactionsContent}>
 
         {renderToolbar()}
 

@@ -32,6 +32,7 @@
   height: 26px;
   margin-left: 3px;
 }
+
 .title{
   font-size: 18px;
   color: #B9B9B9;
@@ -42,6 +43,41 @@
   align-items: center;
   margin-top: 30px;
   justify-content: space-between;
+}
+.narrowToolbar{
+  flex-direction: column;
+  gap: 10px;
+}
+.narrowToolbar .filterContainer{
+    padding: 0px 15px;
+      gap: 7px;
+}
+.moreNarrowToolbar .leftContainer{
+    flex-direction: column;
+    gap: 10px;
+}
+
+.moreNarrowToolbar .searchContainer,
+.moreNarrowToolbar .networkSelector {
+  margin-right: 0px;
+  width: 100%;
+}
+
+.moreNarrowToolbar .filterContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 3 однакові колонки */
+  grid-auto-rows: auto;
+  height: 100%;
+  padding: 5px;
+  margin-left: 0;
+  gap: 10px;
+  align-items: center;
+}
+
+.searchIcon{
+    width: 24px;
+    height: 24px;
+    margin-right: 8px
 }
 .leftContainer{
   display: flex;
@@ -54,27 +90,31 @@
   border-radius: 10px;
   border: 2px solid #292929;
   height: 40px;
-  padding: 0px 25px;
+  padding: 0px 0px 0px 15px;
   margin-right: 15px;
+  width: auto;
 }
 .filterContainer{
   display: flex;
-  gap: 13px;
+  gap: 8px;
   align-items: center;
   border-radius: 10px;
   border: 2px solid #292929;
   height: 40px;
-  padding: 0px 25px;
+  padding: 0px 35px;
   margin-left: 15px;
 
 }
 .filterButton{
   cursor: pointer;
   color: #999999;
-  width: 100%;
   padding: 0px 2px;
   border-radius: 7px;
   font-size: 16px;
+  
+}
+.doubleColumn {
+  grid-column: span 2; /* займе дві колонки */
 }
 .filterButton:hover {
   background-color: #1a1a1a;
@@ -85,7 +125,7 @@
 }
 
 .searchInput {
-  
+  width: 100%;
   background: transparent;
   border: none;
   outline: none;
@@ -95,12 +135,15 @@
 }
 
 .searchButton {
-  
   background: none;
   border: none;
   color: white;
   font-size: 20px;
   cursor: pointer;
+      display: flex;
+    justify-content: center;
+    align-items: center;
+
 }
 
 

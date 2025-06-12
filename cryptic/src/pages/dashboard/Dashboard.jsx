@@ -73,7 +73,7 @@ export default function Dashboard() {
     labels: ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
     datasets: [
       {
-        label: "Balance",
+        label: `${t("dashboard.table.balance")}`,
         data: [100, 98, 95, 110, 92, 90],
         borderColor: "rgba(192, 132, 252, 1)", // Purple line
         borderWidth: 2,
@@ -153,7 +153,7 @@ export default function Dashboard() {
                   <div ref={ref} className={styles.compressedInfo}>
                     <div  className={`${styles.mainInfo} ${widthsState[812]  ? styles.compressed : ''}`}>
                       <div className={styles.compressedInfoText}>
-                        <span className={styles.title}>Total Worth</span>
+                        <span className={styles.title}>{t("dashboard.totalWorth")}</span>
                         <div className={styles.balance}>
                           <span title={totalWorth} className={styles.currentBalance}>
                             {totalWorth.length > 8 ? totalWorth.slice(0, 6) : totalWorth}
@@ -183,7 +183,7 @@ export default function Dashboard() {
                     <div className={styles.syncAll}>
                       <button onClick={()=> syncPortfolio()} className={styles.syncAllButton}>
                         <img className={styles.syncIcon} src={syncIcon} alt="Sync" />
-                        <span>Sync All</span>
+                        <span>{t("dashboard.syncAll")}</span>
                       </button>
                     </div>
                   </div>
@@ -193,20 +193,20 @@ export default function Dashboard() {
                         <>
                           <div className={styles.historyInfoWrapper}>
                             <div className={styles.assetsInfo}>
-                              <span className={styles.assetsTopic}>Assets</span>
+                              <span className={styles.assetsTopic}>{t("dashboard.assets")}</span>
                               <span className={styles.assetsBalance}>${totalWorth}</span>
                             </div>
                             <div className={styles.tableScroll}>
                               <table className={styles.assetsTable}>
                                 <thead>
                                   <tr className={styles.assetsTableTopic}>
-                                    <th>Token</th>
-                                    <th>Balance</th>
-                                    <th>Price</th>
-                                    <th>Total</th>
-                                    <th>Avg Buy</th>
-                                    <th>1H Change</th>
-                                    <th>All Time</th>
+                                    <th>{t("dashboard.table.token")}</th>
+                                    <th>{t("dashboard.table.balance")}</th>
+                                    <th>{t("dashboard.table.price")}</th>
+                                    <th>{t("dashboard.table.total")}</th>
+                                    <th>{t("dashboard.table.avgBuy")}</th>
+                                    <th>{t("dashboard.table.change1h")}</th>
+                                    <th>{t("dashboard.table.allTime")}</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -232,7 +232,7 @@ export default function Dashboard() {
                         </>
                       ) : (
                         <div className={styles.notCoins}>
-                          You don't have any coins in your portfolio yet. Add your first one to start tracking your assets!
+                        {t("dashboard.assetsEmpty")}
                         </div>
                       )}
                   </div>
@@ -241,7 +241,7 @@ export default function Dashboard() {
             </>
           ) : (
             <div className={styles.needSelect}>
-              To view the information, you need to select the required portfolio from the list.
+             {t("dashboard.needSelect")}
             </div>
           )
 

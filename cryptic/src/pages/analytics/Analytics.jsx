@@ -1,29 +1,28 @@
 import styles from "./Analytics.module.css";
 import { useTranslation } from 'react-i18next';
 import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth"; // 
 import { fetchAssetAllocation, fetchPerformance, fetchRiskScore, fetchTokenDistribution, fetchWalletActivity  } from "../../store/slices/analyticsSlice";
-import Category from "../../assets/images/AnalyticsPage/Category.jpg";
-import Balance from "../../assets/images/AnalyticsPage/Balance.jpg";
-import Profit from "../../assets/images/AnalyticsPage/Profit.jpg";
-import Risks from "../../assets/images/AnalyticsPage/Risks.jpg";
 import { useRef } from "react";
 import { useAnalyics } from "../../hooks/useAnalytics";
-import AnalyticsSection from './components/AnalyticsSection/AnalyticsSection';
-import AssetAllocations from "./components/AssetAllocations/AssetAllocations";
-import CostAnalysis from "./components/CostAnalysis/CostAnalysis";
+import AnalyticsSection from '../../components/analytics/AnalyticsSection/AnalyticsSection';
+import AssetAllocations from "../../components/analytics/AssetAllocations/AssetAllocations";
+import CostAnalysis from "../../components/analytics/CostAnalysis/CostAnalysis";
 
 import Loader from '../../components/common/Loader/Loader';
 import Error from '../../components/common/Error/Error';
-import BalanceChanges from "./components/BalanceChanges/BalanceChanges";
+import BalanceChanges from "../../components/analytics/BalanceChanges/BalanceChanges";
+import Volatility from "../../components/analytics/Volatility/Volatility";
+import ProfitLoss from "../../components/analytics/ProfitLoss/ProfitLoss";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 
 export default function Analytics() {
   const [activeSection, setActiveSection] = useState(null);
   const [sectionProgress, setSectionProgress] = useState({});
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-  const [overallProgress, setOverallProgress] = useState(0);
+  const [overallProgress, setOverallProgress] = useState(10);
   const { t } = useTranslation();
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -31,21 +30,54 @@ export default function Analytics() {
   const sectionsRef = useRef({});
   const analiticsRef = useRef(null);
   const { isAuth } = useAuth(); 
-  const { assetAllocation, performance, tokenDistribution, walletActivity, riskScore } = useAnalyics(); 
-
-
+  const { ref, widthsState } = useContainerWidth([885, 500]);
+  const {assetAllocation,
+    balanceChanges,
+    totalProfitLoss,
+    costAnalysis,
+     } = useAnalyics();
     // Authorization check and portfolio info loading
     useEffect(() => {
       if (id) {
         dispatch(fetchAssetAllocation(id));
-        /*
-        dispatch(fetchPerformance(id));
+        dispatch(fetchRiskScore({
+          id: id,
+          data:{
+            symbol: "BTC",
+            fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+            toTs: new Date().setHours(23, 59, 59, 999),
+            pointsCount: 12
+          }
+        }));
+        /*dispatch(fetchPerformance(id));
         dispatch(fetchRiskScore(id));
         ispatch(fetchTokenDistribution(id));
         dispatch(fetchWalletActivity(id));*/
       }
     }, [navigate, dispatch, id]);
-    
+/*
+    useEffect(() => {
+      try {
+        if (!selectedSymbolRiskScore|| 
+          !dateRangeRiskScore.startDate || 
+          !dateRangeRiskScore.endDate || 
+          !selectedPointsCountRiskScore) 
+          return;
+        
+        dispatch(fetchRiskScore({
+          id: id,
+          data: {
+            symbol: selectedSymbolRiskScore,
+            fromTs: dateRangeRiskScore.startDate,
+            toTs: dateRangeRiskScore.endDate,
+            pointsCount: selectedPointsCountRiskScore
+          }
+        }));
+      } catch (err) {
+        console.error('Error handling date range change:', err);
+      }
+    }, [selectedSymbolRiskScore, dateRangeRiskScore, selectedPointsCountRiskScore ]);
+    */
   // Register section ref
    const registerSectionRef = (id, element) => {
      if (element) {
@@ -53,110 +85,98 @@ export default function Analytics() {
      }
    };
    
-  // Scroll tracking and active section management
-  useEffect(() => {
-    const analiticsEl = analiticsRef.current;
-    if (!analiticsEl) return;
-    
-    let ticking = false;
-    
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollTop = analiticsEl.scrollTop;
-          const scrollHeight = analiticsEl.scrollHeight;
-          const clientHeight = analiticsEl.clientHeight;
-          const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
-          
-          // Calculate overall scroll progress (0-100%)
-          const totalScrollable = scrollHeight - clientHeight;
-          const currentProgress = (scrollTop / totalScrollable) * 100;
-          setOverallProgress(Math.min(currentProgress, 100));
-          
-          setIsScrolledToBottom(isBottom);
-          
-          // Calculate progress for each section
-          const newSectionProgress = {};
-          let foundActiveSection = false;
-          
-          Object.entries(sectionsRef.current).forEach(([id, section]) => {
-            if (!section) return;
-            
-            const sectionRect = section.getBoundingClientRect();
-            const analiticsRect = analiticsEl.getBoundingClientRect();
-            const sectionTop = section.offsetTop - 160;
-            const sectionHeight = section.offsetHeight;
-            const sectionBottom = sectionTop + sectionHeight;
-            
-            // Calculate progress percentage
-            let progress = 0;
-            
-            if (scrollTop >= sectionBottom) {
-              progress = 100;
-            } else if (scrollTop >= sectionTop && scrollTop <= sectionBottom) {
-              progress = ((scrollTop - sectionTop) / sectionHeight) * 100;
-              setActiveSection(id);
-              foundActiveSection = true;
-            }
-            
-            newSectionProgress[id] = progress;
-          });
-          
-          setSectionProgress(newSectionProgress);
-          
-          // If scrolled to bottom, ensure 100% progress
-          if (isBottom) {
-            const allComplete = {};
-            Object.keys(sectionsRef.current).forEach(id => {
-              allComplete[id] = 100;
-            });
-            setSectionProgress(allComplete);
-            
-            // Set the last section as active when at bottom
-            const sectionIds = Object.keys(sectionsRef.current);
-            if (sectionIds.length > 0) {
-              setActiveSection(sectionIds[sectionIds.length - 1]);
-            }
+useEffect(() => {
+  const analiticsEl = analiticsRef.current;
+  if (!analiticsEl) return;
+
+  // Потім підключай скрол
+  let ticking = false;
+
+const handleScroll = () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      const scrollTop = analiticsEl.scrollTop;
+      const scrollHeight = analiticsEl.scrollHeight;
+      const clientHeight = analiticsEl.clientHeight;
+      const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
+
+      const totalScrollable = scrollHeight - clientHeight;
+      const currentProgress = (scrollTop / totalScrollable) * 100;
+      setOverallProgress(Math.min(currentProgress, 100));
+      setIsScrolledToBottom(isBottom);
+
+      const newSectionProgress = {};
+      let foundActiveSection = false;
+
+      Object.entries(sectionsRef.current).forEach(([id, section]) => {
+        if (!section) return;
+
+        const sectionTop = section.offsetTop - 160;
+        const sectionHeight = section.offsetHeight;
+        const sectionBottom = sectionTop + sectionHeight;
+
+        let progress = 0;
+
+        if (scrollTop >= sectionBottom) {
+          progress = 100;
+        } else if (scrollTop >= sectionTop && scrollTop <= sectionBottom) {
+          progress = ((scrollTop - sectionTop) / sectionHeight) * 100;
+          if (!foundActiveSection) {
+            setActiveSection(id);
+            foundActiveSection = true;
           }
-          
-          ticking = false;
-        });
-        
-        ticking = true;
+        }
+
+        newSectionProgress[id] = progress;
+      });
+
+      if (isBottom) {
+        const sectionIds = Object.keys(sectionsRef.current);
+        if (sectionIds.length > 0) {
+          const lastId = sectionIds[sectionIds.length - 1];
+          setActiveSection(lastId);
+          newSectionProgress[lastId] = 100;
+        }
       }
-    };
-    
-    analiticsEl.addEventListener("scroll", handleScroll);
-    
-    // Initial check
-    handleScroll();
-    
-    return () => analiticsEl.removeEventListener("scroll", handleScroll);
-  }, []);
-  
-  const handleDateRangeChange = async (startDate, endDate) => {
-/*
-    try {
-      await dispatch(fetchAssetAllocation(id));
 
-    } catch (err) {
+      setSectionProgress(prev => ({ ...prev, ...newSectionProgress }));
 
-    }*/
-  };
+      ticking = false;
+    });
+
+    ticking = true;
+  }
+};
+
+
+  analiticsEl.addEventListener("scroll", handleScroll);
+
+  setTimeout(() => handleScroll(), 0);
+
+  return () => analiticsEl.removeEventListener("scroll", handleScroll);
+}, []);
+
+
 
   // Handle click on navigation items
-  const handleNavClick = (e, sectionId) => {
-    e.preventDefault();
-    const section = sectionsRef.current[sectionId];
-    const analiticsEl = analiticsRef.current;
-    
-    if (section && analiticsEl) {
-      analiticsEl.scrollTo({
-        top: section.offsetTop - 20, // Adjust offset as needed
-        behavior: 'smooth'
-      });
-    }
-  };
+const handleNavClick = (e, sectionId) => {
+  e.preventDefault();
+  const section = sectionsRef.current[sectionId];
+  const analiticsEl = analiticsRef.current;
+  
+  if (section && analiticsEl) {
+    const sectionRect = section.getBoundingClientRect();
+    const containerRect = analiticsEl.getBoundingClientRect();
+
+    const offset = sectionRect.top - containerRect.top;
+
+    analiticsEl.scrollTo({
+      top: analiticsEl.scrollTop + offset - 10, // -20 або інший відступ
+      behavior: 'smooth'
+    });
+  }
+};
+
 
   if (!isAuth) {
     return null;
@@ -167,20 +187,21 @@ export default function Analytics() {
               {id ? (
                   <>
 
-                    <div className={styles.analiticsContent}>
+                    <div ref={ref} className={`${styles.analiticsContent}  ${widthsState[885] ? styles.narrowAnalitics : ''}`}>
                         <div className={styles.analitics} ref={analiticsRef} >
                           <AnalyticsSection
-                            sectionId="allocation"
-                            title="Asset Allocation"
-                            dataState={assetAllocation}
-                            renderData={(data) => <AssetAllocations data={data} />}
+                            sectionId="assetAllocation"
+                            title={t("analytics.navigator.assetAllocations")}
+                            renderData={(data, title) => <AssetAllocations portfolioId={id} data={data} title={title}/>}
+                             dataState={assetAllocation}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
                           />
 
                           <AnalyticsSection
-                            sectionId="changes"
-                            title="Balance Changes"
+                            sectionId="balanceChanges"
+                            title={t("analytics.navigator.balanceChanges")}
+                            renderData={(data,title) => <BalanceChanges data={data} title={title} />}
                             dataState={{loading: false, error: false, data: 
                               [
                                 { date: 'Sep 13', balance: 18.5, timestamp: 1694649600 },
@@ -195,29 +216,56 @@ export default function Analytics() {
                                 { date: 'May 10', balance: 38.2, timestamp: 1715299200 },
                               ]
                             }}
-                            renderData={(data) => <BalanceChanges data={data} onDateRangeChange={handleDateRangeChange} />}
+                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            registerRef={registerSectionRef}
+                          />
+
+                          <Volatility
+                            sectionId="risksAndVolatility"
+                            title={t("analytics.navigator.risksAndVolatility")}
+                            portfolioId={id}
+                            onReset={() => dispatch(fetchRiskScore({
+                              id: id,
+                              data:{
+                                symbol: "BTC",
+                                fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+                                toTs: new Date().setHours(23, 59, 59, 999),
+                                pointsCount: 12
+                              }
+                            }))}
+                            registerRef={registerSectionRef}
+                          />
+                          <AnalyticsSection
+                            sectionId="totalProfitLoss"
+                            title={t("analytics.navigator.totalProfitLoss")}
+                            renderData={(data,title) => <ProfitLoss data={data} title={title}/>}
+                            dataState={{
+                              loading: false,
+                              error: false,
+                              data: 
+                                  [
+                                      { date: 'Sep 13', value: -1.5, timestamp: '2024-09-13' },
+                                      { date: 'Sep 14', value: -8.2, timestamp: '2024-09-14' },
+                                      { date: 'Sep 15', value: 8.1, timestamp: '2024-09-15' },
+                                      { date: 'Sep 16', value: 2.8, timestamp: '2024-09-16' },
+                                      { date: 'Sep 17', value: 0, timestamp: '2024-09-17' },
+                                      { date: 'Sep 18', value: 0, timestamp: '2024-09-18' },
+                                      { date: 'Sep 19', value: -9.8, timestamp: '2024-09-19' },
+                                      { date: 'Sep 20', value: -11.2, timestamp: '2024-09-20' },
+                                      { date: 'Sep 21', value: -6.5, timestamp: '2024-09-21' },
+                                      { date: 'Sep 22', value: -12.1, timestamp: '2024-09-22' },
+                                      { date: 'Sep 23', value: 1.2, timestamp: '2024-09-23' },
+                                      { date: 'Sep 24', value: -0.8, timestamp: '2024-09-24' },
+                                    ]
+                              
+                            }}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
                           />
                           <AnalyticsSection
-                            sectionId="volatility"
-                            title="Total Profit & Loss"
-                            dataState={{loading: false, error: false,data: null}}
-                            renderData={null}
-                            onReset={() => dispatch(fetchAssetAllocation(id))}
-                            registerRef={registerSectionRef}
-                          />
-                          <AnalyticsSection
-                            sectionId="profiitLoss"
-                            title="Risks and volatility"
-                            dataState={{loading: false, error: false,data: null}}
-                            renderData={null}
-                            onReset={() => dispatch(fetchAssetAllocation(id))}
-                            registerRef={registerSectionRef}
-                          />
-                          <AnalyticsSection
-                            sectionId="cost"
-                            title="Cost analysis"
+                            sectionId="costAnalysis"
+                            title={t("analytics.navigator.costAnalysis")}
+                            renderData={(data, title) => <CostAnalysis data={data} title={title}/>}
                             dataState={{
                               loading: false,
                               error: false,
@@ -231,43 +279,47 @@ export default function Analytics() {
                                 ]
                               
                             }}
-                            renderData={(data) => <CostAnalysis data={data} />}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
+                            
                           />
+
+
+
+
                         </div>
                         <div 
                           className={styles.analiticsNav}
                           style={{"--progress": `${overallProgress}%`}} // Use CSS variable for progress
                         >
                           <ul>
-                            <li className={activeSection === "allocation" ? styles.active : ""}>
-                              <a href="#allocation" onClick={(e) => handleNavClick(e, "allocation")}>
-                                Asset Allocations
+                            <li className={activeSection === "assetAllocation" ? styles.active : ""}>
+                              <a href="#assetAllocation" onClick={(e) => handleNavClick(e, "assetAllocation")}>
+                                {t("analytics.navigator.assetAllocations")}
                               </a>
                             </li>
 
-                            <li className={activeSection === "changes" ? styles.active : ""}>
-                              <a href="#changes" onClick={(e) => handleNavClick(e, "changes")}>
-                                Balance Changes
+                            <li className={activeSection === "balanceChanges" ? styles.active : ""}>
+                              <a href="#balanceChanges" onClick={(e) => handleNavClick(e, "balanceChanges")}>
+                                {t("analytics.navigator.balanceChanges")}
                               </a>
                             </li>
                             
-                            <li className={activeSection === "volatility" ? styles.active : ""}>
-                              <a href="#volatility" onClick={(e) => handleNavClick(e, "volatility")}>
-                                Risks and volatility
+                            <li className={activeSection === "risksAndVolatility" ? styles.active : ""}>
+                              <a href="#risksAndVolatility" onClick={(e) => handleNavClick(e, "risksAndVolatility")}>
+                                {t("analytics.navigator.risksAndVolatility")}
                               </a>
                             </li>
                             
-                            <li className={activeSection === "profiitLoss" ? styles.active : ""}>
-                              <a href="#profiitLoss" onClick={(e) => handleNavClick(e, "profiitLoss")}>
-                                Total Profit & Loss
+                            <li className={activeSection === "totalProfitLoss" ? styles.active : ""}>
+                              <a href="#totalProfitLoss" onClick={(e) => handleNavClick(e, "totalProfitLoss")}>
+                                {t("analytics.navigator.totalProfitLoss")}
                               </a>
                             </li>
                             
-                            <li className={activeSection === "cost" ? styles.active : ""}>
-                              <a href="#cost" onClick={(e) => handleNavClick(e, "cost")}>
-                                Cost analysis
+                            <li className={activeSection === "costAnalysis" ? styles.active : ""}>
+                              <a href="#costAnalysis" onClick={(e) => handleNavClick(e, "costAnalysis")}>
+                                {t("analytics.navigator.costAnalysis")}
                               </a>
                             </li>
                           </ul>
@@ -278,7 +330,7 @@ export default function Analytics() {
                   </>
                 ) : (
                   <div className={styles.needSelect}>
-                    To view the information, you need to select the required portfolio from the list.
+                    {t("analytics.selectPortfolioMessage")}
                   </div>
                 )
 

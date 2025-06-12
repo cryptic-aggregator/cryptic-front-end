@@ -52,7 +52,9 @@
 }
 
 /*analiticsNav*/
-
+.narrowAnalitics .analiticsNav {
+  display: none;
+}
 .analiticsNav {
   height: 100%;
   max-width: 160px;

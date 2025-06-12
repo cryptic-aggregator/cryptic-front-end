@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from './store/index';
-import toast, { Toaster } from 'react-hot-toast';
-import RootWrapper from './RootWrapper';
+import { Toaster } from 'react-hot-toast';
+import RootWrapper from './components/layout/RootWrapper';
 
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);

@@ -10,14 +10,16 @@ import { useAuth } from "../../hooks/useAuth"; //
 import { fetchWallets,changeVisibilityWallet } from "../../store/slices/walletSlice";
 import { useWallet } from "../../hooks/useWallet";
 import toast, { Toaster } from 'react-hot-toast';
+import i18n from "i18next";
 
 import ethereumIcon from "../../assets/images/Wallets/ethereumIcon.svg";
 import bitcoinIcon from "../../assets/images/Wallets/bitcoinIcon.svg";
 import solanaIcon from "../../assets/images/Wallets/solanaIcon.svg";
 import networkSelect from "../../assets/images/Wallets/networkSelect.svg";
+import searchIcon from "../../assets/images/Wallets/search.svg";
 import qrCodeIcon from "../../assets/images/Wallets/qrCodeIcon.svg";
-import Modal from "../../components/Modal/WalletConnectModal/WalletConnectModal";
-import ModalQRCode from "../../components/Modal/QRCodeGenerateModal/QRCodeGenerateModal";
+import Modal from "../../components/modals/WalletConnect/WalletConnect";
+import ModalQRCode from "../../components/modals/QRCodeGenerate/QRCodeGenerate";
 import syncIcon from "../../assets/images/Dashboard/syncIcon.svg";
 import Loader from '../../components/common/Loader/Loader';
 import Error from '../../components/common/Error/Error';
@@ -39,18 +41,23 @@ export default function Wallets() {
   const [selectedWallet, setSelectedWallet] = useState(null); // Оголошуємо стан для selectedWallet
   const [isOpen, setIsOpen] = useState(false);
   const { ref, widthsState } = useContainerWidth([811, 500]);
-  const [selectedNetwork, setSelectedNetwork] = useState({
-    value: "type",
-    label: "All Network",
-    icon: syncIcon,
-  });
-  const networks = [
 
-    { value: "type", label: "All Network", icon: syncIcon },
-    { value: "Ethereum", label: "Ethereum", icon: ethereumIcon },
-    { value: "Bitcoin", label: "Bitcoin", icon: bitcoinIcon },
-    { value: "Solana", label: "Solana", icon: solanaIcon },
-  ];
+
+  const networks = useMemo(() => [
+    { value: "", label: t("wallets.toolBar.all"), icon: syncIcon },
+    { value: "eth", label: "Ethereum", icon: ethereumIcon },
+    { value: "btc", label: "Bitcoin", icon: bitcoinIcon },
+    { value: "sol", label: "Solana", icon: solanaIcon },
+  ], [i18n.language]);
+
+  const [selectedNetwork, setSelectedNetwork] = useState(networks[0]);
+
+  useEffect(() => {
+    setSelectedNetwork(prev => {
+      const newType = networks.find(t => t.value === prev.value);
+      return newType || networks[0];
+    });
+  }, [networks]);
 
   const handleSelect = (network) => {
     setSelectedNetwork(network);
@@ -65,9 +72,14 @@ export default function Wallets() {
     }));
   };
   useEffect(() => {
-    dispatch(fetchWallets(id)); // Якщо авторизований, отримуємо портфоліо
+    
+    dispatch(fetchWallets({
+      portfolioId: id,
+      search: search,
+      networks: selectedNetwork.value,
+    })); // Якщо авторизований, отримуємо портфоліо
   
-  }, [navigate, dispatch, id]);
+  }, [navigate, dispatch, id, selectedNetwork, search ]);
   
   const sortedWallets = useMemo(() => {
     if(listWalletsFromPortfolio!=null){
@@ -86,21 +98,23 @@ export default function Wallets() {
   if (!isAuth) {
     return null;  // Якщо не авторизований, нічого не відображається
   }
-  const notify = () => toast.error('Transfers are only available for wallets with automatic connection');
+  const notify = () => toast.error(t("wallets.toast.errorTransfers"));
   return (
     <>
       {id ? (
           <div ref={ref} className={styles.walletsContent}>
-            <div className={`${styles.toolbar} ${widthsState[811] ? styles.narrowToolbar : ''}`}>
+            <div className={`${styles.toolbar} ${widthsState[811] ? styles.narrowToolbar : ''} `}>
               <div className={styles.searchContainer}>
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder={t("wallets.toolBar.placeholderSearch")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className={styles.searchInput}
                 />
-                <button className={styles.searchButton}>🔍</button>
+                <button className={styles.searchButton}>
+                   <img src={searchIcon} alt="Search" className={styles.searchIcon} />
+                </button>
               </div>
               <div className={styles.rightContainer}>
                 <div className={styles.networkSelector}>
@@ -126,7 +140,7 @@ export default function Wallets() {
                       </div>
                     )}
                 </div>
-                <button onClick={() => setModalIsOpen(true)} className={styles.addWalletButton}>Add Wallet</button>
+                <button onClick={() => setModalIsOpen(true)} className={styles.addWalletButton}>{t("wallets.toolBar.buttonAdd")}</button>
               </div>
             </div>
             {loadingListWalletsFromPortfolio && 
@@ -148,25 +162,35 @@ export default function Wallets() {
                     {sortedWallets.map(wallet => (
                       <li key={wallet.id} className={styles.walletsListElement}>
                         <div className={styles.walletsListElementWrapper}>
+
                           <div className={styles.walletsImage}>
-                            <span className={styles.title}>Wallet</span>
-                            <img src={walletIcon} alt="Wallet" />
+                            <span className={styles.title}>{t("wallets.table.wallet")}</span>
+                            {wallet.network === "eth" &&(
+                              <img src={networks[1].icon} alt="Wallet" />
+                            )}
+                            {wallet.network === "btc" &&(
+                              <img src={networks[2].icon} alt="Wallet" />
+                            )}
+                            {wallet.network === "sol" &&(
+                              <img src={networks[3].icon} alt="Wallet" />
+                            )}
                           </div>
+
                           <div className={styles.walletsAddress}>
-                            <span className={styles.title}>Address</span>
+                            <span className={styles.title}>{t("wallets.table.address")}</span>
                             <span className={styles.address}>{wallet.wallet_address}</span>
                           </div>
                           <div className={styles.walletsType}>
-                            <span className={styles.title}>Сonnection type</span>
+                            <span className={styles.title}>{t("wallets.table.connection.type")}</span>
                             <span className={styles.type}>
                               {{
-                                0: 'Automatic',
-                                1: 'Manual',
-                              }[wallet.connection_type] || 'Unknown'}
+                                0: t("wallets.table.connection.automatic"),
+                                1: t("wallets.table.connection.manual"),
+                              }[wallet.connection_type] || t("wallets.table.connection.unknown")}
                             </span>
                           </div>
                           <div className={styles.walletsStatus}>
-                            <span className={styles.title}>Status</span>
+                            <span className={styles.title}>{t("wallets.table.status.title")}</span>
                             <button
                               onClick={() => toggleVisibility(wallet.id, wallet.visibility)}
                               className={`${wallet.visibility ? styles.switchEnabled : styles.switchDisabled} ${styles.switch}`}
@@ -176,25 +200,25 @@ export default function Wallets() {
                               />
                             </button>
                             <span className={styles.statusText}>
-                              {wallet.visibility ? "Wallet Enabled" : "Wallet Disabled"}
+                              {wallet.visibility ? t("wallets.table.status.enabled") : t("wallets.table.status.disabled")}
                             </span>
                           </div>
                           <div className={styles.walletsActions}>
                             <button onClick={() => { setModalQRCodeIsOpen(true); setSelectedWallet(wallet) }} className={styles.receiveButton}>
                               <img src={qrCodeIcon} alt="QRCode" />
-                              <span>Receive</span>
+                              <span>{t("wallets.table.receive")}</span>
                             </button>
 
                             {wallet.connection_type === 1 ? (
                               <div onClick={notify} className= {`${styles.goToTransferDisabled} ${styles.goToTransfer}`} >
-                                {t('Go to transfer')} 
+                                {t("wallets.table.transfer")}
                               </div>
                             ) : (
                               <Link to={`/transfer/${wallet.id}`} className={styles.goToTransfer}>
-                                {t('Go to transfer')}
+                                {t("wallets.table.transfer")}
                               </Link>
                             )}
-                            <button className={styles.disconnect}>Disconnect</button>
+                            <button className={styles.disconnect}>{t("wallets.table.disconnect")}</button>
                           </div>
                         </div>
                       
@@ -206,7 +230,7 @@ export default function Wallets() {
                 </div>
               ) : (
                 <div className={styles.needSelect}>
-                  You don't have any wallets connected yet, but you can easily solve that, just click on the add wallet button
+                {t("wallets.dataUnavailable")}
                 </div>
               )
             )}
@@ -214,7 +238,7 @@ export default function Wallets() {
 
         ) : (
           <div className={styles.needSelect}>
-            To view the information, you need to select the required portfolio from the list.
+            {t("wallets.selectPortfolioMessage")}
           </div>
         )
         }

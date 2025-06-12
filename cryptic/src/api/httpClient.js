@@ -46,7 +46,9 @@ httpClient.interceptors.response.use(
         }
 
         // Запит на оновлення токена
-        const res = await axios.post(`${API_BASE_URL}/users/refresh`, `${refreshToken}`);
+        const res = await axios.post(`${API_BASE_URL}/users/refresh`, `"${refreshToken}"`, {
+          headers: { 'Content-Type': 'application/json-patch+json' },
+        });
         const newAccessToken = res.data.accessToken;
 
         // Оновлюємо токени в Redux

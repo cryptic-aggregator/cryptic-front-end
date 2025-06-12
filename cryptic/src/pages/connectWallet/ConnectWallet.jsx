@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../../components/navigation/MainNavbar/MainNavbar";
-import Footer from "../../components/layout/Footer/Footer";
+import Navbar from "../../components/navigation/Navbar/Main/Main";
+import Footer from "../../components/navigation/Footer/Footer";
 import styles from "./ConnectWallet.module.css";
 import { wagmiAdapter,solanaWeb3JsAdapter, bitcoinAdapter, metadata,networks, projectId } from "../../lib/reownAppkit/reownAppkit";
 import { useDispatch } from "react-redux";
@@ -46,7 +46,7 @@ export default function ConnectWallet() {
   const updateWalletState = async () => {
     const address = modal.getAddress();
     if (!address) {
-      toast.error("Wallet address not found");
+      toast.error(t("connectWallet.toast.walletNotFound"));
       return;
     }
 
@@ -90,14 +90,14 @@ export default function ConnectWallet() {
           setConnectWallet(null)
           navigate("/dashboard")
         } catch (error) {
-          toast.error('Error connecting wallet');
+          toast.error(t("connectWallet.toast.errorConnecting"));
           console.error('Error connecting wallet' + error);
         }
 
       }else if(!portfolioName){
-        toast.error('Portfolio name not find');
+        toast.error(t("connectWallet.toast.nameNotFound"));
       }else{
-        toast.error('Connect wallet address not find');
+        toast.error(t("connectWallet.toast.walletNotFound"));
       }
   };
 
@@ -126,21 +126,21 @@ export default function ConnectWallet() {
             <div className={styles.connectWalletContainer}>
               {currentStep === 1 && (
                 <div className={styles.card}>
-                  <h2 className={styles.title}>{t("Connect Your Wallet")}</h2>
-                  <p className={styles.subtitle}>{t("Choose a connection method")}</p>
+                  <h2 className={styles.title}>{t("connectWallet.title")}</h2>
+                  <p className={styles.subtitle}>{t("connectWallet.subtitle")}</p>
 
                   <div className={styles.connectionOptions}>
                     <button
                       className={`${styles.optionButton} ${!isManualInput ? styles.selected : ""}`}
                       onClick={() => setIsManualInput(0)}
                     >
-                      {t("Automatic connection")}
+                      {t("connectWallet.connectionOptions.automatic")}
                     </button>
                     <button
                       className={`${styles.optionButton} ${isManualInput ? styles.selected : ""}`}
                       onClick={() => setIsManualInput(1)}
                     >
-                      {t("Manual Input")}
+                      {t("connectWallet.connectionOptions.manual")}
                     </button>
                   </div>
 
@@ -148,24 +148,24 @@ export default function ConnectWallet() {
                     <>
                       {connectWallet?.wallet_address && (
                         <div className={styles.card}>
-                          <p className={styles.subtitle}>{t("You choose wallet:")} {connectWallet.wallet_address.slice(0, 8)}...{connectWallet.wallet_address.slice(-5)}</p>
+                          <p className={styles.subtitle}>{t("connectWallet.chooseWallet")} {connectWallet.wallet_address.slice(0, 8)}...{connectWallet.wallet_address.slice(-5)}</p>
                         </div>
                       )}
 
                       <div className={styles.web3ModalOption}>
                         <button onClick={() => modal.open()} className={styles.connectButton}>
-                          {connectWallet ? (`Change wallet`):(`Connect wallet`)}
+                          {connectWallet ? (t("connectWallet.connectButton.change")):(t("connectWallet.connectButton.connect"))}
                         </button>
                       </div>
                     </>
                   ) : (
                     <form className={styles.manualInputForm}>
-                      <label htmlFor="addressInput">{t("Wallet Address")}</label>
+                      <label>{t("connectWallet.walletAddress")}</label>
                       <input
                         type="text"
                         id="addressInput"
                         className={styles.addressInput}
-                        placeholder="Enter your address wallet"
+                        placeholder={t("connectWallet.walletAddressPlaceholder")}
                         onChange={(e) => handleWalletConnect(e.target.value)}
                         required
                       />
@@ -174,7 +174,7 @@ export default function ConnectWallet() {
                   )}
                   <div className={styles.navigationButtonsFirstPage}>
                     <button className={styles.nextButton} onClick={() => setCurrentStep(2)}>
-                      {t("Next")}
+                      {t("connectWallet.next")}
                     </button>
                   </div>
                 </div>
@@ -187,21 +187,21 @@ export default function ConnectWallet() {
                   </div>
                 ):(
                   <div className={styles.card}>
-                  <p className={styles.title}>{t("Enter the name of your portfolio where this wallet will be located.")}</p>
+                  <p className={styles.title}>{t("connectWallet.titlePortfolio")}</p>
                   <input
                     type="text"
                     className={styles.addressInput}
-                    placeholder={t("Portfolio Name")}
+                    placeholder={t("connectWallet.portfolioPlaceholder")}
                     value={portfolioName}
                     onChange={(e) => setPortfolioName(e.target.value)}
                   />
 
                   <div className={styles.navigationButtons}>
                     <button className={styles.backButton} onClick={() => setCurrentStep(1)}>
-                      {t("Back")}
+                      {t("connectWallet.back")}
                     </button>
                     <button className={styles.createButton} onClick={() => createPorfolioConnectWallet()}>
-                      {t("Create")}
+                      {t("connectWallet.create")}
                     </button>
                   </div>
                 </div>

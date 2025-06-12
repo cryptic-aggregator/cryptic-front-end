@@ -30,41 +30,36 @@ export default function UserProfile() {
       email: data.email
     }));
   };
-   useEffect(() => {
-     if (!isAuth) {
-       navigate("/signin"); // Якщо не авторизований, перенаправляємо на сторінку входу
-     }
-   }, [isAuth, navigate]);
 
   return (
     <>
 
-              <div className={styles.topic}>{t('userProfile.userProfile')}</div>
-              <div className={styles.textTopic}>{t('userProfile.infomation')}</div>
+              <div className={styles.topic}>{t('profile.title')}</div>
+              <div className={styles.textTopic}>{t('profile.info')}</div>
 
               <form className={styles.registerForm} onSubmit={handleSubmit(onSubmit)}>
                 <div className={styles.inputForm}>
                     <div className={styles.inputGroup}>
-                      <label>{t('signUp.login')}</label>
+                      <label>{t('profile.login')}</label>
                       <input {...register("login", { 
-                        required: `${t('signUp.required')}` 
+                        required: `${t('common.required')}` 
                       })} 
-                      placeholder={t('signUp.placeholderLogin')}
+                      placeholder={t('profile.placeholderLogin')}
                       autoComplete="off"/>
                       <p>{errors.login?.message}</p>
                     </div>
                     <div className={styles.inputGroup}>
-                      <label>{t('signUp.email')}</label>
+                      <label>{t('profile.email')}</label>
                       <input {...register("email", { 
-                        required: `${t('signUp.required')}`,
+                        required: `${t('common.required')}`,
                       })} 
-                      placeholder={t('signUp.placeholderEmail')} autoComplete="off"
+                      placeholder={t('profile.placeholderEmail')} autoComplete="off"
                       />
                       <p>{errors.email?.message}</p>
                     </div>
                 </div>
                 <div className={styles.buttonWrapper}>
-                  <button className={styles.button} type="submit">{t('userProfile.updateProfile')}</button>
+                  <button className={styles.button} type="submit">{t('profile.update')}</button>
               </div>
               </form>
 

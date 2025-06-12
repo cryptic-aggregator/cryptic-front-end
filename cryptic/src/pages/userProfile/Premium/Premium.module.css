@@ -1,0 +1,250 @@
+
+        .wrapper {
+          max-width: 512px;
+          margin: 0 auto;
+        }
+
+        .toast {
+          position: fixed;
+          top: 24px;
+          right: 24px;
+          z-index: 50;
+          padding: 16px 24px;
+          border-radius: 12px;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .toastSuccess {
+          background-color: #059669;
+          border: 1px solid #10b981;
+        }
+
+        .toastError {
+          background-color: #dc2626;
+          border: 1px solid #ef4444;
+        }
+
+        .toa {
+          display: flex;
+          align-items: center;
+        }
+
+        .toastIcon {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+
+        .header {
+          text-align: center;
+          margin-bottom: 48px;
+        }
+
+        .crownIcon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 80px;
+          height: 80px;
+
+          border-radius: 50%;
+          margin-bottom: 24px;
+          font-size: 32px;
+        }
+
+        .title {
+          font-size: 36px;
+          font-weight: bold;
+          background: #FFC205;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 16px;
+        }
+
+        .subtitle {
+          font-size: 20px;
+          color: #d1d5db;
+        }
+
+        .featuresContainer {
+          display: flex;
+          flex-direction: column;
+          gap: 24px;
+          margin-bottom: 48px;
+        }
+
+        .featureCard {
+          background: rgba(31, 41, 55, 0.5);
+          backdrop-filter: blur(8px);
+          border-radius: 16px;
+          padding: 0px 24px;
+          border: 1px solid rgba(55, 65, 81, 0.5);
+          transition: all 0.3s ease;
+        }
+
+        .featureCard:hover {
+          border-color: rgba(251, 191, 36, 0.3);
+          transform: translateY(-2px);
+        }
+
+        .featureContent {
+          display: flex;
+          align-items: center;
+        }
+
+        .featureIcon {
+          width: 28px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 16px;
+          font-size: 24px;
+        }
+
+        .featureText {
+          flex: 1;
+        }
+
+        .featureTitle {
+          font-size: 20px;
+          font-weight: 600;
+          color: white;
+          margin: 4;
+        }
+        .featureDescription {
+          margin-bottom: 20px;
+        }
+
+        .pricingCard {
+          background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+          border-radius: 16px;
+          padding: 0px 20px;
+          border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .pricingContent {
+          text-align: center;
+        }
+
+        .priceWrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+        }
+
+        .price {
+          font-size: 35px;
+          font-weight: bold;
+          color: white;
+        }
+
+        .period {
+          font-size: 16px;
+          color: #9ca3af;
+          margin: 8px;
+          margin-left: 8px;
+        }
+
+        .guarantee {
+          color: #d1d5db;
+          margin-bottom: 10px;
+          padding: 0;
+        }
+
+        .activateButton {
+          background:  #FFC205;
+          color: black;
+          font-weight: bold;
+          padding: 10px 20px;
+          border-radius: 12px;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 16px;
+          margin-bottom: 10px;
+        }
+
+        .activateButton:hover:not(:disabled) {
+          background: linear-gradient(135deg, #f59e0b, #d97706);
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px 0 rgba(251, 191, 36, 0.4);
+        }
+
+        .activateButton:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        .buttonLoading {
+          background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+          cursor: not-allowed !important;
+        }
+
+        .loadingContent {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .buttonContent {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .buttonIcon {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+
+        .spinner {
+          width: 24px;
+          height: 24px;
+          border: 2px solid black;
+          border-bottom-color: transparent;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin-right: 12px;
+        }
+
+        .securityNote {
+          text-align: center;
+        }
+
+        .securityBadge {
+          display: inline-flex;
+          align-items: center;
+          padding: 8px 16px;
+          background: rgba(31, 41, 55, 0.5);
+          border-radius: 50px;
+          border: 1px solid rgba(55, 65, 81, 0.5);
+        }
+
+        .securityIcon {
+          color: #10b981;
+          margin-right: 8px;
+        }
+
+        .securityText {
+          font-size: 14px;
+          color: #9ca3af;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
