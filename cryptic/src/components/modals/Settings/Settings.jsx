@@ -67,8 +67,8 @@ export default function SettingsModal({ isOpen, onClose,children }) {
                         <div className={styles.select}>
                             <span>{t('modals.settings.currency')}</span>
                             <div className={styles.current}>
-                                <span>UAH</span>
-                                <img src="https://flagsapi.com/UA/flat/64.png" alt="UAH" />
+                                <span>USDT</span>
+                                <img src="https://flagsapi.com/US/flat/64.png" alt="UAH" />
                             </div>
                         </div>
                     </div>

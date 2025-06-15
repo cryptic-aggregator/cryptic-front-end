@@ -9,7 +9,19 @@
   background-color: #11141E;
   border-radius: 30px;
 }
+.syncAllButton{
+  position: absolute;
+  right: 20px;
+  height: 30px;
+  font-size: 20px;
+  color: #999999;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+}
 .costAnalysisWrapper{
+      position: relative;
   width: 100%;
   padding: 30PX 50PX 30PX 50PX;
   display: flex;

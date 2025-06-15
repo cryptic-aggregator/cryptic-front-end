@@ -27,16 +27,36 @@ import PrivateRoute from "./components/routes/PrivateRoute";
 import TwoFactorGate from "./components/routes/TwoFactorGate";
 import { useUser } from "./hooks/useUser";
 import Premium from "./pages/UserProfile/Premium/Premium";
+import Terms from "./pages/Terms/Terms";
+import Privacy from "./pages/Privacy/Privacy";
+import { useEffect, useState } from "react";
+import { initializeAuth } from "./store";
 
 function App() {
+  const [initDone, setInitDone] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      await initializeAuth();
+      setInitDone(true);
+    })();
+  }, []);
+
   const { isAuth } = useAuth();
-  const {user} = useUser();
+  const { user } = useUser();
+
+  if (!initDone) {
+
+    return <div></div>;
+  }
+
   return (
     <>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
-
+        <Route path="terms" element={<Terms />} />
+        <Route path="privacy" element={<Privacy />} />
         <Route element={<PublicOnlyRoute isAuthenticated={isAuth} />}>
           <Route path="signIn" element={<SignIn />} />
           <Route path="signUp" element={<SignUp />} />

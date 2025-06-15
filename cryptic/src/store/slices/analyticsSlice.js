@@ -13,14 +13,14 @@ export const fetchAssetAllocation = createAsyncThunk(
     }
   }
 );
-export const fetchPerformance = createAsyncThunk(
-  "analyticsStore/fetchPerformance",
-  async (data, { rejectWithValue }) => {
+export const fetchTotalProfitLoss = createAsyncThunk(
+  "analyticsStore/fetchTotalProfitLoss",
+  async ({id, data}, { rejectWithValue }) => {
     try {
-      const response = await analyticsApi.getAnalyticsAllocations(data); // Використовуємо API
+      const response = await analyticsApi.getTotalProfitLoss(id, data); // Використовуємо API
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Error fetching Asset Allocation");
+      return rejectWithValue(error.response?.data || "Error fetching Total ProfitLoss");
     }
   }
 );
@@ -35,14 +35,14 @@ export const fetchRiskScore = createAsyncThunk(
     }
   }
 );
-export const fetchTokenDistribution = createAsyncThunk(
-  "analyticsStore/fetchTokenDistribution",
-  async (data, { rejectWithValue }) => {
+export const fetchBalanceChange = createAsyncThunk(
+  "analyticsStore/fetchBalanceChange",
+  async ({id, data}, { rejectWithValue }) => {
     try {
-      const response = await analyticsApi.getAnalyticsAllocations(data); // Використовуємо API
+      const response = await analyticsApi.getBalanceChange(id, data); // Використовуємо API
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || "Error fetching Asset Allocation");
+      return rejectWithValue(error.response?.data || "Error fetching balance change");
     }
   }
 );
@@ -102,6 +102,34 @@ const analyticsSlice = createSlice({
         state.assetAllocation.loading = false;
         state.assetAllocation.error = true;
       })
+
+      .addCase(fetchTotalProfitLoss.pending, (state) => {
+        state.totalProfitLoss.loading = true;
+        state.totalProfitLoss.error = false;
+      })
+      .addCase(fetchTotalProfitLoss.fulfilled, (state, action) => {
+        state.totalProfitLoss.loading = false;
+        state.totalProfitLoss.data = action.payload.points;
+      })
+      .addCase(fetchTotalProfitLoss.rejected, (state, action) => {
+        state.totalProfitLoss.loading = false;
+        state.totalProfitLoss.error = true;
+      })
+
+      .addCase(fetchBalanceChange.pending, (state) => {
+        state.balanceChanges.loading = true;
+        state.balanceChanges.error = false;
+      })
+      .addCase(fetchBalanceChange.fulfilled, (state, action) => {
+        state.balanceChanges.loading = false;
+        state.balanceChanges.data = action.payload.points;
+      })
+      .addCase(fetchBalanceChange.rejected, (state, action) => {
+        state.balanceChanges.loading = false;
+        state.balanceChanges.error = true;
+      })
+
+
 
       .addCase(fetchRiskScore.pending, (state) => {
         state.risksAndVolatility.loading = true;

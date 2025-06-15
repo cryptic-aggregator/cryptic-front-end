@@ -1,6 +1,6 @@
 import styles from "./Profile.module.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link,useLocation,useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import userImg from "../../../../assets/images/SideBar/user.jpg";
@@ -23,11 +23,7 @@ export default function ProfileSidebar() {
     const { isAuth } = useAuth(); // Отримуємо інформацію про користувача 
     const { user, isLoading, error } = useUser(); // Отримуємо інформацію про користувача
 
-    useEffect(() => {
-        if (!isAuth) {
-            navigate("/signin");
-        }
-    }, [isAuth, navigate]);
+
 
     const logout = async () => {
       try {
@@ -39,7 +35,34 @@ export default function ProfileSidebar() {
         console.error('Logout failed:', error);
       }
     };
+  const fileInputRef = useRef(null);
+  const [preview, setPreview] = useState(null);
 
+  useEffect(() => {
+    // При монтуванні компонента — перевіряємо чи є збережене фото
+    const savedImage = localStorage.getItem("userPhoto");
+    if (savedImage) {
+      setPreview(savedImage);
+    }
+  }, []);
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64data = reader.result;
+      // Зберігаємо base64 у localStorage
+      localStorage.setItem("userPhoto", base64data);
+      setPreview(base64data);
+    };
+    reader.readAsDataURL(file);
+  };
     return (
         <>
 
@@ -58,12 +81,23 @@ export default function ProfileSidebar() {
                     }
                     {!error && !isLoading && user!=null &&
                     <>
-                    <div className={styles.userImg}>
-                      <img className={styles.userPhoto} src={userImg} alt="User Photo" />
-                      <div className={styles.photoIcon} >
-                        <img src={iconUserImg} alt="Icon" />
-                      </div>
-                    </div>
+<div className={styles.userImg}>
+  <img
+    className={styles.userPhoto}
+    src={preview || userImg}  // показуємо збережене фото або дефолтне
+    alt="User Photo"
+  />
+  <button onClick={handleButtonClick} className={styles.photoIcon}>
+    <img src={iconUserImg} alt="Icon" />
+  </button>
+  <input
+    type="file"
+    accept="image/*"
+    ref={fileInputRef}
+    onChange={handleFileChange}
+    style={{ display: "none" }}
+  />
+</div>
                     <div className={styles.title1}>
                         {user.name}
                     </div>

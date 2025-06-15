@@ -46,7 +46,7 @@ export default function SignUp() {
         navigate('/signIn');
         console.log('Registration successful',);
       } catch (error) {
-        toast.error(t('auth.signIn.failedSignUp'));
+        toast.error(t('auth.signUp.failedSignUp'));
         console.error('Registration failed:', error.response?.data);
       }
     };

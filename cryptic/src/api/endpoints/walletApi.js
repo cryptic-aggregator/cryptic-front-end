@@ -13,4 +13,7 @@ export const walletApi = {
   changeVisibilityWallet: async (portfolioId, walletId, visibility) => {
     return await httpClient.patch(`/portfolio/${portfolioId}/wallet/${walletId}`, visibility);
   },
+  deleteWallet: async (portfolioId, walletId) => {
+    return await httpClient.delete(`/portfolio/${portfolioId}/wallet/${walletId}`);
+  },
 };

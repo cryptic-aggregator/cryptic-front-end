@@ -4,6 +4,7 @@
   text-align: center;
 }
 .assetAllocation{
+
   display: flex;
   width: 100%;
   background-color: #11141E;
@@ -15,7 +16,19 @@
   height: 10px;
   border-radius: 5px;
 }
+.syncAllButton{
+  position: absolute;
+  right: 20px;
+  height: 30px;
+  font-size: 20px;
+  color: #999999;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+}
 .assetAllocationWrapper{
+    position: relative;
   display: flex;
   padding: 30PX;
   width: 100%;

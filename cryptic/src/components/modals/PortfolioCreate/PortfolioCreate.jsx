@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { addPortfolio  } from "../../../store/slices/portfolioSlice";
 import {useNavigate} from "react-router-dom";
 
-export default function SettingsModal({ isOpen, onClose,children }) {
+export default function PortfolioCreate({ isOpen, onClose,children }) {
     const {t} = useTranslation();
     const [avatar, setAvatar] = useState(null);
     const dispatch = useDispatch();

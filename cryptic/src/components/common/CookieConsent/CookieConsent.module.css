@@ -1,0 +1,54 @@
+.cookieBanner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 800px;
+  background: #1e1e1e;
+  color: #f1f1f1;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9999;
+  font-size: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  line-height: 1.5;
+}
+
+.cookieBanner p {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+
+.cookieBanner a {
+  color: #90cdf4;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.cookieBanner a:hover {
+  color: #ffc205;
+}
+
+.cookieBanner button {
+  background-color: #ffc205;
+  color: #1e1e1e;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cookieBanner button:hover {
+  background-color: #ffb400;
+  transform: translateY(-2px);
+}

@@ -34,6 +34,7 @@ export const modals = {
       errorConnecting: "Помилка підключення гаманця",
       nameNotFound: "Назва портфеля не знайдена",
       pleaseEnter: "Будь ласка, введіть адресу гаманця",
+      invalidAddress: "Ви ввели недійсну адресу гаманця.",
     }
   },
 };

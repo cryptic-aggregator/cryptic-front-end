@@ -4,7 +4,7 @@ import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth"; // 
-import { fetchAssetAllocation, fetchPerformance, fetchRiskScore, fetchTokenDistribution, fetchWalletActivity  } from "../../store/slices/analyticsSlice";
+import { fetchAssetAllocation, fetchTotalProfitLoss, fetchRiskScore, fetchBalanceChange  } from "../../store/slices/analyticsSlice";
 import { useRef } from "react";
 import { useAnalyics } from "../../hooks/useAnalytics";
 import AnalyticsSection from '../../components/analytics/AnalyticsSection/AnalyticsSection';
@@ -31,11 +31,7 @@ export default function Analytics() {
   const analiticsRef = useRef(null);
   const { isAuth } = useAuth(); 
   const { ref, widthsState } = useContainerWidth([885, 500]);
-  const {assetAllocation,
-    balanceChanges,
-    totalProfitLoss,
-    costAnalysis,
-     } = useAnalyics();
+  const {assetAllocation} = useAnalyics();
     // Authorization check and portfolio info loading
     useEffect(() => {
       if (id) {
@@ -49,35 +45,25 @@ export default function Analytics() {
             pointsCount: 12
           }
         }));
-        /*dispatch(fetchPerformance(id));
-        dispatch(fetchRiskScore(id));
-        ispatch(fetchTokenDistribution(id));
-        dispatch(fetchWalletActivity(id));*/
-      }
-    }, [navigate, dispatch, id]);
-/*
-    useEffect(() => {
-      try {
-        if (!selectedSymbolRiskScore|| 
-          !dateRangeRiskScore.startDate || 
-          !dateRangeRiskScore.endDate || 
-          !selectedPointsCountRiskScore) 
-          return;
-        
-        dispatch(fetchRiskScore({
+        dispatch(fetchBalanceChange({
           id: id,
-          data: {
-            symbol: selectedSymbolRiskScore,
-            fromTs: dateRangeRiskScore.startDate,
-            toTs: dateRangeRiskScore.endDate,
-            pointsCount: selectedPointsCountRiskScore
+          data:{
+            fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+            toTs: new Date().setHours(23, 59, 59, 999),
+            pointsCount: 120
           }
         }));
-      } catch (err) {
-        console.error('Error handling date range change:', err);
+        dispatch(fetchTotalProfitLoss({
+          id: id,
+          data:{
+            fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+            toTs: new Date().setHours(23, 59, 59, 999),
+            pointsCount: 120
+          }
+        }));
       }
-    }, [selectedSymbolRiskScore, dateRangeRiskScore, selectedPointsCountRiskScore ]);
-    */
+    }, [navigate, dispatch, id]);
+
   // Register section ref
    const registerSectionRef = (id, element) => {
      if (element) {
@@ -156,8 +142,6 @@ const handleScroll = () => {
   return () => analiticsEl.removeEventListener("scroll", handleScroll);
 }, []);
 
-
-
   // Handle click on navigation items
 const handleNavClick = (e, sectionId) => {
   e.preventDefault();
@@ -177,11 +161,6 @@ const handleNavClick = (e, sectionId) => {
   }
 };
 
-
-  if (!isAuth) {
-    return null;
-  }
-
   return (
     <>
               {id ? (
@@ -192,31 +171,24 @@ const handleNavClick = (e, sectionId) => {
                           <AnalyticsSection
                             sectionId="assetAllocation"
                             title={t("analytics.navigator.assetAllocations")}
-                            renderData={(data, title) => <AssetAllocations portfolioId={id} data={data} title={title}/>}
-                             dataState={assetAllocation}
+                            renderData={(data, title) => <AssetAllocations portfolioId={id} data={data} title={title} onReset={() => dispatch(fetchAssetAllocation(id))}/>}
+                            dataState={assetAllocation}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
                           />
 
-                          <AnalyticsSection
+                          <BalanceChanges
                             sectionId="balanceChanges"
                             title={t("analytics.navigator.balanceChanges")}
-                            renderData={(data,title) => <BalanceChanges data={data} title={title} />}
-                            dataState={{loading: false, error: false, data: 
-                              [
-                                { date: 'Sep 13', balance: 18.5, timestamp: 1694649600 },
-                                { date: 'Sep 20', balance: 12.8, timestamp: 1695254400 },
-                                { date: 'Oct 13', balance: 38.2, timestamp: 1697155200 },
-                                { date: 'Nov 12', balance: 35.7, timestamp: 1699747200 },
-                                { date: 'Dec 12', balance: 37.1, timestamp: 1702339200 },
-                                { date: 'Jan 12', balance: 24.3, timestamp: 1704931200 },
-                                { date: 'Feb 11', balance: 72.5, timestamp: 1707609600 },
-                                { date: 'Mar 11', balance: 45.8, timestamp: 1710115200 },
-                                { date: 'Apr 10', balance: 46.7, timestamp: 1712707200 },
-                                { date: 'May 10', balance: 38.2, timestamp: 1715299200 },
-                              ]
-                            }}
-                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            portfolioId={id}
+                            onReset={() => dispatch(fetchBalanceChange({
+                              id: id,
+                              data:{
+                                fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+                                toTs: new Date().setHours(23, 59, 59, 999),
+                                pointsCount: 120
+                              }
+                            }))}
                             registerRef={registerSectionRef}
                           />
 
@@ -235,33 +207,23 @@ const handleNavClick = (e, sectionId) => {
                             }))}
                             registerRef={registerSectionRef}
                           />
-                          <AnalyticsSection
+
+                          <ProfitLoss
                             sectionId="totalProfitLoss"
                             title={t("analytics.navigator.totalProfitLoss")}
-                            renderData={(data,title) => <ProfitLoss data={data} title={title}/>}
-                            dataState={{
-                              loading: false,
-                              error: false,
-                              data: 
-                                  [
-                                      { date: 'Sep 13', value: -1.5, timestamp: '2024-09-13' },
-                                      { date: 'Sep 14', value: -8.2, timestamp: '2024-09-14' },
-                                      { date: 'Sep 15', value: 8.1, timestamp: '2024-09-15' },
-                                      { date: 'Sep 16', value: 2.8, timestamp: '2024-09-16' },
-                                      { date: 'Sep 17', value: 0, timestamp: '2024-09-17' },
-                                      { date: 'Sep 18', value: 0, timestamp: '2024-09-18' },
-                                      { date: 'Sep 19', value: -9.8, timestamp: '2024-09-19' },
-                                      { date: 'Sep 20', value: -11.2, timestamp: '2024-09-20' },
-                                      { date: 'Sep 21', value: -6.5, timestamp: '2024-09-21' },
-                                      { date: 'Sep 22', value: -12.1, timestamp: '2024-09-22' },
-                                      { date: 'Sep 23', value: 1.2, timestamp: '2024-09-23' },
-                                      { date: 'Sep 24', value: -0.8, timestamp: '2024-09-24' },
-                                    ]
-                              
-                            }}
-                            onReset={() => dispatch(fetchAssetAllocation(id))}
+                            portfolioId={id}
+                            onReset={() => dispatch(fetchTotalProfitLoss({
+                              id: id,
+                              data:{
+                                fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+                                toTs: new Date().setHours(23, 59, 59, 999),
+                                pointsCount: 120
+                              }
+                            }))}
                             registerRef={registerSectionRef}
                           />
+                    
+
                           <AnalyticsSection
                             sectionId="costAnalysis"
                             title={t("analytics.navigator.costAnalysis")}
@@ -276,17 +238,12 @@ const handleNavClick = (e, sectionId) => {
                                   { symbol: "Received", percentage: "15" },
                                   { symbol: "Fee", percentage: "10" },
 
-                                ]
-                              
+                                ]  
                             }}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
-                            
+ 
                           />
-
-
-
-
                         </div>
                         <div 
                           className={styles.analiticsNav}

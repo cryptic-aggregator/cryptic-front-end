@@ -26,6 +26,9 @@ import {
   Filler
 } from "chart.js";
 import { useContainerWidth } from "../../hooks/useContainerWidth";
+import { fetchBalanceChange } from "../../store/slices/analyticsSlice";
+import { useAnalyics } from "../../hooks/useAnalytics";
+import i18n, { formatDateLabel } from "../../lib/i18n";
 
 export default function Dashboard() {
   const {t} = useTranslation();
@@ -38,6 +41,14 @@ export default function Dashboard() {
   const { portfolio, loadingPortfolio, errorPortfolio }  = usePortfolio(); 
   const [coins, setCoins] = useState([]);
   const [totalWorth, setTotalWorth] = useState(0);
+  const [changeText, setChangeText] = useState("");
+  const [changeColor, setChangeColor] = useState("green");
+  const [chartData, setChartData] = useState(null);
+  const { balanceChanges } = useAnalyics();
+  const data = balanceChanges.data;
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const formatNumber = (value) => {
     const num = parseFloat(value);
@@ -45,20 +56,34 @@ export default function Dashboard() {
     return num.toFixed(4);
   };
 
-
-
-
-
   useEffect(() => {
-    if (!isAuth) {
-      navigate("/signin"); // Якщо не авторизований, перенаправляємо на сторінку входу
-    } else if (id) {
-      dispatch(infoPortfolio(id)); // Якщо авторизований, отримуємо портфоліо
+    if (id) {
+    dispatch(infoPortfolio(id)); // Якщо авторизований, отримуємо портфоліо
+    dispatch(fetchBalanceChange({
+      id: id,
+      data:{
+        fromTs: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).setHours(0, 0, 0, 0),
+        toTs: new Date().setHours(23, 59, 59, 999),
+        pointsCount: 120
+      }
+    }));
     }
-  }, [isAuth, navigate, dispatch, id]);
+  }, [navigate, dispatch, id]);
   
   const syncPortfolio = () => {
     dispatch(infoPortfolio(id));
+  };
+
+  useEffect(() => {
+    if (!data ) return;
+    processChartData()
+
+  }, [data, i18n.language]);
+  const createGradient = (ctx, chartArea) => {
+    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+    gradient.addColorStop(0, gradientColors.start);
+    gradient.addColorStop(1, gradientColors.end);
+    return gradient;
   };
 
   useEffect(() => {
@@ -67,40 +92,66 @@ export default function Dashboard() {
       setTotalWorth(portfolio.wallet_info.total_portfolio_value_USDT);
     }
   }, [portfolio]);
-
-  // Data setup
-  const data = {
-    labels: ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
-    datasets: [
-      {
-        label: `${t("dashboard.table.balance")}`,
-        data: [100, 98, 95, 110, 92, 90],
-        borderColor: "rgba(192, 132, 252, 1)", // Purple line
-        borderWidth: 2,
-        fill: true,
-        backgroundColor: function(context) {
-          const chart = context.chart;
-          const {ctx, chartArea} = chart;
-          
-          if (!chartArea) {
-            // This case happens on initial chart load
-            return 'rgba(192, 132, 252, 0.3)';
-          }
-          
-          // Create gradient
-          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-          gradient.addColorStop(0, "rgba(192, 132, 252, 0.5)");
-          gradient.addColorStop(1, "rgba(192, 132, 252, 0)");
-          
-          return gradient;
-        },
-        tension: 0.4, // Smoothed line
-        pointRadius: 0, // Hide points
-        pointHoverRadius: 6, // Show points on hover
-        pointHoverBackgroundColor: "#C084FC"
-      }
-    ]
+  const gradientColors = {
+    start: 'rgba(147, 71, 255, 0.3)', // Фіолетовий з прозорістю
+    end: 'rgba(147, 71, 255, 0.05)',   // Більш прозорий фіолетовий
+    line: '#9747FF',                   // Основний колір лінії
+    lineHover: '#B967FF'               // Колір при наведенні
   };
+  const processChartData = () => {
+      try {
+        let processedData;
+        console.log(data)
+        if (data && Array.isArray(data) && data.length > 0) {
+          // Обробка реальних даних
+          processedData = {
+            labels: data.map(item => formatDateLabel(item.ts)),
+            values: data.map(item => parseFloat(item.balance) || 0),
+            timestamps: data.map(item => item.ts) 
+          };
+        }else{
+           setChartData(null);
+          return
+        }
+        const { labels, values, timestamps } = processedData;
+  
+        setChartData({
+          labels,
+          datasets: [
+            {
+              label: 'Balance',
+              data: values.map((value, index) => ({
+                x: labels[index],
+                y: value,
+                timestamp: timestamps[index],
+              })),
+              borderColor: gradientColors.line,
+              backgroundColor: function(context) {
+                const chart = context.chart;
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return null;
+                return createGradient(ctx, chartArea);
+              },
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: gradientColors.line,
+              pointBorderColor: '#ffffff',
+              pointHoverBackgroundColor: gradientColors.lineHover,
+              pointHoverBorderColor: '#ffffff',
+              pointRadius: 0,
+              pointHoverRadius: 6,
+            }
+          ]
+        });
+  
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Помилка при обробці даних діаграми:', error);
+        setIsLoading(false);
+      }
+    };
+
 
   const options = {
     responsive: true,
@@ -167,7 +218,9 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className={styles.balanceChange}>
-                          <span className={styles.balanceChangeDifferent}>-19.1 USDT / 25.67%</span>
+                          <span className={styles.balanceChangeDifferent}>
+                           0 USDT / 0%
+                          </span>
                           <div className={styles.changeTime}>
                             <span>24H</span>
                             <button className={styles.changeTimeButton}>
@@ -176,9 +229,11 @@ export default function Dashboard() {
                           </div>
                         </div>
                       </div>
-                      <div className={`${styles.compressedInfoGraph} ${widthsState[812] ? styles.compressedInfoGraphCompressed : ''}`}>
-                        <Line data={data} options={options} onClick={(elems) => console.log(elems)} />
-                      </div>
+                      {chartData &&(
+                        <div className={`${styles.compressedInfoGraph} ${widthsState[812] ? styles.compressedInfoGraphCompressed : ''}`}>
+                          <Line data={chartData} options={options} onClick={(elems) => console.log(elems)} />
+                        </div>
+                      )}
                     </div>
                     <div className={styles.syncAll}>
                       <button onClick={()=> syncPortfolio()} className={styles.syncAllButton}>

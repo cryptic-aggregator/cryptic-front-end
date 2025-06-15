@@ -5,7 +5,7 @@ import styles from "./AssetAllocations.module.css";
 import Reset from "../../common/Reset/Reset";
 import assetsIcon from "../../../assets/images/Dashboard/assetsIcon.svg";
 import Loader from "../../common/Loader/Loader";
-
+import syncIcon from "../../../assets/images/Dashboard/syncIcon.svg";
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -33,7 +33,7 @@ const options = {
   },
 };
 
-export default function AssetAllocations({ data, title }) {
+export default function AssetAllocations({ data, title, onReset }) {
   ChartJS.register(ArcElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
   const [assets, setAssets] = useState([]);
   const [dataForChart, setDataForChart] = useState(null);
@@ -87,6 +87,9 @@ export default function AssetAllocations({ data, title }) {
     <>
 
         <div className={styles.assetAllocationWrapper}>
+          <button className={styles.syncAllButton} onClick={onReset}>
+            <img className={styles.syncIcon} src={syncIcon} alt="Sync" />
+          </button>
           <div className={styles.chartAsset}>
               {dataForChart ? (
                 <>

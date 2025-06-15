@@ -25,9 +25,7 @@ export default function PortfoliosSidebar({ isOpen, setIsOpen }) {
     const [hoveredDeleteId, setHoveredDeleteId] = useState(null);
 
     useEffect(() => {
-        if (!isAuth) {
-          navigate("/signin"); // Якщо не авторизований, перенаправляємо на сторінку входу
-        } else {
+        if (isAuth) {
           dispatch(fetchPortfolios()); // Якщо авторизований, забираємо портфелі
         }
       }, [isAuth, dispatch]); // Залежності для ефекту

@@ -75,9 +75,10 @@ export const sendRecoveryCode = createAsyncThunk(
 
   export const updateUser = createAsyncThunk(
     "userStore/updateUser",
-    async (data,{ rejectWithValue }) => {
+    async (data,{ dispatch, rejectWithValue }) => {
       try {
         const response = await userApi.updateProfile(data);
+        dispatch(fetchUser());
         return response.data;
       } catch (error) {
         return rejectWithValue(error.response?.data || "Error update user");

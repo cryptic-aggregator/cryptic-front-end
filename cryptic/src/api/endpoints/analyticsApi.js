@@ -15,4 +15,24 @@ export const analyticsApi = {
 
     return await httpClient.get(`/portfolio/${id}/correlation`, { params }); 
   },
+  getTotalProfitLoss: async (id, data) => {
+    const { fromTs, toTs, pointsCount } = data;
+  
+      const params = {};
+      if (fromTs) params.FromTs = fromTs;
+      if (toTs) params.ToTs = toTs;
+      if (pointsCount) params.PointsCount = pointsCount;
+
+    return await httpClient.get(`/portfolio/${id}/pnl`, { params }); 
+  },
+  getBalanceChange: async (id, data) => {
+    const { fromTs, toTs, pointsCount } = data;
+  
+      const params = {};
+      if (fromTs) params.FromTs = fromTs;
+      if (toTs) params.ToTs = toTs;
+      if (pointsCount) params.PointsCount = pointsCount;
+
+    return await httpClient.get(`/portfolio/${id}/balance-graph`, { params }); 
+  },
 };

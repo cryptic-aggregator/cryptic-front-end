@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
-  accessToken: sessionStorage.getItem('accessToken') || null,
+  accessToken: null,
   refreshToken: sessionStorage.getItem('refreshToken') || null,
-  isAuthenticated: !!sessionStorage.getItem('accessToken'),
+  isAuthenticated: false,
 };
 
 const authSlice = createSlice({
@@ -14,18 +15,22 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
       state.isAuthenticated = true;
-      sessionStorage.setItem("accessToken", action.payload.accessToken);
+
+      // Зберігаємо тільки refreshToken
       sessionStorage.setItem("refreshToken", action.payload.refreshToken);
     },
     logout: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
       state.isAuthenticated = false;
-      sessionStorage.removeItem("accessToken");
+
       sessionStorage.removeItem("refreshToken");
     },
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    }
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, setAccessToken } = authSlice.actions;
 export default authSlice.reducer;

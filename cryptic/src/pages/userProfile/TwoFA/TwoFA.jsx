@@ -66,7 +66,7 @@ export default function TwoFA() {
           .then(() => {
             toast.success(t('profile.twoFA.toast.successConnection'));
             dispatch(fetchUser())
-            navigate('twoAuthenticator/disable');
+            navigate('/twoAuthenticator/disable');
           })
           .catch((error) => {
             toast.error(t('profile.twoFA.toast.errorConnection'));

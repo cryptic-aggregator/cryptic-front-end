@@ -33,7 +33,7 @@ export default function TwoFADisable() {
       .then(() => {
         toast.success(t('profile.twoFADisable.toast.successDisabling'));
         dispatch(fetchUser())
-        navigate('twoAuthenticator/enabled');
+        navigate('/twoAuthenticator/enabled');
       })
       .catch((error) => {
         console.error("setupTwoFactor error:", error);

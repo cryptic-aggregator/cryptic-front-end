@@ -109,6 +109,20 @@ export default function WalletConnectModal({ isOpen, onClose, portfolioId }) {
     }, 500); 
   }, [isConnected]);
 
+
+  function isValidWalletAddress(address) {
+    // Ethereum address: 0x + 40 hex символів
+    const ethRegex = /^0x[a-fA-F0-9]{40}$/;
+
+    // Solana address: Base58 строка, зазвичай 32–44 символів
+    const solRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+
+    // Bitcoin address: починається з 1, 3 або bc1 (спрощено)
+    const btcRegex = /^(1|3|bc1)[a-zA-HJ-NP-Z0-9]{25,39}$/;
+
+    return ethRegex.test(address) || solRegex.test(address) || btcRegex.test(address);
+  }
+
   const handleWalletConnect = async (walletAddress) => {
     if (!walletAddress) {
       toast.error(t("modals.connectWallet.toast.walletNotFound"));
@@ -151,11 +165,17 @@ export default function WalletConnectModal({ isOpen, onClose, portfolioId }) {
   };
 
   const handleManualInput = () => {
-    if (walletInput.trim() !== "") {
-      handleWalletConnect(walletInput);
-    } else {
+    if (walletInput.trim() === "") {
       toast.error(t("modals.connectWallet.toast.pleaseEnter"));
+      return;
     }
+
+    if (!isValidWalletAddress(walletInput.trim())) {
+      toast.error(t("modals.connectWallet.toast.invalidAddress"));
+      return;
+    }
+
+    handleWalletConnect(walletInput.trim());
   };
 
   const onModalClick = (event) => {

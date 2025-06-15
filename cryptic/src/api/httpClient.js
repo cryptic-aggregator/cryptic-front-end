@@ -11,7 +11,7 @@ const httpClient = axios.create({
   }
 });
 
-// Додавання токена в кожен запит
+// ➕ Додаємо accessToken до кожного запиту
 httpClient.interceptors.request.use(
   (config) => {
     const state = store.getState();
@@ -26,46 +26,51 @@ httpClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Оновлення токена, якщо він протух
+// 🔄 Обробка 401 + оновлення токена
 httpClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true;
-      
+
       try {
-        const state = store.getState();
-        const refreshToken = state.auth.refreshToken;
-        console.log(refreshToken);
+        // ✅ Читаємо refreshToken з sessionStorage
+        const refreshToken = sessionStorage.getItem("refreshToken");
+
         if (!refreshToken) {
           store.dispatch(logout());
           window.location.href = "/signin";
           return Promise.reject(error);
         }
 
-        // Запит на оновлення токена
-        const res = await axios.post(`${API_BASE_URL}/users/refresh`, `"${refreshToken}"`, {
-          headers: { 'Content-Type': 'application/json-patch+json' },
-        });
-        const newAccessToken = res.data.accessToken;
+        const res = await axios.post(
+          `${API_BASE_URL}/users/refresh`,
+          `"${refreshToken}"`,
+          {
+            headers: { 'Content-Type': 'application/json-patch+json' }
+          }
+        );
 
-        // Оновлюємо токени в Redux
-        store.dispatch(login({ accessToken: newAccessToken, refreshToken }));
+        const accessTokenNew = res.data.accessToken;
+        const refreshTokenNew = res.data.refreshToken;
+        // ✅ Оновлюємо тільки accessToken у Redux
+        store.dispatch(login({ accessToken: accessTokenNew, refreshToken: refreshTokenNew }));
 
-        // Додаємо новий токен в заголовки повторного запиту
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-        console.log("newAccessToken:", newAccessToken);
+        // 🔁 Повторюємо оригінальний запит з новим токеном
+        originalRequest.headers["Authorization"] = `Bearer ${accessTokenNew}`;
         return httpClient(originalRequest);
       } catch (refreshError) {
         store.dispatch(logout());
-        console.log(refreshError);
-       // window.location.href = "/signin";
         return Promise.reject(refreshError);
       }
     }
-    
+
     return Promise.reject(error);
   }
 );

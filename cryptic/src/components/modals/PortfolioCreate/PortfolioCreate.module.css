@@ -1,14 +1,14 @@
 .modalWrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5); /* Напівпрозорий фон */
-    display: flex;
-    justify-content: center; /* Вирівнює по горизонталі */
-    align-items: center; /* Вирівнює по вертикалі */
-    z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Напівпрозорий фон */
+  display: flex;
+  justify-content: center; /* Вирівнює по горизонталі */
+  align-items: center; /* Вирівнює по вертикалі */
+  z-index: 999;
 }
 .createPortfoliosModal{
     position: relative;

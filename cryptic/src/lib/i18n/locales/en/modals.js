@@ -34,6 +34,7 @@ export const modals = {
             errorConnecting: "Error connecting wallet",
             nameNotFound: "Portfolio name not find",
             pleaseEnter: "Please enter a wallet address",
+            invalidAddress: "You entered an invalid wallet address",
         }
     },
 };

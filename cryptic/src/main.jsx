@@ -10,22 +10,12 @@ const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
 
 root.render(
-  <React.StrictMode>
+
     <Provider store={store}>
       <BrowserRouter>
         <RootWrapper />
-        <Toaster
-          position="bottom-right"
-          reverseOrder={false}
-          toastOptions={{
-            style: {
-              background: '#313135',
-              padding: '5px 10px',
-              color: '#FFFFFFFF',
-            },
-          }}
-        />
+
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+
 );

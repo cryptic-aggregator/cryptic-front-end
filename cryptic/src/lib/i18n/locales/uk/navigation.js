@@ -39,6 +39,7 @@ export const navigation = {
     userProfile: "Профіль користувача",
     authenticator: "Двофакторна автентифікація",
     changePassword: "Змінити пароль",
+    premium: "Перейти до преміума",
     delete: "Видалити профіль",
     logout: "Вийти",
   }

@@ -16,8 +16,11 @@ import styles from "./BalanceChanges.module.css";
 import Loader from "../../../components/common/Loader/Loader";
 import DateRangePicker from "../../../components/common/DateRangePicker/DateRangePicker";
 import { useTranslation } from "react-i18next";
-import { formatDate } from "../../../lib/i18n";
-
+import i18n, { formatDate, formatDateLabel } from "../../../lib/i18n";
+import { useDispatch } from "react-redux";
+import { fetchBalanceChange } from "../../../store/slices/analyticsSlice";
+import { useAnalyics } from "../../../hooks/useAnalytics";
+import syncIcon from "../../../assets/images/Dashboard/syncIcon.svg";
 // Реєструємо необхідні компоненти Chart.js
 ChartJS.register(
   CategoryScale,
@@ -30,18 +33,21 @@ ChartJS.register(
   Filler
 );
 
-export default function BalanceChanges({ data, title, onDateRangeChange   }) {
+export default function BalanceChanges({sectionId , portfolioId, title, onReset, registerRef}) {
   // ========================
   // СТАН КОМПОНЕНТА
   // ========================
   const { t } = useTranslation();
   const [chartData, setChartData] = useState(null);
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const dispatch = useDispatch();
   const [dateRange, setDateRange] = useState({
     startDate: null,
     endDate: null,
   });
+  const { balanceChanges } = useAnalyics();
+  const data = balanceChanges.data;
   // ========================
   // КОНСТАНТИ КОНФІГУРАЦІЇ
   // ========================
@@ -58,6 +64,21 @@ export default function BalanceChanges({ data, title, onDateRangeChange   }) {
     end: 'rgba(147, 71, 255, 0.05)',   // Більш прозорий фіолетовий
     line: '#9747FF',                   // Основний колір лінії
     lineHover: '#B967FF'               // Колір при наведенні
+  };
+  const sync = () => {
+    if (!dateRange.startDate || !dateRange.endDate) return;
+
+    const startTimestamp = Math.floor((dateRange.startDate).setHours(0, 0, 0, 0) / 1000);
+    const endTimestamp = Math.floor((dateRange.endDate).setHours(23, 59, 59, 999) / 1000);
+   
+    dispatch(fetchBalanceChange({
+      id: portfolioId,
+      data: {
+        fromTs: startTimestamp,
+        toTs: endTimestamp,
+        pointsCount: 120
+      }
+    }));
   };
 
   // ========================
@@ -112,6 +133,7 @@ export default function BalanceChanges({ data, title, onDateRangeChange   }) {
       y: {
         display: true,
         position: 'left',
+         min: 0,
         grid: {
           display: true,
           color: 'rgba(255, 255, 255, 0.1)',
@@ -178,11 +200,14 @@ export default function BalanceChanges({ data, title, onDateRangeChange   }) {
       if (data && Array.isArray(data) && data.length > 0) {
         // Обробка реальних даних
         processedData = {
-          labels: data.map(item => item.date || item.label),
-          values: data.map(item => parseFloat(item.balance) || parseFloat(item.value) || 0),
-          timestamps: data.map(item => item.timestamp) 
+          labels: data.map(item => formatDateLabel(item.ts)),
+          values: data.map(item => parseFloat(item.balance) || 0),
+          timestamps: data.map(item => item.ts) 
         };
+      }else{
+        return
       }
+
 
       const { labels, values, timestamps } = processedData;
 
@@ -226,17 +251,35 @@ export default function BalanceChanges({ data, title, onDateRangeChange   }) {
   // ========================
   // ЕФЕКТИ
   // ========================
+    useEffect(() => {
+      setActiveFilter(filterOptions[1].value);
+    }, [portfolioId]);
 
   /**
    * Ініціалізація та обробка даних при зміні пропсів
    */
-  useEffect(() => {
+ useEffect(() => {
+    if (!dateRange.startDate || !dateRange.endDate) return;
 
-    if (!dateRange.startDate || !dateRange.endDate ) return;
+    const startTimestamp = Math.floor((dateRange.startDate).setHours(0, 0, 0, 0) / 1000);
+    const endTimestamp = Math.floor((dateRange.endDate).setHours(23, 59, 59, 999) / 1000);
+   
+    dispatch(fetchBalanceChange({
+      id: portfolioId,
+      data: {
+        fromTs: startTimestamp,
+        toTs: endTimestamp,
+        pointsCount: 120
+      }
+    }));
+
+  }, [dateRange.startDate, dateRange.endDate]);
+
+  useEffect(() => {
+    if (!data ) return;
     processChartData()
 
-  }, [data, dateRange.startDate, dateRange.endDate]);
-
+  }, [data, i18n.language]);
 
   // ========================
   // КОМПОНЕНТИ РЕНДЕРИНГУ
@@ -292,16 +335,38 @@ export default function BalanceChanges({ data, title, onDateRangeChange   }) {
     );
   };
 
+    // Перевірка на відсутність даних або помилку
+    if (!data || data.length === 0 || isError) {
+      return (
+        <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles.balanceChangesSection}>
+          <div className={styles.balanceChangesWrapper}>
+            <div className={styles.balanceChanges}>
+              <div className={styles.assetNoFind}>
+                <span>
+                  {t("analytics.section.dataUnavailable", { title: title.toLowerCase() })}
+                </span>
+                {onReset && <button className={styles.reset} onClick={onReset}> {t("analytics.section.reset")}</button>}
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    }
   // ========================
   // ОСНОВНИЙ РЕНДЕР
   // ========================
   return (
-    <div className={styles.balanceChangesWrapper}>
-      <div className={styles.balanceChanges}>
-        <div className={styles.header}>{title}</div>
-        {renderChart()}
-        {renderTimeframeButtons()}
-      </div>
-    </div>
+     <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles.balanceChangesSection}>
+        <div className={styles.balanceChangesWrapper}>
+          <button className={styles.syncAllButton} onClick={sync}>
+            <img className={styles.syncIcon} src={syncIcon} alt="Sync" />
+          </button>
+          <div className={styles.balanceChanges}>
+            <div className={styles.header}>{title}</div>
+            {renderChart()}
+            {renderTimeframeButtons()}
+          </div>
+        </div>
+      </section>
   );
 }

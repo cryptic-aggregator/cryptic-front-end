@@ -1,23 +1,35 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useUser } from "../../hooks/useUser";
+import { initializeAuth } from '../../store/index';
 import App from '../../App';
 import Loader from '../common/Loader/Loader';
 import Error from '../common/Error/Error';
-import { useUser } from "../../hooks/useUser";
-import { initializeAuth } from '../../store/index';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { wagmiConfig } from '../../lib/reownAppkit/reownAppkit';  
 import "../../styles/index.css";
+import CookieConsent from '../common/CookieConsent/CookieConsent';
 
 const RootWrapper = () => {
-  const { isLoading, error }  = useUser(); 
+  const { isLoading, error } = useUser();
   const queryClient = new QueryClient();
-  const dispatch = useDispatch();
+  const initialized = useRef(false);
 
   useEffect(() => {
-     initializeAuth();
-  }, [dispatch]);
+    if (initialized.current) {
+      console.log("Ініціалізація вже була виконана, пропускаємо");
+      return;
+    }
+
+    const init = async () => {
+      console.log("initializeAuth починається");
+      initialized.current = true;
+      await initializeAuth();
+      console.log("initializeAuth завершився");
+    };
+    
+    init();
+  }, []);
 
   if (error) {
     return (
@@ -35,11 +47,11 @@ const RootWrapper = () => {
     );
   }
 
-
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <App />
+        <CookieConsent />
       </QueryClientProvider>
     </WagmiProvider>
   );

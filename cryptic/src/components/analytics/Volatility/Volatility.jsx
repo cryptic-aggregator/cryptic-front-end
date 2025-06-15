@@ -23,6 +23,7 @@ import networkSelect from "../../../assets/images/Wallets/networkSelect.svg";
 import { useDispatch } from "react-redux";
 import { fetchRiskScore } from "../../../store/slices/analyticsSlice";
 import { useAnalyics } from "../../../hooks/useAnalytics";
+import syncIcon from "../../../assets/images/Dashboard/syncIcon.svg";
 // Реєструємо необхідні компоненти Chart.js
 ChartJS.register(
   CategoryScale,
@@ -34,7 +35,6 @@ ChartJS.register(
   Legend,
   Filler
 );
-
 export default function Volatility ({sectionId , portfolioId, title, onReset, registerRef}) {
   // ========================
   // СТАН КОМПОНЕНТА
@@ -42,6 +42,7 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
   const { t } = useTranslation();
   const [chartData, setChartData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const selectBoxRef = useRef(null);
@@ -220,6 +221,8 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
           portfolio : data.map(item => parseFloat(item.portfolio_value )),
           timestamps: data.map(item => item.ts) 
         };
+      }else{
+        return
       }
 
       const { labels, symbol, portfolio, timestamps } = processedData;
@@ -286,7 +289,10 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
   // ========================
   // ЕФЕКТИ
   // ========================
-
+    useEffect(() => {
+      setActiveFilter(filterOptions[1].value);
+      setSelectedNetwork(networks[0]);
+    }, [portfolioId]);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
@@ -303,6 +309,22 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
   /**
    * Ініціалізація та обробка даних при зміні пропсів
    */
+  const sync = () => {
+    if (!selectedNetwork.value || !dateRange.startDate || !dateRange.endDate) return;
+
+    const startTimestamp = Math.floor((dateRange.startDate).setHours(0, 0, 0, 0) / 1000);
+    const endTimestamp = Math.floor((dateRange.endDate).setHours(23, 59, 59, 999) / 1000);
+   
+    dispatch(fetchRiskScore({
+      id: portfolioId,
+      data: {
+        symbol: selectedNetwork.value,
+        fromTs: startTimestamp,
+        toTs: endTimestamp,
+        pointsCount: 12
+      }
+    }));
+  };
 
   useEffect(() => {
     if (!selectedNetwork.value || !dateRange.startDate || !dateRange.endDate) return;
@@ -373,7 +395,6 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
   const renderChart = () => 
     
     {
-    if (!data || data.length === 0) return null;
 
     if (isLoading) {
       return (
@@ -383,14 +404,7 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
       );
     }
 
-    if (risksAndVolatility.loading) {
-      return (
-        <div className={styles.loaderContainer}>
-          <Loader text={t("analytics.cost.loading")} />
-        </div>
-      );
-    }
- 
+
     if (risksAndVolatility.error) {
       return (
         <div className={styles.loaderContainer}>
@@ -497,11 +511,14 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
       </div>
     );
   };
+  
   // ========================
   // ОСНОВНИЙ РЕНДЕР
   // ========================
-  if (!data || data.length === 0) return
- (
+  
+  // Перевірка на відсутність даних або помилку
+  if (!data || data.length === 0 || isError) {
+    return (
       <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles.balanceChangesSection}>
         <div className={styles.balanceChangesWrapper}>
           <div className={styles.balanceChanges}>
@@ -515,10 +532,14 @@ export default function Volatility ({sectionId , portfolioId, title, onReset, re
         </div>
       </section>
     );
+  }
   
   return (
-    <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles.balanceChangesSection}>
-      <div className={styles.balanceChangesWrapper}>
+ <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles.balanceChangesSection}>
+      <div className={styles.balanceChangesWrapper}>   
+          <button className={styles.syncAllButton} onClick={sync}>
+            <img className={styles.syncIcon} src={syncIcon} alt="Sync" />
+          </button>
         <div className={styles.balanceChanges}>
           <div className={styles.header}>{title}</div>
           {renderSelectedNetwork()}

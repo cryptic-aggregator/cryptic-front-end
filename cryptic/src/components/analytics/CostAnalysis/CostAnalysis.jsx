@@ -8,7 +8,8 @@ import receivedIcon from "../../../assets/images/Analytics/receivedIcon.svg";
 import transferIcon from "../../../assets/images/Analytics/transferIcon.svg";
 import Loader from "../../../components/common/Loader/Loader";
 import { useTranslation } from "react-i18next";
-
+import syncIcon from "../../../assets/images/Dashboard/syncIcon.svg";
+import { useDispatch } from "react-redux";
 const options = {
   responsive: true,
   maintainAspectRatio: false,
@@ -37,11 +38,13 @@ const options = {
   },
 };
 
-export default function CostAnalysis({data, title}) {
+export default function CostAnalysis({data, title, onReset}) {
   ChartJS.register(ArcElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
   const [assets, setAssets] = useState([]);
   const [dataForChart, setDataForChart] = useState(null);
+  const [isError, setIsError] = useState(false);
   const { t } = useTranslation();
+
   useEffect(() => {
     if (data && Array.isArray(data) && data.length > 0) {
       const assetLabels = data.map((coin) => t(`analytics.cost.assets.${coin.symbol.toLowerCase()}`));
@@ -82,6 +85,9 @@ export default function CostAnalysis({data, title}) {
   return (
     <>
       <div className={styles.costAnalysisWrapper}>
+        <button className={styles.syncAllButton} onClick={onReset}>
+          <img className={styles.syncIcon} src={syncIcon} alt="Sync" />
+        </button>
         <div className={styles.chartCostAnfLabels}>
               <div className={styles.chartCost}> 
                 {dataForChart ? (

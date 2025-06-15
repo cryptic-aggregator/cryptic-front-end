@@ -13,13 +13,32 @@ export const fetchWallets = createAsyncThunk(
   }
 );
 
+export const deleteWallet = createAsyncThunk(
+  "walletStore/deleteWallet",
+  async (data, { dispatch, rejectWithValue }) => {
+    try {
+      await walletApi.deleteWallet(data.portfolioId, data.walletId);
+      dispatch(fetchWallets({
+        portfolioId:data.portfolioId,
+        search: null,
+        networks:null,
+      })); // Оновлюємо список після додавання
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error delete wallets");
+    }
+  }
+);
 
 export const changeVisibilityWallet = createAsyncThunk(
   "walletStore/changeVisibilityWallet",
   async (data, { dispatch, rejectWithValue }) => {
     try {
       await walletApi.changeVisibilityWallet(data.portfolioId, data.walletId, data.visibility);
-      dispatch(fetchWallets(data.portfolioId)); // Оновлюємо список після додавання
+      dispatch(fetchWallets({
+        portfolioId:data.portfolioId,
+        search: null,
+        networks:null,
+      })); // Оновлюємо список після додавання
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error changeVisibilityWallet wallets");
     }

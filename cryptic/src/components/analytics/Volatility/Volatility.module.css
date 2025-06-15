@@ -7,7 +7,20 @@
     background-color: #11141E;
     border-radius: 30px;
 }  
+.syncAllButton{
+  position: absolute;
+  right: 20px;
+  height: 30px;
+  font-size: 20px;
+  color: #999999;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+}
+
 .balanceChangesWrapper {
+  position: relative;
   width: 100%;
   padding: 15px 30px 10px 30px;
   display: flex;
@@ -50,6 +63,7 @@
   background-color: #11141E;
   border-radius: 30px;
 }
+
 .reset{
   color: #FFC205;
   font-size: 24px;
@@ -57,6 +71,7 @@
   text-align: center;
   cursor: pointer;
 }
+
 .assetNoFind span{
   width: 100%;
   font-size: 20px;

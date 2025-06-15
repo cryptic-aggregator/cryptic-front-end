@@ -7,7 +7,7 @@ import { Link,useLocation ,useNavigate,useParams} from "react-router-dom";
 import React, { useEffect, useState, useMemo  } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../hooks/useAuth"; // 
-import { fetchWallets,changeVisibilityWallet } from "../../store/slices/walletSlice";
+import { fetchWallets,changeVisibilityWallet, deleteWallet } from "../../store/slices/walletSlice";
 import { useWallet } from "../../hooks/useWallet";
 import toast, { Toaster } from 'react-hot-toast';
 import i18n from "i18next";
@@ -71,14 +71,24 @@ export default function Wallets() {
       visibility: { visibility: visibility === 1 ? 0 : 1 }
     }));
   };
-  useEffect(() => {
-    
-    dispatch(fetchWallets({
+
+  const disconnectWallet = (walletId) => {
+    dispatch(deleteWallet({
       portfolioId: id,
-      search: search,
-      networks: selectedNetwork.value,
-    })); // Якщо авторизований, отримуємо портфоліо
-  
+      walletId: walletId,
+    }));
+  };
+
+
+  useEffect(() => {
+    if(id){
+      dispatch(fetchWallets({
+        portfolioId: id,
+        search: search,
+        networks: selectedNetwork.value,
+      })); // Якщо авторизований, отримуємо портфоліо
+    
+    }
   }, [navigate, dispatch, id, selectedNetwork, search ]);
   
   const sortedWallets = useMemo(() => {
@@ -218,7 +228,7 @@ export default function Wallets() {
                                 {t("wallets.table.transfer")}
                               </Link>
                             )}
-                            <button className={styles.disconnect}>{t("wallets.table.disconnect")}</button>
+                            <button onClick={() => disconnectWallet(wallet.id)} className={styles.disconnect}>{t("wallets.table.disconnect")}</button>
                           </div>
                         </div>
                       

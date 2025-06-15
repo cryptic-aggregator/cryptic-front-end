@@ -3,8 +3,13 @@ import Error from '../../../components/common/Error/Error';
 import styles from "./AnalyticsSection.module.css";
 import { useTranslation } from 'react-i18next';
 import { useAnalyics } from '../../../hooks/useAnalytics';
+
 const AnalyticsSection = ({ sectionId, title, renderData, dataState, onReset, registerRef }) => {
   const { t } = useTranslation();
+  const { assetAllocation } = useAnalyics();
+
+  const isAssetAllocationEmpty = sectionId === "costAnalysis" && (!assetAllocation.data || assetAllocation.data.length === 0);
+  const isDataEmpty = !dataState?.data || dataState.data.length === 0;
 
   return (
     <section id={sectionId} ref={(el) => registerRef(sectionId, el)} className={styles[sectionId]}>
@@ -13,15 +18,21 @@ const AnalyticsSection = ({ sectionId, title, renderData, dataState, onReset, re
           <Loader />
         </div>
       )}
+
       {dataState.error && (
         <div className={styles.analyticsContentLoader}>
-          <Error text={dataState.error}/>
+          <Error text={dataState.error} />
         </div>
       )}
-      {!dataState.error && !dataState.loading && dataState.data != null && dataState.data?.length > 0 && (
-        renderData(dataState.data, title)
+
+
+      {!dataState.error && !dataState.loading &&
+        !isDataEmpty &&
+        !isAssetAllocationEmpty && (
+          renderData(dataState.data, title)
       )}
-      {!dataState.error && !dataState.loading && (dataState.data == null || dataState.data?.length == 0) && (
+
+      {!dataState.error && !dataState.loading && (isDataEmpty || isAssetAllocationEmpty) && (
         <div className={styles.assetNoFind}>
           <span>
             {t("analytics.section.dataUnavailable", { title: title.toLowerCase() })}
