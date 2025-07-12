@@ -41,7 +41,7 @@ export default function Transaction() {
   // ========================
   // КОНСТАНТИ КОНФІГУРАЦІЇ
   // ========================
-  const ITEMS_PER_PAGE = 5;
+  const ITEMS_PER_PAGE = 7;
   const SCROLL_THRESHOLD = 100;
   
  const filterKeys = ["h24", "w1", "m1", "m3", "m6", "y1", "y2"];

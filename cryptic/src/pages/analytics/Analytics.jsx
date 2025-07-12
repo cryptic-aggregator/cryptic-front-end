@@ -71,69 +71,68 @@ export default function Analytics() {
      }
    };
    
-useEffect(() => {
-  const analiticsEl = analiticsRef.current;
-  if (!analiticsEl) return;
+  useEffect(() => {
+    const analiticsEl = analiticsRef.current;
+    if (!analiticsEl) return;
 
-  // Потім підключай скрол
-  let ticking = false;
+    // Потім підключай скрол
+    let ticking = false;
 
-const handleScroll = () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      const scrollTop = analiticsEl.scrollTop;
-      const scrollHeight = analiticsEl.scrollHeight;
-      const clientHeight = analiticsEl.clientHeight;
-      const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollTop = analiticsEl.scrollTop;
+          const scrollHeight = analiticsEl.scrollHeight;
+          const clientHeight = analiticsEl.clientHeight;
+          const isBottom = scrollTop + clientHeight >= scrollHeight - 10;
 
-      const totalScrollable = scrollHeight - clientHeight;
-      const currentProgress = (scrollTop / totalScrollable) * 100;
-      setOverallProgress(Math.min(currentProgress, 100));
-      setIsScrolledToBottom(isBottom);
+          const totalScrollable = scrollHeight - clientHeight;
+          const currentProgress = (scrollTop / totalScrollable) * 100;
+          setOverallProgress(Math.min(currentProgress, 100));
+          setIsScrolledToBottom(isBottom);
 
-      const newSectionProgress = {};
-      let foundActiveSection = false;
+          const newSectionProgress = {};
+          let foundActiveSection = false;
 
-      Object.entries(sectionsRef.current).forEach(([id, section]) => {
-        if (!section) return;
+          Object.entries(sectionsRef.current).forEach(([id, section]) => {
+            if (!section) return;
 
-        const sectionTop = section.offsetTop - 160;
-        const sectionHeight = section.offsetHeight;
-        const sectionBottom = sectionTop + sectionHeight;
+            const sectionTop = section.offsetTop - 160;
+            const sectionHeight = section.offsetHeight;
+            const sectionBottom = sectionTop + sectionHeight;
 
-        let progress = 0;
+            let progress = 0;
 
-        if (scrollTop >= sectionBottom) {
-          progress = 100;
-        } else if (scrollTop >= sectionTop && scrollTop <= sectionBottom) {
-          progress = ((scrollTop - sectionTop) / sectionHeight) * 100;
-          if (!foundActiveSection) {
-            setActiveSection(id);
-            foundActiveSection = true;
+            if (scrollTop >= sectionBottom) {
+              progress = 100;
+            } else if (scrollTop >= sectionTop && scrollTop <= sectionBottom) {
+              progress = ((scrollTop - sectionTop) / sectionHeight) * 100;
+              if (!foundActiveSection) {
+                setActiveSection(id);
+                foundActiveSection = true;
+              }
+            }
+
+            newSectionProgress[id] = progress;
+          });
+
+          if (isBottom) {
+            const sectionIds = Object.keys(sectionsRef.current);
+            if (sectionIds.length > 0) {
+              const lastId = sectionIds[sectionIds.length - 1];
+              setActiveSection(lastId);
+              newSectionProgress[lastId] = 100;
+            }
           }
-        }
 
-        newSectionProgress[id] = progress;
-      });
+          setSectionProgress(prev => ({ ...prev, ...newSectionProgress }));
 
-      if (isBottom) {
-        const sectionIds = Object.keys(sectionsRef.current);
-        if (sectionIds.length > 0) {
-          const lastId = sectionIds[sectionIds.length - 1];
-          setActiveSection(lastId);
-          newSectionProgress[lastId] = 100;
-        }
+          ticking = false;
+        });
+
+        ticking = true;
       }
-
-      setSectionProgress(prev => ({ ...prev, ...newSectionProgress }));
-
-      ticking = false;
-    });
-
-    ticking = true;
-  }
-};
-
+  };
 
   analiticsEl.addEventListener("scroll", handleScroll);
 
@@ -143,22 +142,22 @@ const handleScroll = () => {
 }, []);
 
   // Handle click on navigation items
-const handleNavClick = (e, sectionId) => {
-  e.preventDefault();
-  const section = sectionsRef.current[sectionId];
-  const analiticsEl = analiticsRef.current;
-  
-  if (section && analiticsEl) {
-    const sectionRect = section.getBoundingClientRect();
-    const containerRect = analiticsEl.getBoundingClientRect();
+  const handleNavClick = (e, sectionId) => {
+    e.preventDefault();
+    const section = sectionsRef.current[sectionId];
+    const analiticsEl = analiticsRef.current;
+    
+    if (section && analiticsEl) {
+      const sectionRect = section.getBoundingClientRect();
+      const containerRect = analiticsEl.getBoundingClientRect();
 
-    const offset = sectionRect.top - containerRect.top;
+      const offset = sectionRect.top - containerRect.top;
 
-    analiticsEl.scrollTo({
-      top: analiticsEl.scrollTop + offset - 10, // -20 або інший відступ
-      behavior: 'smooth'
-    });
-  }
+      analiticsEl.scrollTo({
+        top: analiticsEl.scrollTop + offset - 10, // -20 або інший відступ
+        behavior: 'smooth'
+      });
+    }
 };
 
   return (
@@ -242,7 +241,6 @@ const handleNavClick = (e, sectionId) => {
                             }}
                             onReset={() => dispatch(fetchAssetAllocation(id))}
                             registerRef={registerSectionRef}
- 
                           />
                         </div>
                         <div 

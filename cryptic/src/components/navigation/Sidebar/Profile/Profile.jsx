@@ -81,23 +81,23 @@ export default function ProfileSidebar() {
                     }
                     {!error && !isLoading && user!=null &&
                     <>
-<div className={styles.userImg}>
-  <img
-    className={styles.userPhoto}
-    src={preview || userImg}  // показуємо збережене фото або дефолтне
-    alt="User Photo"
-  />
-  <button onClick={handleButtonClick} className={styles.photoIcon}>
-    <img src={iconUserImg} alt="Icon" />
-  </button>
-  <input
-    type="file"
-    accept="image/*"
-    ref={fileInputRef}
-    onChange={handleFileChange}
-    style={{ display: "none" }}
-  />
-</div>
+                    <div className={styles.userImg}>
+                      <img
+                        className={styles.userPhoto}
+                        src={preview || userImg}  // показуємо збережене фото або дефолтне
+                        alt="User Photo"
+                      />
+                      <button onClick={handleButtonClick} className={styles.photoIcon}>
+                        <img src={iconUserImg} alt="Icon" />
+                      </button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
                     <div className={styles.title1}>
                         {user.name}
                     </div>

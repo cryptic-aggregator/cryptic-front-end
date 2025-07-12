@@ -114,24 +114,31 @@ export default function AssetAllocations({ data, title, onReset }) {
           </div>
           <div className={styles.assets}>
             <div className={styles.topic}>{title}</div>
-            <div className={`${styles.assetsList} ${assets?.length > 6 ? styles.twoColumns : ''}`}>
-              <ul>                                  
-                {assets?.map((asset, index) => (
-                  <li className={styles.assetListElement} key={index}>
-                    <div className={styles.assetName}>
-                      <span>{asset.symbol}</span>
-                    </div>
-                    <div className={styles.assetInterest}>
-                      <span>{asset.interest} %</span>
-                      <div
-                        className={styles.assetColor}
-                        style={{ backgroundColor: asset.color }}
-                      ></div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+  {/** Спочатку фільтруємо активи з interest > 0 */}
+  {(() => {
+    const filteredAssets = assets?.filter(asset => asset.interest > 0) || [];
+
+    return (
+      <div className={`${styles.assetsList} ${filteredAssets.length > 6 ? styles.twoColumns : ''}`}>
+        <ul>
+          {filteredAssets.map((asset, index) => (
+            <li className={styles.assetListElement} key={index}>
+              <div className={styles.assetName}>
+                <span>{asset.symbol}</span>
+              </div>
+              <div className={styles.assetInterest}>
+                <span>{asset.interest} %</span>
+                <div
+                  className={styles.assetColor}
+                  style={{ backgroundColor: asset.color }}
+                ></div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  })()}
           </div>
         </div>
     </>

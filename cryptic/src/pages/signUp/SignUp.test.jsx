@@ -37,7 +37,7 @@ describe("SignUp Component", () => {
 
     await waitFor(() => {
       const requiredMessages = screen.queryAllByText("signUp.required");
-      expect(requiredMessages.length).toBeGreaterThan(0); // Checks if there's at least one error message displayed.
+      expect(requiredMessages.length).toBeGreaterThan(0); // очікує показ повідомлень про обов’язковість полів.
       
     });
   });

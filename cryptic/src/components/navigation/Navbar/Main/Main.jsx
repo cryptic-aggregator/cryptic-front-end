@@ -2,14 +2,18 @@ import styles from "./Main.module.css";
 import logo from "../../../../assets/images/NavBar/Logo.svg";
 import settings from "../../../../assets/images/NavBar/Settings.svg";
 import menu from "../../../../assets/images/NavBar/Menu.svg";
-import { useState, useRef,useEffect } from "react";
+import React, { useState, useRef,useEffect } from "react";
 import { Link } from "react-router-dom";
 import Modal from "../../../modals/Settings/Settings";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../../../hooks/useAuth"; // Глобальний стан авторизації
 import { useUser } from "../../../../hooks/useUser"; // Глобальний стан авторизації
 
+const LazyModal = React.lazy(() => import("../../../modals/Settings/Settings"));
+
 export default function MainNavbar() {
+
+
     const { t } = useTranslation();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [isOpenMenu, setOpenMenu] = useState(false);
@@ -108,7 +112,7 @@ export default function MainNavbar() {
                                 <img src={settings} alt="Settings" />
                             </button>
                         </li>
-                        <Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}></Modal>
+                        <LazyModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}></LazyModal>
                     </ul>
                 </div>
             </nav>

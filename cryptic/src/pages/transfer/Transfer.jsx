@@ -78,7 +78,7 @@ export default function Transfer() {
   const { register, handleSubmit, formState: { errors }, watch, reset, setValue } = useForm({
     mode: 'onChange',
     defaultValues: {
-      addressFrom: wallet?.wallet_address,
+      addressFrom: wallet?.wallet_address ,
     }
   });
 
@@ -119,7 +119,7 @@ export default function Transfer() {
     })() : undefined,
     enabled: !!toAddress && !!amount && parseFloat(amount) > 0,
   });
-
+const [shouldSendTx, setShouldSendTx] = useState(false);
   const { address: connectedAddress, isConnected, connector } = useAccount();
   const { connect, connectors } = useConnect();
   const { data: hash, error, isPending, sendTransaction } = useSendTransaction();
@@ -127,49 +127,65 @@ export default function Transfer() {
     hash,
   });
 
-  const onSubmit = async () => {
-    if (!isConnected) {
-      const targetConnector = connectors.find(c => c.id === wallet.connector);
-      if (targetConnector) {
-        try {
-          await connect({ connector: targetConnector });
-        } catch (err) {
-          toast.error("Failed to connect wallet");
-          console.error("Failed to connect wallet:", err);
-          return;
-        }
-      } else {
-        toast.error("Please connect your wallet first");
+const onSubmit = async () => {
+  if (!toAddress || !amount) {
+    toast.error("Enter valid 'to' address and amount");
+    return;
+  }
+
+  let parsedAmount;
+  try {
+    parsedAmount = parseEther(amount);
+  } catch (error) {
+    toast.error("Invalid amount format");
+    return;
+  }
+
+  if (balanceData?.value && parsedAmount > balanceData.value) {
+    toast.error("Insufficient balance");
+    return;
+  }
+
+  if (!window.ethereum) {
+    toast.error("Ethereum provider not found");
+    return;
+  }
+
+  if (!isConnected) {
+    const targetConnector = connectors.find(c => c.id === wallet.connector);
+    if (targetConnector) {
+      try {
+        await connect({ connector: targetConnector });
+        setShouldSendTx(true); // чекаємо isConnected
+      } catch (err) {
+        toast.error("Failed to connect wallet");
+        console.error("Failed to connect wallet:", err);
         return;
       }
-    }
-
-    if (!toAddress || !amount) {
-      toast.error("Enter valid 'to' address and amount");
+    } else {
+      toast.error("Please connect your wallet first");
       return;
     }
+  } else {
+    setShouldSendTx(true); // вже підключено, відразу дозволяємо відправку
+  }
+};
+
+useEffect(() => {
+  const trySendTransaction = async () => {
+    if (!shouldSendTx || !isConnected) return;
 
     let parsedAmount;
     try {
       parsedAmount = parseEther(amount);
-    } catch (error) {
+    } catch {
       toast.error("Invalid amount format");
-      return;
-    }
-
-    // Перевіряємо чи достатньо коштів
-    if (balanceData?.value && parsedAmount > balanceData.value) {
-      toast.error("Insufficient balance");
-      return;
-    }
-
-    if (!window.ethereum) {
-      toast.error("Ethereum provider not found");
+      setShouldSendTx(false);
       return;
     }
 
     try {
-      sendTransaction({
+      await sendTransaction({
         to: toAddress,
         value: parsedAmount,
         gas: gasEstimate,
@@ -177,8 +193,13 @@ export default function Transfer() {
     } catch (error) {
       console.error("Transaction error:", error);
       toast.error("Transaction failed");
+    } finally {
+      setShouldSendTx(false); // скидаємо прапорець
     }
   };
+
+  trySendTransaction();
+}, [isConnected, shouldSendTx]);
 
   useEffect(() => {
     if (isPending) {

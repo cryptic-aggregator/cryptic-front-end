@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center; /* Вирівнює по горизонталі */
   align-items: center; /* Вирівнює по вертикалі */
-  z-index: 999;
+  z-index: 999999;
 }
 .createPortfoliosModal{
     position: relative;

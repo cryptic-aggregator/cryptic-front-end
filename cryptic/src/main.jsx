@@ -14,7 +14,17 @@ root.render(
     <Provider store={store}>
       <BrowserRouter>
         <RootWrapper />
-
+        <Toaster
+          position="bottom-right"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: '#313135',
+              padding: '5px 10px',
+              color: '#FFFFFFFF',
+            },
+          }}
+        />
       </BrowserRouter>
     </Provider>
 
